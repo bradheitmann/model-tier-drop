@@ -3,13 +3,14 @@
 ## Execution graph
 
 ```
-S-01 scaffold+plan ──┬──▶ S-02 core ──▶ S-03 CLI ──┐
-                     ├──▶ S-04 skill ───────────────┼──▶ S-07 dsh adapter ──┐
-                     ├──▶ S-08 plan graph           │                       ├──▶ S-09 README+publish
-                     │                  S-02+S-04 ──▶ S-05 worker ──▶ S-06 deploy ──┘
+S-01 scaffold+plan ──┬──▶ S-02 core ──┬──▶ S-03 CLI ──────┬──────────────────────────┐
+                     │                │                   ├──▶ S-07 dsh adapter ──┐   │
+                     ├──▶ S-04 skill ─┼───────────────────┤                       │   │
+                     │                └──▶ S-05 worker ──▶ S-06 deploy ───────────┼───┼──▶ S-09 README+publish
+                     └──▶ S-08 plan graph ────────────────────────────────────────┴───┘
 ```
 
-Each `S-nn` is followed by its `V-nn` before merge. Order of merges to `main`: S-01, then any of S-02 / S-04 / S-08 as they pass, then S-03 and S-05, then S-06, then S-07, then S-09.
+Dependencies (also the `prerequisite` edges in `plan/graph.json`): S-02, S-04, S-08 depend on S-01; S-03 on S-02; S-05 on S-02 and S-04; S-06 on S-03 and S-05 (both write `README.md`); S-07 on S-03, S-04 and S-06; S-09 on S-03, S-06, S-07 and S-08. Each `S-nn` is followed by its `V-nn` before merge. Order of merges to `main`: S-01, then any of S-02 / S-04 / S-08 as they pass, then S-03 and S-05, then S-06, then S-07, then S-09.
 
 ## Waves
 

@@ -5,5 +5,5 @@
 - Model names are configuration (`registry/registry.example.json`), never code.
 - Secrets never enter the repository. Run `gitleaks protect --staged --redact` before every commit and `gitleaks detect --redact` before every push. Check that a key exists by its length, never by printing it.
 - `main` receives only slices accepted by a separate QA context against `plan/contracts.md`.
-- Plain, specific prose. Never write "needs you".
+- Plain, specific prose. Never write the forbidden phrase (grep pattern `needs[ ]you`) or the owner's forbidden organisation name (grep pattern `O[K]OA`).
 - The plan lives in `plan/`; change the contracts there before changing the code they bind.
