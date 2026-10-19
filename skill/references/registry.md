@@ -17,8 +17,11 @@ The example lives at `registry/registry.example.json` in the repository. Its mod
   "as_of": "YYYY-MM-DD",
   "deployments": [ Deployment ],
   "models": [ Model ],
-  "embeddings": [ EmbeddingModel ] }
+  "embeddings": [ EmbeddingModel ],
+  "notes": "..." }
 ```
+
+`notes` is optional free text about the registry as a whole, for example where its QoS values were measured.
 
 `as_of` is the date your model list was current. Disqualifications bind it as `registry_as_of`; when you raise `as_of` after changing the registry, older disqualifications stop being in force and lower tiers are tried again with the new models.
 
@@ -62,7 +65,7 @@ These are measurements over a stated window, not targets or vendor claims. Compu
 | `deployment_id` | The deployment that serves it. Must exist. |
 | `open_weight` | True when the weights are open. |
 | `reasoning_levels` | Levels the plan tries, in order. `["none"]` when the model has no levels. Never empty. |
-| `shapes` | Task shapes it serves. Tier 1 may list only `classify`, `choose`, `route`, `yes_no`. |
+| `shapes` | Task shapes it serves. Empty (`[]`) means any shape, which suits generalists. A tier-1 model must list its shapes explicitly, and only `classify`, `choose`, `route`, `yes_no`. |
 | `families` | Families it serves. Empty means any family. Required non-empty for `specialised` and `tailored`. |
 | `cost` | `input_usd_per_mtok`, `output_usd_per_mtok`. Used to order candidates. Never negative. |
 | `speed` | `output_tokens_per_second`, `median_latency_ms`; either may be null. |
@@ -79,7 +82,7 @@ Embedding models are helpers, not a tier. They are listed separately and can nev
 
 ## Validation
 
-`validate_registry` rejects: duplicate ids; an unknown `deployment_id`; a tier-1 model with a non-decision shape; a `specialised` or `tailored` model with empty `families`; empty `reasoning_levels`; negative cost; an embedding model id reused as a model id. Fix every issue before routing.
+`validate_registry` rejects: duplicate ids; an unknown `deployment_id`; a tier-1 model with a non-decision shape or with no shapes listed; a `specialised` or `tailored` model with empty `families`; empty `reasoning_levels`; negative cost; an embedding model id reused as a model id. Fix every issue before routing.
 
 ## Indicative model names
 

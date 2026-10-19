@@ -15,7 +15,7 @@ Record an attempt for every candidate you execute, whatever happened:
 
 A dataset made only of successes overstates every tier. Failures and abstentions are the evidence that disqualifies a tier and the negatives a tailored model learns from.
 
-Each row carries what training and evaluation need without reopening the source: `task_id`, `family`, `tier`, `candidate`, `outcome`, `metrics`, `judge`, `cost_usd`, `latency_ms`, `tokens`, `input_sha256`, `output_sha256` (null when there is no output), `rights`, `eval_item_id`, `recorded_at`, `record_sha256`. The ledger stores hashes of inputs and outputs, not the content. Keep content in your own store, addressed by those hashes.
+Each row carries what training and evaluation need without reopening the source: `schema_version`, `attempt_id`, `task_id`, `family`, `tier`, `candidate`, `outcome`, `metrics`, `judge`, `cost_usd`, `latency_ms`, `tokens`, `input_sha256`, `output_sha256` (null when there is no output), `rights`, `eval_item_id`, `recorded_at`, `record_sha256`. The ledger stores hashes of inputs and outputs, not the content. Keep content in your own store, addressed by those hashes.
 
 ## Rights by purpose
 
