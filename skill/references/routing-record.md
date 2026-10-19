@@ -27,7 +27,7 @@ Print its JSON Schema with `tier-drop schemas routing_decision`.
 |---|---|
 | `tier` | The `Tier` value. |
 | `status` | One of `disqualified`, `skipped`, `tried`, `selected` (below). |
-| `refs` | Ids that justify the status: disqualification ids for `disqualified`, attempt ids for `tried` and `selected`, empty for `skipped`. |
+| `refs` | Ids that justify the status: disqualification ids for `disqualified`, attempt ids for `tried`, only the winning attempt id for `selected`, empty for `skipped`. |
 | `detail` | For `skipped`, the reason and its detail; otherwise one sentence on the status. |
 
 Status values:
@@ -35,9 +35,9 @@ Status values:
 - `disqualified`: an in-force disqualification exists for the family and tier. `refs` holds the disqualification ids. This tier never supplies the winner, even if it has a passing attempt.
 - `skipped`: the tier was not tried. `detail` gives a structural reason (`shape_mismatch`, `no_provisioned_candidates`, `no_qos_qualified_candidates`) or `not_tried` for an open tier above the winner that has no attempts.
 - `tried`: attempts exist, but the tier neither won nor is disqualified.
-- `selected`: the winner came from this tier.
+- `selected`: the winner came from this tier. `refs` holds the winning attempt id only; the tier's other qualified attempts are in `ranking`.
 
-`tailored` appears in `tiers` in one of two places: first, when a tailored model is bound to the family (it is then first on the ladder), or last as a `skipped` entry when none is bound.
+`tailored` appears in `tiers` in one of three ways. Bound to the family with `policy.tailored_first` true: first, as a real tier. Bound with `tailored_first` false: last on the ladder, as a real tier. Not bound: it is not on the ladder and appears as a trailing `skipped` entry with `no_provisioned_candidates`.
 
 Tiers above the selected one normally show `skipped` with `not_tried`. That is expected: the rule forbids trying a higher tier once a lower tier qualifies.
 
@@ -66,9 +66,22 @@ The winner is the first entry of the lowest ladder tier that has a qualified att
 
 `Attempt` (in `attempts.jsonl`): `schema_version`, `attempt_id`, `task_id`, `family`, `tier`, `candidate`, `outcome`, `metrics`, `judge` (`kind`, `ref`), `cost_usd`, `latency_ms`, `tokens` (`input`, `output`), `input_sha256`, `output_sha256`, `rights`, `eval_item_id`, `recorded_at`, `record_sha256`.
 
-`Disqualification` (in `disqualifications.jsonl`): `schema_version`, `disqualification_id`, `family`, `tier`, `reason` (`floors_not_met` or `operator`), `evidence` (attempt ids, or eval run ids for an operator record), `detail`, `registry_as_of`, `decided_at`, `expires_at`, `record_sha256`.
+`Disqualification` (in `disqualifications.jsonl`): `schema_version`, `disqualification_id`, `family`, `tier`, `reason` (`floors_not_met` from `attempt record`; any of `shape_mismatch`, `no_provisioned_candidates`, `no_qos_qualified_candidates`, `rights_forbid_remote`, `floors_not_met`, `operator` from `tier-drop disqualify`), `evidence` (attempt ids, or eval run ids for a `tier-drop disqualify` record), `detail`, `registry_as_of`, `decided_at`, `expires_at`, `record_sha256`.
 
 `record_sha256` may be omitted on input; `tier-drop` fills it before writing.
+
+## Derived ids and times
+
+Task and attempt ids are yours to supply; `tier-drop` generates ULID-shaped ids (26 characters, Crockford base32) only when you omit them. The other ids are derived from content, so the same evidence always gives the same id:
+
+| Record | Id | Time field |
+|---|---|---|
+| `RoutingDecision` | `decision_id` = `rd-` + first 16 hex of SHA-256 over `task_id` and the sorted attempt ids | `decided_at` = latest attempt `recorded_at`, or the task's `created_at` |
+| `Disqualification` (`floors_not_met`) | `disqualification_id` = `dq-` + first 16 hex of SHA-256 over `family`, `tier` and the sorted evidence attempt ids | `decided_at` = latest `recorded_at` among the evidence attempts |
+| `Disqualification` (from `tier-drop disqualify`) | `dq-` prefix | `decided_at` from the command line tool's clock; `registry_as_of` from the registry |
+| `EvalRun` | `eval_run_id` with the `er-` prefix, derived from the run's content | `recorded_at` |
+
+Because a `floors_not_met` record is derived from its evidence, the same evidence always yields the same `disqualification_id` and `decided_at`.
 
 ## Reading a decision
 

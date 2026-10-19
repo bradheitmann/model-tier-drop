@@ -12,9 +12,20 @@ A tier is a compute category. It says what kind of model the work runs on, not w
 | `specialised` | 2 | second |
 | `cheap_generalist` | 3 | third |
 | `frontier` | 4 | fourth |
-| `tailored` | 5 | first when a tailored model is bound to the family and `policy.tailored_first` is true; otherwise last, as a skipped entry |
+| `tailored` | 5 | bound and `policy.tailored_first` true: first; bound and `tailored_first` false: last, as a real tier; unbound: not on the ladder (a trailing skipped entry) |
 
-`ladder(task)` starts from `[system_one, specialised, cheap_generalist, frontier]`. When the registry has a `tailored` model whose `families` include the task's family and `policy.tailored_first` is true, `tailored` is placed at the front. Otherwise `tailored` is appended at the end and reported as `skipped` with `no_provisioned_candidates`.
+`ladder(task)` starts from `[system_one, specialised, cheap_generalist, frontier]`. When the registry has a `tailored` model whose `families` include the task's family and `policy.tailored_first` is true, `tailored` is placed at the front. When a tailored model is bound but `tailored_first` is false, `tailored` is appended at the end as a real tier, tried after `frontier` like any other. When no tailored model is bound to the family, `tailored` is not on the ladder; plans and decisions report it as a trailing `skipped` entry with `no_provisioned_candidates`.
+
+## Trial order inside a tier
+
+`tier-drop plan` orders the untried singles of a tier by these keys, in turn:
+
+1. open-weight models before closed-weight models, when `policy.prefer_open_weight` is true (default);
+2. models on `local` deployments before `remote`, when `policy.prefer_local` is true (default);
+3. cost ascending (input plus output price per million tokens);
+4. reasoning-level order as listed in the registry.
+
+This carries the tier text into the plan: open-weight first in `frontier`, your own equipment preferred in `cheap_generalist`. Panels and composition helpers are chosen by cost alone (see `references/composition.md`).
 
 The task moves along the ladder one tier at a time. It leaves a tier only when a disqualification for that tier and the task's family is in force, or when `tier-drop plan` skips the tier for a structural reason.
 
@@ -56,7 +67,7 @@ Structural skip: `no_provisioned_candidates` when no tier-2 model is bound to th
 
 ## Tier 3: `cheap_generalist`
 
-What it is for: generalists that are inexpensive and close to the frontier on the job. Prefer deployments on your own hardware (`locality: "local"`). Generalists usually list `shapes: []`, which means any shape.
+What it is for: generalists that are inexpensive and close to the frontier on the job. Prefer deployments on your own hardware (`locality: "local"`); with `policy.prefer_local` true, the plan tries local models before remote ones. Generalists usually list `shapes: []`, which means any shape.
 
 Indicative models as of 2026-10-19: DeepSeek 4.1 Flash, Qwen 3.8 27B, GLM-5.3-flash.
 
@@ -66,7 +77,7 @@ Structural skips: `no_provisioned_candidates`, or `no_qos_qualified_candidates` 
 
 ## Tier 4: `frontier`
 
-What it is for: work the cheaper tiers cannot do. Try the best open-weight models first, then closed models. Order inside the tier comes from cost, so make the registry costs accurate.
+What it is for: work the cheaper tiers cannot do. Try the best open-weight models first, then closed models: with `policy.prefer_open_weight` true, the plan offers every open-weight single before any closed one. Within each group, local comes before remote and then cost decides, so set `open_weight` and the registry costs accurately.
 
 Indicative models as of 2026-10-19: GLM-5.3, Qwen 3.8 Max, Mistral 4, Kimi K3 (open weight), then Opus 5.5 and GPT-6.1-Sol.
 
@@ -82,7 +93,7 @@ No model names are indicative for this tier; each tailored model is your own art
 
 A tier-5 model must list its `families`. It is a candidate only for them. `references/dataset.md` describes when a family is worth a tailored model.
 
-What disqualifies it: the same evidence rule. A tailored model that drifts below the floors on new held-out items is disqualified, and the ladder continues at tier 1. Its compositions use a `frontier` helper.
+What disqualifies it: the same evidence rule. A tailored model that drifts below the floors on new held-out items is disqualified, and the ladder continues at tier 1 (or, when `tailored` was last, the plan is `exhausted`). Its compositions use a `frontier` helper.
 
 ## Plan skip reasons
 
