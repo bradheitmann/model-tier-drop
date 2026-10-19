@@ -1,0 +1,12 @@
+{
+  "schema_version": "tier-drop.policy/1",
+  "tailored_first": true,
+  "required_floors": ["quality", "accuracy", "completeness"],
+  "quality_band": 0.02,
+  "cost_band": 0.10,
+  "disqualify": { "min_attempts": 5, "max_pass_rate": 0.5 },
+  "panel": { "max_members": 3 },
+  "cascade": { "audit_sample_rate": 0.1 },
+  "allow_unmeasured_qos": false,
+  "holdout": { "fraction": 0.2, "seed": 20261019 }
+}

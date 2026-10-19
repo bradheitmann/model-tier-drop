@@ -1,0 +1,244 @@
+//! Attempt records (every try, including failures and abstentions) and `check_floors`.
+
+use std::collections::BTreeMap;
+
+use schemars::JsonSchema;
+use serde::{Deserialize, Serialize};
+
+use crate::candidate::Candidate;
+use crate::policy::Policy;
+use crate::rights::Rights;
+use crate::task::{Floor, Task};
+use crate::tier::Tier;
+
+/// How an attempt ended.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum Outcome {
+    /// The candidate produced an answer.
+    Answered,
+    /// The candidate declined to answer.
+    Abstained,
+    /// The call or the answer failed.
+    Failed,
+    /// The call did not finish in time.
+    TimedOut,
+}
+
+/// Who scored the attempt's metrics.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(rename_all = "snake_case")]
+pub enum JudgeKind {
+    /// A deterministic checker.
+    Deterministic,
+    /// A model judge.
+    Model,
+    /// A person.
+    Human,
+}
+
+/// The scorer of an attempt.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct Judge {
+    /// Kind of scorer.
+    pub kind: JudgeKind,
+    /// Reference to the scorer (checker name, model id, reviewer role).
+    #[serde(rename = "ref")]
+    pub reference: String,
+}
+
+/// Token counts of an attempt.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct Tokens {
+    /// Input tokens.
+    pub input: u64,
+    /// Output tokens.
+    pub output: u64,
+}
+
+/// One recorded try of a candidate on a task.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct Attempt {
+    /// Caller-supplied attempt id.
+    pub attempt_id: String,
+    /// The task tried.
+    pub task_id: String,
+    /// The task's family.
+    pub family: String,
+    /// The tier under test.
+    pub tier: Tier,
+    /// What was tried.
+    pub candidate: Candidate,
+    /// How it ended.
+    pub outcome: Outcome,
+    /// Metric vector.
+    pub metrics: BTreeMap<String, f64>,
+    /// Who scored it.
+    pub judge: Judge,
+    /// Cost in USD.
+    pub cost_usd: f64,
+    /// Wall-clock latency in milliseconds, measured by the harness.
+    pub latency_ms: u64,
+    /// Token counts.
+    pub tokens: Tokens,
+    /// SHA-256 of the input.
+    pub input_sha256: String,
+    /// SHA-256 of the output, null when there is none.
+    pub output_sha256: Option<String>,
+    /// The task's rights at attempt time.
+    pub rights: Rights,
+    /// Eval item the attempt ran on, if any.
+    pub eval_item_id: Option<String>,
+    /// RFC 3339 UTC time supplied by the caller.
+    pub recorded_at: String,
+    /// SHA-256 over the canonical JSON without this field; empty until sealed.
+    // decision: defaulted so a harness can submit an attempt before it is hashed; the CLI
+    // fills it before writing to the ledger.
+    #[serde(default)]
+    pub record_sha256: String,
+}
+
+/// One floor an attempt did not clear.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct FloorFailure {
+    /// Metric name.
+    pub metric: String,
+    /// Required minimum.
+    pub min: f64,
+    /// Observed value, null when the metric is missing.
+    pub observed: Option<f64>,
+}
+
+/// The result of checking an attempt against floors.
+#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
+#[serde(deny_unknown_fields)]
+pub struct FloorResult {
+    /// The attempt checked.
+    pub attempt_id: String,
+    /// True only when the attempt answered and cleared every floor.
+    pub passed: bool,
+    /// Every floor not cleared.
+    pub failures: Vec<FloorFailure>,
+}
+
+/// Check an attempt against an explicit list of floors.
+pub(crate) fn check_against(attempt: &Attempt, floors: &[Floor]) -> FloorResult {
+    let mut failures = Vec::new();
+    for f in floors {
+        match attempt.metrics.get(&f.metric) {
+            Some(v) if *v >= f.min => {}
+            observed => failures.push(FloorFailure {
+                metric: f.metric.clone(),
+                min: f.min,
+                observed: observed.copied(),
+            }),
+        }
+    }
+    FloorResult {
+        attempt_id: attempt.attempt_id.clone(),
+        passed: failures.is_empty() && attempt.outcome == Outcome::Answered,
+        failures,
+    }
+}
+
+/// Compare an attempt's metric vector with the task's floors; a missing metric is a failure.
+// decision: a `policy.required_floors` metric that the task forgot to floor is checked
+// with `min: 0.0`, so a missing required metric still fails even on an invalid task.
+pub fn check_floors(task: &Task, attempt: &Attempt, policy: &Policy) -> FloorResult {
+    let mut floors = task.floors.clone();
+    for required in &policy.required_floors {
+        if !floors.iter().any(|f| &f.metric == required) {
+            floors.push(Floor {
+                metric: required.clone(),
+                min: 0.0,
+            });
+        }
+    }
+    check_against(attempt, &floors)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::testutil::{attempt, good, single, task_classify};
+
+    #[test]
+    fn floors_missing_completeness_fails_with_null_observed() {
+        let t = task_classify();
+        let a = attempt(
+            &t,
+            "a1",
+            single("jev", "none"),
+            Outcome::Answered,
+            &[("quality", 0.95), ("accuracy", 0.95)],
+        );
+        let r = check_floors(&t, &a, &Policy::default());
+        assert!(!r.passed);
+        assert_eq!(
+            r.failures,
+            vec![FloorFailure {
+                metric: "completeness".into(),
+                min: 0.9,
+                observed: None
+            }]
+        );
+        let json = serde_json::to_value(&r).unwrap();
+        assert_eq!(json["failures"][0]["observed"], serde_json::Value::Null);
+    }
+
+    #[test]
+    fn floors_below_min_fails_with_observed_value_and_pass_needs_answered() {
+        let t = task_classify();
+        let a = attempt(
+            &t,
+            "a1",
+            single("jev", "none"),
+            Outcome::Answered,
+            &[("quality", 0.95), ("accuracy", 0.5), ("completeness", 0.95)],
+        );
+        let r = check_floors(&t, &a, &Policy::default());
+        assert!(!r.passed);
+        assert_eq!(r.failures.len(), 1);
+        assert_eq!(r.failures[0].metric, "accuracy");
+        assert_eq!(r.failures[0].observed, Some(0.5));
+
+        let ok = attempt(&t, "a2", single("jev", "none"), Outcome::Answered, good());
+        assert!(check_floors(&t, &ok, &Policy::default()).passed);
+        let abstained = attempt(&t, "a3", single("jev", "none"), Outcome::Abstained, good());
+        let r = check_floors(&t, &abstained, &Policy::default());
+        assert!(!r.passed);
+        assert!(r.failures.is_empty());
+    }
+
+    #[test]
+    fn floors_required_metric_without_task_floor_still_must_be_present() {
+        let mut t = task_classify();
+        t.floors.retain(|f| f.metric != "completeness");
+        let a = attempt(
+            &t,
+            "a1",
+            single("jev", "none"),
+            Outcome::Answered,
+            &[("quality", 0.95), ("accuracy", 0.95)],
+        );
+        let r = check_floors(&t, &a, &Policy::default());
+        assert!(!r.passed);
+        assert_eq!(r.failures[0].metric, "completeness");
+        assert_eq!(r.failures[0].observed, None);
+    }
+
+    #[test]
+    fn floors_attempt_judge_ref_field_name() {
+        let t = task_classify();
+        let a = attempt(&t, "a1", single("jev", "none"), Outcome::Answered, good());
+        let v = serde_json::to_value(&a).unwrap();
+        assert_eq!(v["judge"]["ref"], "exact-match");
+        assert_eq!(v["candidate"]["kind"], "single");
+        let back: Attempt = serde_json::from_value(v).unwrap();
+        assert_eq!(back, a);
+    }
+}
