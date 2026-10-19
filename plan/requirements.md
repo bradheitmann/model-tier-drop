@@ -56,7 +56,7 @@ Every requirement has a stable ID, an owning epic, a kind, a criticality flag an
 - **R-21** (functional) `tier-drop schemas` prints JSON Schema for every record type (`registry`, `policy`, `task`, `attempt`, `disqualification`, `routing_decision`, `eval_item`, `eval_split`, `eval_run`, `plan`) so other languages can validate the same files.
   - T-21 Action: `tier-drop schemas routing_decision | jq .title`. Observation: `RoutingDecision`; `tier-drop schemas | jq 'keys | length'` is 10.
 - **R-22** (critical, compliance) The engine's `Task.review` defaults to `strict`; a `sampled` value requires a `class` and a `decision_ref`, and the engine refuses `sampled` for tasks whose shape is `extract` of numbers or whose metadata flags `financial` or `regulated`.
-  - T-22 Action: `cargo test -p tier-drop-core review`. Observation: a task with `metadata.financial: true` and `review: sampled` fails validation.
+  - T-22 Action: `cargo test -p tier-drop-core review`. Observation: a task with `metadata.financial: "true"` (metadata values are strings) and `review: sampled` fails validation with `sampled_review_forbidden`; a floor `min` outside 0..=1 fails with `floor_out_of_range` unless the metric name ends with `_raw`.
 
 ### E3 Hosted MCP
 

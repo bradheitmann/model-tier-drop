@@ -13,6 +13,12 @@ path = "src/main.rs"
 
 [dependencies]
 tier-drop-core = { path = "../core" }
+clap = { version = "4", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+# decision: `float_roundtrip` makes parsing a ledger line and printing it again give the same
+# digits, so `ledger verify` recomputes the hash that was written (the default parser can be
+# off by one unit in the last place for values such as a mean of three metrics).
+serde_json = { version = "1", features = ["float_roundtrip"] }
 
 [lints]
 workspace = true
