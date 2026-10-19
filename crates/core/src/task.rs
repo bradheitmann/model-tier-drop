@@ -171,6 +171,9 @@ pub fn validate_task(task: &Task, policy: &Policy) -> Vec<Issue> {
             ));
         }
     }
+    // decision: `floor_out_of_range` is an added issue code. Metrics are normalised to 0..=1, so a
+    // floor outside that range (or not finite) can never be met or is always met and is refused;
+    // metrics whose name ends with `_raw` carry unnormalised values and may use any finite min.
     for f in &task.floors {
         let raw = f.metric.ends_with("_raw");
         if !f.min.is_finite() || (!raw && !(0.0..=1.0).contains(&f.min)) {

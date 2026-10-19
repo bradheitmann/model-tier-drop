@@ -172,10 +172,11 @@ pub struct Registry {
     /// YYYY-MM-DD date the model names and values were current; binds disqualifications.
     pub as_of: String,
     /// Free text about the registry as a whole.
-    // decision: the contract has no registry-level notes; a defaulted `notes` field is added
-    // so the example can say once that its numbers are example values, not measurements.
+    // decision: the contract types registry-level `notes` as `string | null`; it is optional
+    // (null or absent both parse to None) and the example uses it to say once that its numbers
+    // are example values, not measurements.
     #[serde(default)]
-    pub notes: String,
+    pub notes: Option<String>,
     /// Deployments.
     pub deployments: Vec<Deployment>,
     /// Routing-candidate models.
@@ -347,7 +348,11 @@ mod tests {
         let r = Registry::example();
         assert_eq!(validate_registry(&r), vec![]);
         assert_eq!(r.as_of, "2026-10-19");
-        assert!(r.notes.contains("example values, not measurements"));
+        assert!(r
+            .notes
+            .as_deref()
+            .unwrap_or_default()
+            .contains("example values, not measurements"));
         for t in Tier::ALL {
             assert!(r.models.iter().any(|m| m.tier == t), "no {t:?} model");
         }
@@ -428,5 +433,21 @@ mod tests {
         let mut v: serde_json::Value = serde_json::from_str(REGISTRY_EXAMPLE_JSON).unwrap();
         v["models"][0]["hostname"] = serde_json::json!("x");
         assert!(serde_json::from_value::<Registry>(v).is_err());
+    }
+
+    #[test]
+    fn registry_notes_may_be_null_or_absent() {
+        let mut v: serde_json::Value = serde_json::from_str(REGISTRY_EXAMPLE_JSON).unwrap();
+        v["notes"] = serde_json::Value::Null;
+        let r: Registry = serde_json::from_value(v.clone()).unwrap();
+        assert_eq!(r.notes, None);
+        assert_eq!(validate_registry(&r), vec![]);
+        assert_eq!(
+            serde_json::to_value(&r).unwrap()["notes"],
+            serde_json::Value::Null
+        );
+        v.as_object_mut().unwrap().remove("notes");
+        let r: Registry = serde_json::from_value(v).unwrap();
+        assert_eq!(r.notes, None);
     }
 }

@@ -335,7 +335,28 @@ pub fn plan_next(
         cs.into_iter().filter(|c| !tried.contains(&c)).collect()
     };
     let mut skipped = Vec::new();
-    for tier in tiers_considered(&ladder(task, registry, policy)) {
+    let lad = ladder(task, registry, policy);
+    // decision (settled by QA V-02): when no tailored model binds the family, tailored is not on
+    // the ladder but is still reported as the trailing `skipped` entry of every plan, `try`
+    // plans included, so the reader always sees why tier 5 was not offered.
+    let off_ladder: Vec<SkippedTier> = tiers_considered(&lad)
+        .into_iter()
+        .filter(|t| !lad.contains(t))
+        .filter_map(|tier| {
+            structural_skip(task, registry, &gate, tier)
+                .err()
+                .map(|(reason, detail)| SkippedTier {
+                    tier,
+                    reason,
+                    detail,
+                })
+        })
+        .collect();
+    let with_trailing = |mut s: Vec<SkippedTier>| {
+        s.extend(off_ladder.iter().cloned());
+        s
+    };
+    for tier in lad.iter().copied() {
         let models = match structural_skip(task, registry, &gate, tier) {
             Ok(models) => models,
             Err((reason, detail)) => {
@@ -361,7 +382,7 @@ pub fn plan_next(
             return Plan::Try {
                 tier,
                 candidates: open_singles,
-                skipped,
+                skipped: with_trailing(skipped),
                 detail: String::new(),
             };
         }
@@ -380,11 +401,13 @@ pub fn plan_next(
         return Plan::Try {
             tier,
             candidates: open_comps,
-            skipped,
+            skipped: with_trailing(skipped),
             detail,
         };
     }
-    Plan::Exhausted { skipped }
+    Plan::Exhausted {
+        skipped: with_trailing(skipped),
+    }
 }
 
 #[cfg(test)]
@@ -435,7 +458,10 @@ mod tests {
         let (tier, cands, skipped, _) = try_parts(&p);
         assert_eq!(tier, Tier::SystemOne);
         assert_eq!(cands, &vec![single("jev", "none"), single("laya", "none")]);
-        assert!(skipped.is_empty());
+        // no tailored model binds `ticket.priority`: tier 5 is the trailing skipped entry
+        assert_eq!(skipped.len(), 1);
+        assert_eq!(skipped[0].tier, Tier::Tailored);
+        assert_eq!(skipped[0].reason, SkipReason::NoProvisionedCandidates);
         assert_eq!(serde_json::to_value(&p).unwrap()["kind"], "try");
     }
 
@@ -484,7 +510,9 @@ mod tests {
             ]
         );
         let plan = plan_next(&t, &r, &[], &[], &p);
-        let (tier, cands, _, _) = try_parts(&plan);
+        let (tier, cands, skipped, _) = try_parts(&plan);
+        // tailored is on the ladder here, so it is not reported as skipped
+        assert!(skipped.is_empty());
         assert_eq!(tier, Tier::Tailored);
         assert_eq!(cands, &vec![single("invoice-total-tailored", "none")]);
         p.tailored_first = false;
@@ -496,7 +524,9 @@ mod tests {
     fn plan_offers_tier3_panel_with_tier4_judge_after_all_singles_fail() {
         let r = Registry::example();
         let t = task_generate();
-        let policy = Policy::default();
+        // a non-default rate shows the cascade takes it from the policy
+        let mut policy = Policy::default();
+        policy.cascade.audit_sample_rate = 0.37;
         let first = plan_next(&t, &r, &[], &[], &policy);
         let (_, singles, _, _) = try_parts(&first);
         let attempts: Vec<Attempt> = singles
@@ -520,8 +550,37 @@ mod tests {
             }
             other => panic!("expected panel first, got {other:?}"),
         }
-        assert!(matches!(cands[1], Candidate::Cascade { .. }));
-        assert!(matches!(cands[2], Candidate::Draft { .. }));
+        match &cands[1] {
+            Candidate::Cascade {
+                first,
+                auditor,
+                audit_sample_rate,
+            } => {
+                assert_eq!(*audit_sample_rate, 0.37);
+                assert_eq!(
+                    r.model(&first.model_id).unwrap().tier,
+                    Tier::CheapGeneralist
+                );
+                assert_eq!(r.model(&auditor.model_id).unwrap().tier, Tier::Frontier);
+            }
+            other => panic!("expected cascade second, got {other:?}"),
+        }
+        match &cands[2] {
+            Candidate::Draft { drafter, finisher } => {
+                assert_eq!(
+                    r.model(&drafter.model_id).unwrap().tier,
+                    Tier::CheapGeneralist
+                );
+                assert_eq!(r.model(&finisher.model_id).unwrap().tier, Tier::Frontier);
+            }
+            other => panic!("expected draft third, got {other:?}"),
+        }
+        assert_eq!(cands.len(), 3);
+        // the trailing skipped entry is the unbound tailored tier
+        assert_eq!(
+            try_parts(&next).2.last().map(|s| (s.tier, s.reason)),
+            Some((Tier::Tailored, SkipReason::NoProvisionedCandidates))
+        );
     }
 
     #[test]
