@@ -8,5 +8,7 @@
   "panel": { "max_members": 3 },
   "cascade": { "audit_sample_rate": 0.1 },
   "allow_unmeasured_qos": false,
+  "prefer_open_weight": true,
+  "prefer_local": true,
   "holdout": { "fraction": 0.2, "seed": 20261019 }
 }

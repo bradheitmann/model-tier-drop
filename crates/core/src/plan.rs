@@ -14,7 +14,7 @@ use crate::candidate::{Candidate, ModelRef};
 use crate::disqualification::Disqualification;
 use crate::policy::Policy;
 use crate::qos::{qos_gate, QosGateResult};
-use crate::registry::{Model, Registry};
+use crate::registry::{Locality, Model, Registry};
 use crate::task::Task;
 use crate::tier::Tier;
 
@@ -214,11 +214,26 @@ fn lowest(m: &Model) -> ModelRef {
     }
 }
 
-/// Every single (model × reasoning level) of the tier, cheapest model first, levels in registry order.
-// decision: ordering key is (cost, registry position, level position), so the levels of one
-// model stay together even when two models cost the same.
-fn singles(models: &[&Model], registry: &Registry) -> Vec<Candidate> {
-    by_cost(models, registry)
+/// Every single (model × reasoning level) of the tier in trial order: open-weight first (when
+/// `policy.prefer_open_weight`), then local deployments first (when `policy.prefer_local`), then
+/// cost ascending, then registry position; each model's levels in registry order.
+// decision: the commission asks for open-weight first in tier 4 and own equipment first in tier
+// 3; both preferences apply in every tier and rank above cost. Registry position breaks ties, so
+// the levels of one model stay together even when two models cost the same. Panel members,
+// the cascade's first model, the drafter and helpers stay cost-based.
+fn singles(models: &[&Model], registry: &Registry, policy: &Policy) -> Vec<Candidate> {
+    let closed = |m: &Model| policy.prefer_open_weight && !m.open_weight;
+    let remote = |m: &Model| {
+        policy.prefer_local
+            && registry
+                .deployment(&m.deployment_id)
+                .map(|d| d.locality != Locality::Local)
+                .unwrap_or(true)
+    };
+    let mut ordered = by_cost(models, registry);
+    // stable sort keeps the cost order inside each preference group
+    ordered.sort_by_key(|m| (closed(m), remote(m)));
+    ordered
         .into_iter()
         .flat_map(|m| {
             m.reasoning_levels
@@ -291,7 +306,7 @@ pub(crate) fn tier_offer(
 ) -> Vec<Candidate> {
     match structural_skip(task, registry, gate, tier) {
         Ok(models) => {
-            let mut all = singles(&models, registry);
+            let mut all = singles(&models, registry, policy);
             all.extend(compositions(tier, &models, task, registry, gate, policy));
             all
         }
@@ -341,7 +356,7 @@ pub fn plan_next(
             });
             continue;
         }
-        let open_singles = untried(singles(&models, registry));
+        let open_singles = untried(singles(&models, registry, policy));
         if !open_singles.is_empty() {
             return Plan::Try {
                 tier,
@@ -630,5 +645,94 @@ mod tests {
         other.family = "other.family".into();
         let p = plan_next(&t, &r, &[other], &[], &Policy::default());
         assert_eq!(try_parts(&p).0, Tier::SystemOne);
+    }
+
+    fn first_ids(p: &Plan) -> Vec<String> {
+        try_parts(p)
+            .1
+            .iter()
+            .filter_map(|c| c.primary_model_id().map(str::to_string))
+            .collect()
+    }
+
+    fn pos(ids: &[String], id: &str) -> usize {
+        ids.iter().position(|x| x == id).unwrap()
+    }
+
+    /// Example registry with GPT-6.1-Sol made the cheapest frontier model, and a generate task
+    /// whose tier 3 is disqualified so the plan reaches tier 4.
+    fn frontier_setup() -> (Registry, Task, Vec<Disqualification>) {
+        let mut r = Registry::example();
+        let gpt = r.models.iter_mut().find(|m| m.id == "gpt-6.1-sol").unwrap();
+        assert!(!gpt.open_weight);
+        gpt.cost.input_usd_per_mtok = 0.01;
+        gpt.cost.output_usd_per_mtok = 0.01;
+        let t = task_generate();
+        let dqs = vec![dq(&t.family, Tier::CheapGeneralist, "2026-10-19", "dq-t3")];
+        (r, t, dqs)
+    }
+
+    #[test]
+    fn plan_open_weight_offered_before_cheaper_closed_weight_in_tier4() {
+        let (r, t, dqs) = frontier_setup();
+        let p = plan_next(&t, &r, &dqs, &[], &Policy::default());
+        assert_eq!(try_parts(&p).0, Tier::Frontier);
+        let ids = first_ids(&p);
+        assert!(
+            r.model("glm-5.3").unwrap().cost.key() > r.model("gpt-6.1-sol").unwrap().cost.key()
+        );
+        assert!(pos(&ids, "glm-5.3") < pos(&ids, "gpt-6.1-sol"));
+        // every open-weight single comes before every closed-weight single
+        let open: Vec<bool> = ids
+            .iter()
+            .map(|id| r.model(id).unwrap().open_weight)
+            .collect();
+        let first_closed = open.iter().position(|o| !o).unwrap();
+        assert!(open[first_closed..].iter().all(|o| !o));
+        // within the open-weight group, cost still decides: Mistral 4 is the cheapest
+        assert_eq!(ids[0], "mistral-4");
+    }
+
+    #[test]
+    fn plan_without_preferences_cost_decides() {
+        let (r, t, dqs) = frontier_setup();
+        let policy = Policy {
+            prefer_open_weight: false,
+            prefer_local: false,
+            ..Policy::default()
+        };
+        let p = plan_next(&t, &r, &dqs, &[], &policy);
+        let ids = first_ids(&p);
+        assert_eq!(ids[0], "gpt-6.1-sol");
+        assert!(pos(&ids, "gpt-6.1-sol") < pos(&ids, "glm-5.3"));
+    }
+
+    #[test]
+    fn plan_local_offered_before_remote_of_equal_weight_class() {
+        let mut r = Registry::example();
+        // make the local tier-3 model the most expensive of the tier
+        let q = r
+            .models
+            .iter_mut()
+            .find(|m| m.id == "qwen-3.8-27b")
+            .unwrap();
+        q.cost.input_usd_per_mtok = 10.0;
+        q.cost.output_usd_per_mtok = 10.0;
+        let t = task_generate();
+        for id in ["qwen-3.8-27b", "glm-5.3-flash", "deepseek-4.1-flash"] {
+            assert!(r.model(id).unwrap().open_weight);
+        }
+        let p = plan_next(&t, &r, &[], &[], &Policy::default());
+        let ids = first_ids(&p);
+        assert_eq!(ids[0], "qwen-3.8-27b");
+        assert_eq!(ids[1], "qwen-3.8-27b");
+        let policy = Policy {
+            prefer_local: false,
+            ..Policy::default()
+        };
+        let p = plan_next(&t, &r, &[], &[], &policy);
+        let ids = first_ids(&p);
+        assert_eq!(ids[0], "glm-5.3-flash");
+        assert_eq!(ids.last().map(String::as_str), Some("qwen-3.8-27b"));
     }
 }

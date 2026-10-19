@@ -28,6 +28,12 @@ pub struct Policy {
     pub cascade: CascadePolicy,
     /// Whether deployments without observed QoS pass the QoS gate.
     pub allow_unmeasured_qos: bool,
+    /// Offer open-weight singles before closed-weight ones within a tier (default true).
+    #[serde(default = "default_true")]
+    pub prefer_open_weight: bool,
+    /// Offer singles on local deployments before remote ones within a tier (default true).
+    #[serde(default = "default_true")]
+    pub prefer_local: bool,
     /// Held-out split settings.
     pub holdout: HoldoutPolicy,
 }
@@ -106,6 +112,8 @@ mod tests {
         assert_eq!(p.panel.max_members, 3);
         assert_eq!(p.cascade.audit_sample_rate, 0.1);
         assert!(!p.allow_unmeasured_qos);
+        assert!(p.prefer_open_weight);
+        assert!(p.prefer_local);
         assert_eq!(p.holdout.fraction, 0.2);
         assert_eq!(p.holdout.seed, 20261019);
     }
