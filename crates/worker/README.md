@@ -97,14 +97,52 @@ curl -s $U/schemas/routing_decision.json | jq .title                            
 
 ## Deploy and roll back
 
-Deployment is a separate step (slice S-06), from `crates/worker`, with a wrangler login:
+From `crates/worker`, with credentials for the Cloudflare account that owns the
+`bradheitmann.ai` zone:
 
 ```sh
 wrangler deploy      # runs build.command (worker-build --release), then uploads
 wrangler rollback    # returns to the previous deployment
+wrangler deployments list
 ```
 
-`wrangler.jsonc` holds no account id (wrangler takes it from the login), sets
-`workers_dev: false` and `preview_urls: false`, and routes the custom domain
-`model-tier-drop-mcp.bradheitmann.ai`. No secrets or bindings exist, so there is nothing to
-configure with `wrangler secret`.
+`wrangler.jsonc` holds no account id, sets `workers_dev: false` and `preview_urls: false`, and
+routes the custom domain `model-tier-drop-mcp.bradheitmann.ai`. No secrets or bindings exist, so
+there is nothing to configure with `wrangler secret`.
+
+Credentials: a `wrangler login` (OAuth) works when that login belongs to the right account. On a
+machine where several agents share one wrangler login, the login can change under you; the
+release of 2026-10-19 hit exactly that (an OAuth login for another account answered
+`Authentication error [code: 10000]`). The dependable way is an account API token with
+*Workers Scripts: Edit* (and zone DNS edit for the custom domain), supplied through the
+environment and never written to disk or this repository:
+
+```sh
+# CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID come from a secret manager (for example
+# `doppler run --project <project> --config <config> -- wrangler deploy`).
+wrangler deploy
+```
+
+A token that lacks *Workers Scripts: Edit* fails with `No access to the specified resource` on
+`/workers/scripts/<name>/deployments`; that is a permission problem, not a build problem.
+
+## Live deployment (2026-10-19)
+
+`https://model-tier-drop-mcp.bradheitmann.ai` (custom domain, `observability.enabled`). Upload
+1148 KiB (gzip 359 KiB), startup 4 ms. Verified from a plain shell right after the deploy
+(identifiers redacted; the full commands are the ones in the local transcript above with
+`U=https://model-tier-drop-mcp.bradheitmann.ai`):
+
+```text
+GET /                       200  {"name":"model-tier-drop","version":"0.1.0","mcp":".../mcp","skill":".../skill/SKILL.md"}
+initialize 2025-11-25       200  protocolVersion 2025-11-25, serverInfo.name model-tier-drop, capabilities.tools.listChanged false
+tools/list                  200  12 tools, ttlMs 3600000, cacheScope "public", every inputSchema.additionalProperties false
+tools/call registry_example 200  as_of 2026-10-19, 15 models
+tools/call plan_next        200  isError false, kind "try", tier "system_one", candidates [jev, laya], skipped [tailored:no_provisioned_candidates]
+GET /skill/SKILL.md         200  sha256 6627c366…54727c, equal to skill/SKILL.md in the repository
+Origin https://evil.example 403  Origin denied
+Origin (own)                200
+ping with _meta 2026-07-28  200  {"result":{"resultType":"complete"}}
+```
+
+Roll back with `wrangler rollback` from this directory using the same credentials.
