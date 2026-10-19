@@ -1,6 +1,6 @@
 # Slice coverage (full horizon)
 
-Denominator: 38 requirements in `plan/requirements.md` (R-01…R-06, R-10…R-22, R-30…R-35, R-40…R-43, R-50…R-55). Every one has an implementation slice and a paired verifier. Nothing is deferred inside the horizon; the explicitly deferred items are listed at the end.
+Denominator: 35 requirements in `plan/requirements.md` (R-01…R-06, R-10…R-22, R-30…R-35, R-40…R-43, R-50…R-55). Every one has an implementation slice and a paired verifier. Nothing is deferred inside the horizon; the explicitly deferred items are listed at the end.
 
 | Requirement | Implemented by | Verified by | Tests |
 |---|---|---|---|
@@ -19,7 +19,7 @@ Denominator: 38 requirements in `plan/requirements.md` (R-01…R-06, R-10…R-22
 | Category | Covered by |
 |---|---|
 | Security | R-34 (Worker request hygiene), R-51 (secret hygiene), R-40 (paths never from tool arguments) |
-| Data integrity and lifecycle | R-16 (hash-chained append-only ledger), R-19 (rights on every attempt) |
+| Data integrity and lifecycle | R-16 (append-only ledger with a per-record hash), R-19 (rights on every attempt) |
 | Telemetry / observability | Worker `observability.enabled` (R-35 deployment), ledger as the engine's own wide events |
 | Release / delivery | R-50 CI, R-53 publication, R-35 deploy with rollback command documented |
 | Recovery / operations | `wrangler rollback` (S-06), ledger verify (R-16) |
@@ -28,7 +28,7 @@ Denominator: 38 requirements in `plan/requirements.md` (R-01…R-06, R-10…R-22
 
 ## Counts
 
-Implementation slices: 9 (S-01 … S-09). Verification slices: 9 (V-01 … V-09). Total: 18. Requirements selected: 38. Deferred: 0 inside the horizon.
+Implementation slices: 9 (S-01 … S-09). Verification slices: 9 (V-01 … V-09). Total: 18. Requirements selected: 35. Deferred: 0 inside the horizon.
 
 ## Explicitly out of scope (recorded, not silently dropped)
 
