@@ -11,8 +11,10 @@ From a clone of the repository (`<repo>` below is its absolute path, `<p>` your 
 1. Install the CLI: `cargo install --path crates/cli`. Check with `tier-drop schemas routing_decision`.
 2. Build the plugin: `pnpm --dir adapters/dsh install && pnpm --dir adapters/dsh build`.
 3. Add it to the profile: `npx -y @deepseek-ai/dsh plugin --profile <p> add <repo>/adapters/dsh`. This runs `pnpm add` in `~/.dsh/profiles/<p>`. Because `package.json` declares `dsh.bundle.patch`, it also adds `dsh-tier-drop` to the profile's `dsh.profile.bundles`. Both rows of `cordis.patch.yml` then load on every boot of that profile, so you do not have to copy them.
-4. Point the plugin at your files. The shipped rows use placeholder paths (`.tier-drop/ledger`, `.tier-drop/registry.json`, relative to the directory dsh starts in). Override them by id in `~/.dsh/profiles/<p>/cordis.patch.yml`:
+4. Point the plugin at your files. `plugin add` already applied the package's bundle patch, so both rows are loaded and you need patch rows only to override settings. The shipped rows use placeholder paths (`.tier-drop/ledger`, `.tier-drop/registry.json`, relative to the directory dsh starts in). Override them by id in `~/.dsh/profiles/<p>/cordis.patch.yml`.
+   A fresh profile's `cordis.patch.yml` holds comment lines and one bare `[]` (an empty patch list). Do not append rows after `[]`: the file then fails to parse with `YAMLException: end of the stream or a document separator is expected`. Replace the `[]` line with your rows. A complete replacement file looks like this:
    ```yaml
+   # Patch layer for profile <p>, applied after every bundle layer.
    - id: tier-drop
      config:
        binary: /absolute/path/to/tier-drop      # or a bare name on PATH
@@ -22,7 +24,7 @@ From a clone of the repository (`<repo>` below is its absolute path, `<p>` your 
        timeoutMs: 30000
    ```
    Write the registry first: `tier-drop registry example > registry.json`, then edit it to match your own deployments.
-   If the package is in the profile but not in its bundle list (for example after a plain `pnpm add`), append the two rows from `cordis.patch.yml` to the profile patch, or pass `--patch <repo>/adapters/dsh/cordis.patch.yml` when you start dsh. Repeating the rows when the bundle is already listed does no harm, because the loader keys entries by id and the last row with a given id wins. It is redundant, though.
+   If the profile patch already has rows, add yours to that list. If the package is in the profile but not in its bundle list (for example after a plain `pnpm add`), add the two rows from `cordis.patch.yml` to the profile patch the same way (replacing `[]` in a fresh file), or pass `--patch <repo>/adapters/dsh/cordis.patch.yml` when you start dsh. Repeating the rows when the bundle is already listed does no harm, because the loader keys entries by id and the last row with a given id wins. It is redundant, though.
 5. Install the skill: `ln -s <repo>/skill ~/.dsh/skills/model-tier-drop`. dsh also reads `~/.agents/skills`.
 6. Verify: `npx -y @deepseek-ai/dsh --profile <p> --dump-config | grep -A8 tier-drop` shows both rows and your overrides. The dump composes the patch layers without importing any plugin. The first real boot imports the plugin.
 
