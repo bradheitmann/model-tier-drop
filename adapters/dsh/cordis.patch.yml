@@ -1,0 +1,36 @@
+# model-tier-drop for dsh: two independent rows.
+#
+# Row `tier-drop` loads the native plugin `dsh-tier-drop` (this package). It registers five local
+# tools that run the `tier-drop` CLI and write your ledger: tier_drop_plan, tier_drop_qos,
+# tier_drop_record_attempt, tier_drop_decide, tier_drop_ledger_show. It needs the CLI installed
+# (`cargo install --path crates/cli`) and this package added to the profile.
+#
+# Row `mcp-tier-drop` mounts the hosted MCP server through @deepseek-ai/dsh-mcp-client. Its tools
+# appear as mcp__tier-drop__<name> (plan_next, qos_gate, check_floors, decide, skill_read and the
+# rest). They are stateless and write nothing. This row works without the native row: delete the
+# `tier-drop` row if you only want the hosted tools.
+#
+# Paths below are placeholders. Edit them for your setup. Relative paths resolve against the
+# directory dsh is started in. Tool arguments can never override them.
+- insert:
+    - id: tier-drop
+      name: 'dsh-tier-drop'
+      config:
+        # The CLI: a bare name looked up on PATH, or an absolute path. TIER_DROP_BIN overrides it.
+        binary: !!js process.env.TIER_DROP_BIN ?? 'tier-drop'
+        # The append-only JSONL ledger directory (--ledger).
+        ledgerDir: .tier-drop/ledger
+        # Your edited registry (start from `tier-drop registry example > .tier-drop/registry.json`).
+        registryPath: .tier-drop/registry.json
+        # Optional policy file (--policy); without it the CLI's embedded default policy applies.
+        # policyPath: .tier-drop/policy.json
+        timeoutMs: 30000
+
+    - id: mcp-tier-drop
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: tier-drop
+        transport: streamable-http
+        url: https://model-tier-drop-mcp.bradheitmann.ai/mcp
+        # Keep dsh starting when the hosted server is unreachable; the native row still works.
+        failOnStartupError: false
