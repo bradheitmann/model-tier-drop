@@ -10,15 +10,15 @@
 | `SRC-owner-req` | `owner:REQ-MODEL-TIER-DROP-2026-10-19.md` | user_instruction | `a326303ff98abd1bcab19ad88f3d968bae42cd8e408ea1714dd6e1ea1ab344f8` |
 | `SRC-owner-review-profile` | `owner:DECISION-D-REVIEW-PROFILE-2026-10-19.md` | user_instruction | `b6cafd734ffa5374423ba3c539a989955545eaa57d5f960175e9b983077102b1` |
 | `SRC-owner-python-adapter` | `owner:DECISION-D-PYTHON-ADAPTER-2026-10-19.md` | user_instruction | `60ce24f625895a50fe713337cf0f6bb348d73cd17601f1af277432b9ffcda03f` |
-| `SRC-plan-requirements` | `repo:plan/requirements.md` | generated | `e30ed85785827f9012a6e604caa78dd1989162615b6a0bb74c9b86ed0b755000` |
+| `SRC-plan-requirements` | `repo:plan/requirements.md` | generated | `e3cad5cbef9e88d0dfe6931a3081c53945bd6024b35d7525bd4ee19815345c08` |
 | `SRC-plan-contracts` | `repo:plan/contracts.md` | generated | `764d9f59705173e7742b0b6e3557cf47d9b741ce306d8e401647fdce2927a801` |
-| `SRC-plan-technology` | `repo:plan/technology-decisions.md` | generated | `4513ca8c004912fbb0840aebaee8ea804db684be8a14f0dd9089605225e3d038` |
+| `SRC-plan-technology` | `repo:plan/technology-decisions.md` | generated | `1f460ad85b0b88b0d22b36f9dfb83fce2f3b6603810837297b2150a42c672a10` |
 | `SRC-plan-implementation` | `repo:plan/implementation-plan.md` | generated | `a25551e27186f99582e36bf6521b409e9770dc85595887598ff39ed4da6204e8` |
 | `SRC-plan-coverage` | `repo:plan/slice-coverage.md` | generated | `aaa14487ac5a0db6b603a8653aebaa778a0db6015249d37b7e52f2af264009a3` |
 
 ### How to recompute
 
-- `repo:` sources: from the repository root, `shasum -a 256 plan/<file>.md`. The hashes match the files as of commit `21a8d54` (`plan/commission.md` is unchanged since `ead44c6`). If a plan document changes, its hash in `plan/graph.json` is out of date and the graph needs a new revision.
+- `repo:` sources: from the repository root, `shasum -a 256 plan/<file>.md`. The hashes match the files as of commit `4b2161d` (`plan/commission.md` is unchanged since `ead44c6`). If a plan document changes, its hash in `plan/graph.json` is out of date and the graph needs a new revision.
 - `owner:` sources: these are the owner's documents. The repository refers to them only by file name and hash and does not copy their text or location. Anyone holding a copy can check it with `shasum -a 256 <path to the owner document>` and compare the result with the table.
 
 The plan documents are recorded as `generated` sources with delegated authority. They can show that a planning choice was made, but they carry no owner authority. Owner authority comes from `plan/commission.md` and the three `owner:` documents.
@@ -54,6 +54,8 @@ The plan documents are recorded as `generated` sources with delegated authority.
     - All slices: the shared wording rule changed.
     - `prerequisite` edges: they now cite `plan/contracts.md` "Depends on" and the dependency list in `plan/implementation-plan.md`.
 
+12. **Final refresh against plan `4b2161d`.** `main` (`4b2161d`) was merged into `s08`. Commit `97c1ada` changed only `plan/requirements.md` (T-22: metadata values are strings, and the `sampled_review_forbidden` and `floor_out_of_range` issues are named) and `plan/technology-decisions.md` (`registry_validate` output typed `[Issue]`). The graph changes are the T-22 statement and the two source hashes for those files. No slice, edge or decision changed.
+
 ## Earlier conflicts, now resolved
 
-As of `21a8d54`, all three searches return nothing in the merged tree: `grep -rnE "O[K]OA" .`, `grep -rnE "needs[ ]you" .`, and the V-06 word-bounded 32-hex search. V-01.C10, T-55 and V-06.C4 can therefore pass.
+As of `4b2161d`, all three searches return nothing in the merged tree: `grep -rnE "O[K]OA" .`, `grep -rnE "needs[ ]you" .`, and the V-06 word-bounded 32-hex search. V-01.C10, T-55 and V-06.C4 can therefore pass.

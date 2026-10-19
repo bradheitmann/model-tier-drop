@@ -468,7 +468,7 @@
     {
       "id": "SRC-plan-requirements",
       "uri": "repo:plan/requirements.md",
-      "content_sha256": "e30ed85785827f9012a6e604caa78dd1989162615b6a0bb74c9b86ed0b755000",
+      "content_sha256": "e3cad5cbef9e88d0dfe6931a3081c53945bd6024b35d7525bd4ee19815345c08",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -479,7 +479,7 @@
     {
       "id": "SRC-plan-technology",
       "uri": "repo:plan/technology-decisions.md",
-      "content_sha256": "4513ca8c004912fbb0840aebaee8ea804db684be8a14f0dd9089605225e3d038",
+      "content_sha256": "1f460ad85b0b88b0d22b36f9dfb83fce2f3b6603810837297b2150a42c672a10",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -4493,7 +4493,7 @@
       "id": "T-22",
       "node_type": "t.test",
       "label": "T-22 acceptance test for R-22",
-      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core review. Observation: a task with metadata.financial: true and review: sampled fails validation. Fails if validation accepts it.",
+      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core review. Observation: a task with metadata.financial: \"true\" (metadata values are strings) and review: sampled fails validation with sampled_review_forbidden; a floor min outside 0..=1 fails with floor_out_of_range unless the metric name ends with _raw. Fails if validation accepts either task or reports a different issue.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
