@@ -103,14 +103,18 @@ Policy {
 ### Task
 
 ```
+Floor { metric: string, min: f64 }
+
 Task {
+  schema_version: "tier-drop.task/1",            // default when omitted on input
   task_id, family, shape: TaskShape, input_sha256,
   rights: Rights,
-  floors: [ { metric: string, min: f64 } ],      // must include every policy.required_floors metric
+  floors: [Floor],                               // must include every policy.required_floors metric
   qos: { availability_min: f64, p95_latency_max_ms: u64, error_rate_max: f64 },
   review: "strict" | { "sampled": { "class": string, "decision_ref": string } },
-  metadata: { [string]: string },                // "financial": "true" or "regulated": "true" forbid sampled review
-  created_at
+  metadata: { [string]: string },                // "financial": "true" or "regulated": "true" forbid sampled review; "numeric": "true" with shape extract too
+  created_at,
+  record_sha256                                  // filled by the CLI when the task is appended to tasks.jsonl
 }
 ```
 
@@ -129,6 +133,7 @@ Task {
 
 ```
 Attempt {
+  schema_version: "tier-drop.attempt/1",
   attempt_id, task_id, family, tier: Tier, candidate: Candidate,
   outcome: "answered" | "abstained" | "failed" | "timed_out",
   metrics: { [metric]: f64 },
@@ -152,6 +157,7 @@ Attempt {
 
 ```
 Disqualification {
+  schema_version: "tier-drop.disqualification/1",
   disqualification_id, family, tier: Tier,
   reason: "shape_mismatch" | "no_provisioned_candidates" | "no_qos_qualified_candidates"
         | "rights_forbid_remote" | "floors_not_met" | "operator",
@@ -181,6 +187,7 @@ Candidate order inside a tier: untried singles ordered by (cost ascending, then 
 
 ```
 RoutingDecision {
+  schema_version: "tier-drop.routing_decision/1",
   decision_id, task_id, family, ladder: [Tier],
   tiers: [ { tier, status: "disqualified" | "skipped" | "tried" | "selected", refs: [string], detail } ],
   winner: { candidate, attempt_id, floor_result: FloorResult, score: { quality: f64, cost_usd: f64, latency_ms: u64 } } | null,
@@ -198,9 +205,10 @@ RoutingDecision {
 
 ```
 EvalItem  { item_id, family, source_family, input_sha256, expected_sha256: string | null, oracle: "exact" | "judge" | "human" }
-EvalSplit { family, seed: u64, fraction: f64, holdout_source_families: [string], train_source_families: [string],
-            items: [ { item_id, split: "holdout" | "train" } ] }
-EvalRun   { eval_run_id, family, tier, candidate, attempt_ids: [string], n: u64,
+EvalSplit { schema_version: "tier-drop.eval_split/1", family, seed: u64, fraction: f64,
+            holdout_source_families: [string], train_source_families: [string],
+            items: [ { item_id, split: "holdout" | "train" } ], record_sha256 }
+EvalRun   { schema_version: "tier-drop.eval_run/1", eval_run_id, family, tier, candidate, attempt_ids: [string], n: u64,
             aggregate: { [metric]: f64 }, pass_rate: f64, floors: [Floor], recorded_at, record_sha256 }
 ```
 
@@ -215,6 +223,7 @@ EvalRun   { eval_run_id, family, tier, candidate, attempt_ids: [string], n: u64,
   decisions.jsonl
   disqualifications.jsonl
   eval-runs.jsonl
+  eval-splits.jsonl
 ```
 
 One canonical JSON record per line. Canonical JSON: keys sorted, no whitespace, numbers as serde_json prints them, `record_sha256` excluded from the hashed bytes. `ledger verify` recomputes every hash and reports `file:line` on mismatch.
@@ -240,7 +249,7 @@ tier-drop disqualify --ledger DIR --registry r.json --family F --tier T --reason
                    # plan and decide drop records whose expires_at is earlier than the CLI clock before calling the engine
 tier-drop ledger verify --ledger DIR
 tier-drop ledger show   --ledger DIR [--family F] [--kind attempts|decisions|disqualifications|eval-runs|tasks]
-tier-drop eval split    --items items.json [--policy p.json]
+tier-drop eval split    --items items.json [--policy p.json] [--ledger DIR]   # prints the EvalSplit; appends it to eval-splits.jsonl when --ledger is given
 tier-drop eval summarise --ledger DIR --family F --tier T --candidate c.json [--task t.json]
 tier-drop dataset export --ledger DIR --purpose process|train|send_remote|export [--family F]
 tier-drop schemas [NAME]                          # all, or one of: registry policy task attempt disqualification routing_decision eval_item eval_split eval_run plan
@@ -258,7 +267,8 @@ Exit codes: 0 ok; 1 validation or floor failure (the JSON output still describes
 | `qos_gate` | `{ task, registry, policy? }` | `{ qualified: [model_id], excluded: [ { model_id, deployment_id, reason } ] }` |
 | `plan_next` | `{ task, registry, disqualifications?, attempts?, policy? }` | Plan |
 | `check_floors` | `{ task, attempt, policy? }` | FloorResult |
-| `assess_disqualification` | `{ family, tier, task, attempts, registry_as_of, policy? }` | `{ disqualification: Disqualification \| null }` |
+| `assess_disqualification` | `{ family, tier, task, registry, attempts, policy? }` (`registry_as_of` is taken from the registry) | `{ disqualification: Disqualification \| null }` |
+| `validate_attempt` | `{ task, attempt, registry }` | `{ valid, issues: [Issue] }` |
 | `decide` | `{ task, registry, disqualifications?, attempts, policy? }` | RoutingDecision |
 | `split_holdout` | `{ items, policy? }` | EvalSplit |
 | `summarise_eval` | `{ family, tier, candidate, attempts, floors }` | EvalRun |

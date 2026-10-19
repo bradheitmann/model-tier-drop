@@ -18,7 +18,7 @@ Rollback: delete the branch. Evidence: command outputs.
 
 ## V-01 Verify scaffold and plan — kind: verify — verifies S-01
 
-Checks: the five plan files exist and each requirement in `plan/requirements.md` has at least one `T-` test; every commission sentence in "What must exist from the beginning" maps to a requirement; `cargo build --workspace` exit 0; `gitleaks detect --redact --source .` exit 0; `grep -rnE "O[K]OA" .` empty; `.github/workflows/ci.yml` parses as YAML and names fmt, clippy, test, wasm build, adapter check and gitleaks.
+Checks: the six plan files exist and each requirement in `plan/requirements.md` has at least one `T-` test; every commission sentence in "What must exist from the beginning" maps to a requirement; `cargo build --workspace` exit 0; `gitleaks detect --redact --source .` exit 0; `grep -rnE "O[K]OA" .` empty; `.github/workflows/ci.yml` parses as YAML and names fmt, clippy, test, wasm build, adapter check and gitleaks.
 
 ---
 
@@ -36,7 +36,8 @@ Steps:
    - `ladder(&Task, &Registry, &Policy) -> Vec<Tier>`
    - `plan_next(&Task, &Registry, &[Disqualification], &[Attempt], &Policy) -> Plan`
    - `check_floors(&Task, &Attempt, &Policy) -> FloorResult`
-   - `assess_disqualification(family: &str, tier: Tier, &[Attempt], &Task, registry_as_of: &str, &Policy) -> Option<Disqualification>`
+   - `validate_attempt(&Task, &Attempt, &Registry) -> Vec<Issue>` (issues: `task_id_mismatch`, `family_mismatch`, `tier_mismatch` when the candidate's tier differs from `attempt.tier`, `unknown_model` for any model id in the candidate, `recorded_before_task_created` when `attempt.recorded_at < task.created_at`, so floors provably predate results)
+   - `assess_disqualification(family: &str, tier: Tier, &[Attempt], &Task, &Registry, registry_as_of: &str, &Policy) -> Option<Disqualification>` (the registry is needed to enumerate the tier's candidates for the coverage rule)
    - `decide(&Task, &Registry, &[Disqualification], &[Attempt], &Policy) -> RoutingDecision`
    - `split_holdout(&[EvalItem], &Policy) -> EvalSplit`
    - `summarise_eval` taking `(family, tier, &Candidate, &[Attempt], &[Floor])` and returning `EvalRun`
@@ -67,7 +68,7 @@ Depends on: S-02. Write prefixes: `crates/cli/`, `Cargo.lock`, `README.md` (the 
 Steps:
 1. `clap` derive CLI exactly as the "CLI surface" table in `plan/technology-decisions.md`.
 2. Ledger module: append-only JSONL writes with `O_APPEND`, canonical JSON lines, `record_sha256` filled before write, `verify` recomputing hashes and reporting `file:line`, `show` filtering.
-3. `attempt record` reads the attempt from stdin (any `outcome`), validates it against the task and registry, fills `schema_version` and `record_sha256`, appends, prints the `FloorResult`, then calls `assess_disqualification` over the family's attempts for that tier and appends a `Disqualification` when returned (print it too). It appends the task to `tasks.jsonl` when its `task_id` is not yet present (so does `decide`).
+3. `attempt record` reads the attempt from stdin (any `outcome`), validates it with `validate_attempt` (exit 1 with the issues on failure), fills `schema_version` and `record_sha256`, appends, prints the `FloorResult`, then calls `assess_disqualification` over the family's attempts for that tier and appends a `Disqualification` when returned (print it too). It appends the task to `tasks.jsonl` when its `task_id` is not yet present (so does `decide`).
 4. `decide` loads the ledger's disqualifications, drops those whose `expires_at` is non-null and earlier than the CLI's clock (`SystemTime::now()` formatted as RFC 3339 UTC; the engine has no clock), takes the task's attempts, calls `decide`, appends and prints. `plan` filters the same way.
 4a. `disqualify --ledger DIR --registry r.json --family F --tier T --reason <shape_mismatch|no_provisioned_candidates|no_qos_qualified_candidates|rights_forbid_remote|floors_not_met|operator> --evidence id[,id…] --detail "…" [--expires-at RFC3339]` writes an operator-authored record with `registry_as_of` from the registry and `decided_at` from the clock.
 5. Integration tests in `crates/cli/tests/` using `std::process::Command` on the built binary (`env!("CARGO_BIN_EXE_tier-drop")`) over a temporary directory: the README walkthrough end to end; ledger tamper detection (T-16); `schemas routing_decision` title (T-21); exit codes (T-20).
