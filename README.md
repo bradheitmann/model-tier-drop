@@ -4,6 +4,8 @@ Tiered model routing with evidence-based disqualification. A harness-neutral ski
 
 This README is completed in slice S-09. The plan is in [`plan/`](plan/).
 
+Hosted MCP (live since 2026-10-19): `https://model-tier-drop-mcp.bradheitmann.ai/mcp`. It also serves the skill at `https://model-tier-drop-mcp.bradheitmann.ai/skill/SKILL.md`. See [`crates/worker/README.md`](crates/worker/README.md).
+
 ## Walkthrough
 
 Install the CLI from a clone of this repository with `cargo install --path crates/cli`, then run the commands below in an empty directory. They route one `classify` task: copy the example registry, write the task with its floors before any result, ask for a plan, record two attempts (one answered, one abstained), decide, verify the ledger and export the rows that may be used for training. The integration test `crates/cli/tests/cli.rs` runs this block exactly as written.
