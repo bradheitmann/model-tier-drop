@@ -265,7 +265,7 @@ Exit codes: 0 ok; 1 validation or floor failure (the JSON output still describes
 |---|---|---|
 | `skill_read` | `{ path?: "SKILL.md" \| "references/<name>.md" }` | `{ path, text }`; no path lists the available paths |
 | `registry_example` | `{}` | the embedded example registry |
-| `registry_validate` | `{ registry }` | `{ valid, issues: [string] }` |
+| `registry_validate` | `{ registry }` | `{ valid, issues: [Issue] }` (`Issue { code, message }`) |
 | `qos_gate` | `{ task, registry, policy? }` | `{ qualified: [model_id], excluded: [ { model_id, deployment_id, reason } ] }` |
 | `plan_next` | `{ task, registry, disqualifications?, attempts?, policy? }` | Plan |
 | `check_floors` | `{ task, attempt, policy? }` | FloorResult |
