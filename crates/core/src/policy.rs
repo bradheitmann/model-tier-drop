@@ -40,6 +40,13 @@ pub struct DisqualifyPolicy {
     pub min_attempts: u64,
     /// Disqualify when the pass rate is at or below this value.
     pub max_pass_rate: f64,
+    /// Require an attempt for every candidate the tier offers before `floors_not_met` (default true).
+    #[serde(default = "default_true")]
+    pub require_full_coverage: bool,
+}
+
+fn default_true() -> bool {
+    true
 }
 
 /// Panel composition settings.
@@ -95,6 +102,7 @@ mod tests {
         assert_eq!(p.cost_band, 0.10);
         assert_eq!(p.disqualify.min_attempts, 5);
         assert_eq!(p.disqualify.max_pass_rate, 0.5);
+        assert!(p.disqualify.require_full_coverage);
         assert_eq!(p.panel.max_members, 3);
         assert_eq!(p.cascade.audit_sample_rate, 0.1);
         assert!(!p.allow_unmeasured_qos);

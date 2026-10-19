@@ -1,4 +1,10 @@
 //! The tier ladder and `plan_next`: the lowest open tier and its untried candidates.
+//!
+//! Composition helpers (judge, auditor, finisher) come from `Tier::next_up`: system_one to
+//! specialised to cheap_generalist to frontier, tailored to frontier, and none for frontier.
+//! Structural skips (`shape_mismatch`, `no_provisioned_candidates`, `no_qos_qualified_candidates`)
+//! and `disqualified` tiers are reported in `skipped`; this module never creates a
+//! `Disqualification` record.
 
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
@@ -273,7 +279,30 @@ fn compositions(
     out
 }
 
+/// Every candidate the tier offers for the task, ignoring which have been tried: singles, then the
+/// panel, cascade and draft when a next-tier helper is QoS-qualified. Empty when the tier is
+/// structurally skipped.
+pub(crate) fn tier_offer(
+    task: &Task,
+    registry: &Registry,
+    gate: &QosGateResult,
+    tier: Tier,
+    policy: &Policy,
+) -> Vec<Candidate> {
+    match structural_skip(task, registry, gate, tier) {
+        Ok(models) => {
+            let mut all = singles(&models, registry);
+            all.extend(compositions(tier, &models, task, registry, gate, policy));
+            all
+        }
+        Err(_) => Vec::new(),
+    }
+}
+
 /// The lowest non-disqualified, non-skipped tier on the ladder and its untried candidates, or `exhausted`.
+///
+/// `disqualifications` are honoured by family and registry date only (`Disqualification::is_in_force`);
+/// `expires_at` is not read. The caller, which owns the clock, drops expired records first.
 pub fn plan_next(
     task: &Task,
     registry: &Registry,
@@ -560,6 +589,21 @@ mod tests {
         assert!(skipped[0].detail.contains("p95_latency"));
         assert!(skipped[0].detail.contains("jev on local-mini"));
         assert!(skipped[0].detail.contains("laya on local-mini"));
+    }
+
+    #[test]
+    fn disqualify_record_with_expires_at_is_still_honoured_by_plan_next() {
+        let r = Registry::example();
+        let t = task_classify();
+        // the caller owns the clock and drops expired records; whatever it passes in counts
+        let mut d = dq(&t.family, Tier::SystemOne, "2026-10-19", "dq-expiring");
+        d.expires_at = Some("2026-01-01T00:00:00Z".into());
+        let p = plan_next(&t, &r, std::slice::from_ref(&d), &[], &Policy::default());
+        let (tier, _, skipped, _) = try_parts(&p);
+        assert_eq!(tier, Tier::CheapGeneralist);
+        assert_eq!(skipped[0].tier, Tier::SystemOne);
+        assert_eq!(skipped[0].reason, SkipReason::Disqualified);
+        assert_eq!(skipped[0].detail, "dq-expiring");
     }
 
     #[test]

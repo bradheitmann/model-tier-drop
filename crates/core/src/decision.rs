@@ -169,6 +169,10 @@ fn rank(mut rest: Vec<RankEntry>, policy: &Policy) -> Vec<RankEntry> {
 }
 
 /// Build the task's `RoutingDecision` from its attempts and the in-force disqualifications.
+///
+/// `disqualifications` are honoured by family and registry date only; `expires_at` is not read.
+/// The caller, which owns the clock, drops expired records first. Structural skips appear in
+/// `tiers[]` as `skipped`; no `Disqualification` record is created for them.
 pub fn decide(
     task: &Task,
     registry: &Registry,
@@ -443,13 +447,17 @@ mod tests {
                 a
             })
             .collect();
+        // five failures of one single: the threshold alone decides here
+        let mut threshold_only = p.clone();
+        threshold_only.disqualify.require_full_coverage = false;
         let dq = crate::disqualification::assess_disqualification(
             &t.family,
             Tier::CheapGeneralist,
             &failed,
             &t,
+            &r,
             &r.as_of,
-            &p,
+            &threshold_only,
         )
         .unwrap();
         assert_eq!(dq.reason, DisqualificationReason::FloorsNotMet);

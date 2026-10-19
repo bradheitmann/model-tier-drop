@@ -5,7 +5,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::attempt::{check_floors, Attempt};
 use crate::canonical::{seal, short_id};
-use crate::plan::{fitting_models, structural_skip, SkipReason};
+use crate::plan::{fitting_models, structural_skip, tier_offer, SkipReason};
 use crate::policy::Policy;
 use crate::qos::{qos_gate, ExclusionReason};
 use crate::registry::Registry;
@@ -60,7 +60,8 @@ pub struct Disqualification {
     pub registry_as_of: String,
     /// RFC 3339 UTC time, taken from the evidence (the engine has no clock).
     pub decided_at: String,
-    /// Expiry time, or null for none.
+    /// Expiry time, or null for none. The engine has no clock and never reads this field: the
+    /// caller that owns the clock (the CLI) drops expired records before passing them in.
     pub expires_at: Option<String>,
     /// SHA-256 over the canonical JSON without this field.
     #[serde(default)]
@@ -68,12 +69,10 @@ pub struct Disqualification {
 }
 
 impl Disqualification {
-    /// In force when the family matches, `registry_as_of >= registry_as_of_now` (YYYY-MM-DD string
-    /// order) and `expires_at` is null. Callers that know the clock filter expired records first.
+    /// In force when the family matches and `registry_as_of >= registry_as_of_now` (YYYY-MM-DD
+    /// string order). `expires_at` is not checked here; the caller filters expired records first.
     pub fn is_in_force(&self, family: &str, registry_as_of_now: &str) -> bool {
-        self.family == family
-            && self.registry_as_of.as_str() >= registry_as_of_now
-            && self.expires_at.is_none()
+        self.family == family && self.registry_as_of.as_str() >= registry_as_of_now
     }
 
     fn sealed(mut self) -> Self {
@@ -82,13 +81,24 @@ impl Disqualification {
     }
 }
 
-/// A `floors_not_met` disqualification when this family's attempts of `tier` reach `min_attempts`
-/// with a pass rate at or below `max_pass_rate`; otherwise None.
+/// A `floors_not_met` disqualification of (family, tier), or None.
+///
+/// When `policy.disqualify.require_full_coverage` is true (the default), every candidate the tier
+/// offers for `task` must first have at least one attempt in this family and tier (an equal
+/// `Candidate` value). The candidates are the same list `plan_next` builds, ignoring which have
+/// been tried: every single model × reasoning level, then the panel, cascade and draft when a
+/// next-tier helper is QoS-qualified. Incomplete coverage returns None. Only then does the
+/// threshold apply: at least `min_attempts` attempts with a pass rate at or below `max_pass_rate`.
+/// With `require_full_coverage: false` only the threshold applies.
+// decision: the contract signature has no registry, but the candidate list cannot be built
+// without one, so `registry` is an added parameter. `registry_as_of` stays separate so the
+// caller states which registry date the record binds to.
 pub fn assess_disqualification(
     family: &str,
     tier: Tier,
     attempts: &[Attempt],
     task: &Task,
+    registry: &Registry,
     registry_as_of: &str,
     policy: &Policy,
 ) -> Option<Disqualification> {
@@ -96,6 +106,17 @@ pub fn assess_disqualification(
         .iter()
         .filter(|a| a.family == family && a.tier == tier)
         .collect();
+    if policy.disqualify.require_full_coverage {
+        let gate = qos_gate(registry, task, policy);
+        // decision: a structurally skipped tier offers nothing, so coverage is vacuously
+        // complete and only the threshold decides.
+        let covered = tier_offer(task, registry, &gate, tier, policy)
+            .iter()
+            .all(|c| relevant.iter().any(|a| &a.candidate == c));
+        if !covered {
+            return None;
+        }
+    }
     let n = relevant.len();
     if n == 0 || (n as u64) < policy.disqualify.min_attempts {
         return None;
@@ -194,8 +215,29 @@ pub fn structural_disqualification(
 mod tests {
     use super::*;
     use crate::attempt::Outcome;
+    use crate::candidate::Candidate;
     use crate::canonical::record_sha256;
     use crate::testutil::{attempt, bad, good, single, task_generate};
+
+    /// The default policy with coverage switched off: the threshold alone decides.
+    fn threshold_only() -> Policy {
+        let mut p = Policy::default();
+        p.disqualify.require_full_coverage = false;
+        p
+    }
+
+    fn assess(attempts: &[Attempt], policy: &Policy) -> Option<Disqualification> {
+        let t = task_generate();
+        assess_disqualification(
+            &t.family,
+            Tier::CheapGeneralist,
+            attempts,
+            &t,
+            &Registry::example(),
+            "2026-10-19",
+            policy,
+        )
+    }
 
     fn failing(n: usize) -> Vec<Attempt> {
         let t = task_generate();
@@ -214,35 +256,36 @@ mod tests {
             .collect()
     }
 
+    /// The tier-3 offer for the generate task: six singles, then panel, cascade and draft.
+    fn tier3_offer() -> Vec<Candidate> {
+        let t = task_generate();
+        let r = Registry::example();
+        let p = Policy::default();
+        let offer = tier_offer(&t, &r, &qos_gate(&r, &t, &p), Tier::CheapGeneralist, &p);
+        assert_eq!(offer.len(), 9);
+        assert_eq!(offer.iter().filter(|c| c.is_single()).count(), 6);
+        offer
+    }
+
+    /// One failing attempt per candidate.
+    fn failing_for(candidates: &[Candidate]) -> Vec<Attempt> {
+        let t = task_generate();
+        candidates
+            .iter()
+            .enumerate()
+            .map(|(i, c)| attempt(&t, &format!("cov-{i}"), c.clone(), Outcome::Answered, bad()))
+            .collect()
+    }
+
     #[test]
     fn disqualify_four_failures_with_min_five_yields_none() {
-        let t = task_generate();
-        let a = failing(4);
-        let p = Policy::default();
-        assert!(assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &a,
-            &t,
-            "2026-10-19",
-            &p
-        )
-        .is_none());
+        assert!(assess(&failing(4), &threshold_only()).is_none());
     }
 
     #[test]
     fn disqualify_five_failures_yield_floors_not_met_with_five_ids() {
-        let t = task_generate();
         let a = failing(5);
-        let d = assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &a,
-            &t,
-            "2026-10-19",
-            &Policy::default(),
-        )
-        .expect("disqualified");
+        let d = assess(&a, &threshold_only()).expect("disqualified");
         assert_eq!(d.reason, DisqualificationReason::FloorsNotMet);
         assert_eq!(
             d.evidence,
@@ -258,83 +301,79 @@ mod tests {
         // same evidence in another order gives the same id
         let mut rev = a.clone();
         rev.reverse();
-        let d2 = assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &rev,
-            &t,
-            "2026-10-19",
-            &Policy::default(),
-        )
-        .unwrap();
+        let d2 = assess(&rev, &threshold_only()).unwrap();
         assert_eq!(d2.disqualification_id, d.disqualification_id);
     }
 
     #[test]
     fn disqualify_pass_rate_above_threshold_and_other_tiers_or_families_do_not_count() {
-        let t = task_generate();
+        let p = threshold_only();
         let mut a = failing(5);
         // 3 of 5 pass: 0.6 > 0.5
         for x in a.iter_mut().take(3) {
             x.metrics = good().iter().map(|(k, v)| ((*k).to_string(), *v)).collect();
         }
-        let p = Policy::default();
-        assert!(assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &a,
-            &t,
-            "2026-10-19",
-            &p
-        )
-        .is_none());
+        assert!(assess(&a, &p).is_none());
         let mut b = failing(5);
         b[0].family = "other".into();
         b[1].tier = Tier::Frontier;
-        assert!(assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &b,
-            &t,
-            "2026-10-19",
-            &p
-        )
-        .is_none());
+        assert!(assess(&b, &p).is_none());
         // abstentions count as attempts that did not pass
         let mut c = failing(5);
         for x in c.iter_mut() {
             x.metrics = good().iter().map(|(k, v)| ((*k).to_string(), *v)).collect();
             x.outcome = Outcome::Abstained;
         }
-        assert!(assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &c,
-            &t,
-            "2026-10-19",
-            &p
-        )
-        .is_some());
+        assert!(assess(&c, &p).is_some());
     }
 
     #[test]
-    fn disqualify_in_force_rule_binds_registry_as_of_and_expiry() {
+    fn disqualify_coverage_threshold_met_but_one_single_untried_yields_none() {
+        let mut offer = tier3_offer();
+        let dropped = offer.remove(1);
+        assert!(dropped.is_single());
+        let a = failing_for(&offer);
+        // 8 attempts, all failing: the threshold alone would disqualify
+        assert!(a.len() as u64 >= Policy::default().disqualify.min_attempts);
+        assert!(assess(&a, &Policy::default()).is_none());
+    }
+
+    #[test]
+    fn disqualify_coverage_all_candidates_tried_and_threshold_met_yields_some() {
+        let offer = tier3_offer();
+        let a = failing_for(&offer);
+        let d = assess(&a, &Policy::default()).expect("disqualified");
+        assert_eq!(d.reason, DisqualificationReason::FloorsNotMet);
+        assert_eq!(d.evidence.len(), 9);
+        // compositions are part of the coverage: dropping the panel blocks it again
+        let without_panel: Vec<Candidate> = offer
+            .into_iter()
+            .filter(|c| !matches!(c, Candidate::Panel { .. }))
+            .collect();
+        assert!(assess(&failing_for(&without_panel), &Policy::default()).is_none());
+    }
+
+    #[test]
+    fn disqualify_coverage_switched_off_restores_threshold_only() {
+        let mut offer = tier3_offer();
+        offer.remove(1);
+        let a = failing_for(&offer);
+        assert!(assess(&a, &Policy::default()).is_none());
+        let d = assess(&a, &threshold_only()).expect("disqualified");
+        assert_eq!(d.evidence.len(), 8);
+    }
+
+    #[test]
+    fn disqualify_in_force_rule_binds_registry_as_of_not_expiry() {
         let t = task_generate();
-        let d = assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &failing(5),
-            &t,
-            "2026-10-19",
-            &Policy::default(),
-        )
-        .unwrap();
+        let d = assess(&failing(5), &threshold_only()).unwrap();
         assert!(d.is_in_force(&t.family, "2026-10-19"));
         assert!(!d.is_in_force(&t.family, "2026-11-01"));
         assert!(!d.is_in_force("other", "2026-10-19"));
+        // the engine has no clock: a non-null expires_at does not change the answer
         let mut e = d.clone();
-        e.expires_at = Some("2026-12-01T00:00:00Z".into());
-        assert!(!e.is_in_force(&t.family, "2026-10-19"));
+        e.expires_at = Some("2026-01-01T00:00:00Z".into());
+        assert!(e.is_in_force(&t.family, "2026-10-19"));
     }
 
     #[test]
@@ -358,15 +397,7 @@ mod tests {
     #[test]
     fn disqualify_record_carries_schema_version_inside_the_hash() {
         let t = task_generate();
-        let d = assess_disqualification(
-            &t.family,
-            Tier::CheapGeneralist,
-            &failing(5),
-            &t,
-            "2026-10-19",
-            &Policy::default(),
-        )
-        .unwrap();
+        let d = assess(&failing(5), &threshold_only()).unwrap();
         assert_eq!(d.schema_version, "tier-drop.disqualification/1");
         let mut v = serde_json::to_value(&d).unwrap();
         assert_eq!(v["schema_version"], "tier-drop.disqualification/1");

@@ -6,6 +6,20 @@
 //! filters dataset rows by rights. It never calls a model and never touches the
 //! filesystem, the clock or the network: ids, timestamps and `as_of` dates are
 //! plain strings supplied by the caller.
+//!
+//! Judges, auditors and finishers for compositions come from [`Tier::next_up`]: system_one to
+//! specialised to cheap_generalist to frontier, and tailored to frontier; frontier has none, so
+//! it offers no compositions.
+//!
+//! Structural skips (`shape_mismatch`, `no_provisioned_candidates`,
+//! `no_qos_qualified_candidates`) and `disqualified` are reported in the plan's `skipped` list
+//! and as `skipped` or `disqualified` entries in `decide`'s `tiers[]`. `plan_next` and `decide`
+//! never create `Disqualification` records for them; only `assess_disqualification` (on recorded
+//! evidence) produces one in the normal flow. `structural_disqualification` is a separate helper
+//! for a caller that chooses to record a structural reason itself.
+//!
+//! Disqualifications passed in are treated as in force by family and registry date only. The
+//! engine has no clock, so the caller (the CLI) drops expired records before passing them in.
 
 pub mod attempt;
 pub mod candidate;
