@@ -1,0 +1,14 @@
+[workspace]
+resolver = "2"
+members = ["crates/core", "crates/cli"]
+# crates/worker is a detached workspace (wasm32 target, built with worker-build).
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+rust-version = "1.91"
+license = "Apache-2.0"
+repository = "https://github.com/bradheitmann/model-tier-drop"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"

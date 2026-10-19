@@ -1,0 +1,13 @@
+# Rust
+target/
+crates/worker/build/
+# Node (dsh adapter)
+node_modules/
+adapters/dsh/dist/
+# Cloudflare
+.wrangler/
+.dev.vars
+# Local ledgers and scratch
+.tier-drop/
+*.log
+.DS_Store

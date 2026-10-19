@@ -1,0 +1,18 @@
+[package]
+name = "tier-drop-cli"
+description = "tier-drop command line: plan, record, decide, verify and export over a local JSONL ledger."
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+repository.workspace = true
+
+[[bin]]
+name = "tier-drop"
+path = "src/main.rs"
+
+[dependencies]
+tier-drop-core = { path = "../core" }
+
+[lints]
+workspace = true

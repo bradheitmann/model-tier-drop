@@ -1,0 +1,12 @@
+// model-tier-drop MCP server (workers-rs). Deploy with `wrangler deploy` from this directory.
+// No secrets and no bindings: the server is stateless. The account comes from the wrangler login.
+{
+  "name": "model-tier-drop-mcp",
+  "main": "build/worker/shim.mjs",
+  "compatibility_date": "2026-10-16",
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{ "pattern": "model-tier-drop-mcp.bradheitmann.ai", "custom_domain": true }],
+  "build": { "command": "cargo install -q worker-build --locked && worker-build --release" },
+  "observability": { "enabled": true }
+}
