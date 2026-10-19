@@ -43,7 +43,7 @@ All records are JSON. Field names are `snake_case`. Enumerations are lower-case 
 
 ### Tier
 
-`"tailored" | "system_one" | "specialised" | "cheap_generalist" | "frontier"` with ordinals 5, 1, 2, 3, 4. `Tier::ladder_default()` is `[system_one, specialised, cheap_generalist, frontier]`; `tailored` is inserted at the front by `ladder(task)` when the registry binds a tailored model to the task's family and `policy.tailored_first` is true, otherwise appended at the end.
+`"tailored" | "system_one" | "specialised" | "cheap_generalist" | "frontier"` with ordinals 5, 1, 2, 3, 4. `Tier::ladder_default()` is `[system_one, specialised, cheap_generalist, frontier]`; `tailored` is inserted at the front by `ladder(task)` when the registry binds a tailored model to the task's family and `policy.tailored_first` is true; when a tailored model is bound but `tailored_first` is false it is appended at the end as a real tier; when none is bound it is not on the ladder (plans and decisions report it as a trailing `skipped` entry with `no_provisioned_candidates`).
 
 ### TaskShape
 
@@ -89,6 +89,8 @@ EmbeddingModel { id, deployment_id, dimensions: u64, notes }
 Policy {
   schema_version: "tier-drop.policy/1",
   tailored_first: true,
+  prefer_open_weight: true,
+  prefer_local: true,
   required_floors: ["quality", "accuracy", "completeness"],
   quality_band: 0.02,
   cost_band: 0.10,
@@ -181,7 +183,7 @@ A disqualification is **in force** for a task when `family` matches and `registr
 
 Skip reasons: `shape_mismatch`, `no_provisioned_candidates`, `no_qos_qualified_candidates` (the QoS and rights exclusions are listed in `detail`), `disqualified` (the in-force record id in `detail`). A `try` with an empty `candidates` list means every candidate of the tier has an attempt and the tier awaits disqualification assessment; the plan never moves up without a Disqualification.
 
-Candidate order inside a tier: untried singles ordered by (cost ascending, then reasoning level order as listed in the registry; cost = input plus output price per million tokens); then one panel of the cheapest `panel.max_members` (at least two) QoS-qualified models at their lowest level with the cheapest QoS-qualified next-tier model as judge; then a cascade (cheapest single, next-tier auditor, `cascade.audit_sample_rate`); then a draft (cheapest single, next-tier finisher). The next tier up is fixed: system_one→specialised→cheap_generalist→frontier, tailored→frontier, frontier has none (so frontier gets no compositions). Helpers must pass the QoS gate and fit the family. Compositions are offered only after every single has an attempt and are omitted when no next-tier model is QoS-qualified.
+Candidate order inside a tier: untried singles ordered by (open-weight before closed-weight when `policy.prefer_open_weight`, local deployment before remote when `policy.prefer_local`, then cost ascending, then reasoning level order as listed in the registry; cost = input plus output price per million tokens). This is the owner's tier text: open-weight first in tier 4, own equipment preferred in tier 3. Then one panel of the cheapest `panel.max_members` (at least two) QoS-qualified models at their lowest level with the cheapest QoS-qualified next-tier model as judge; then a cascade (cheapest single, next-tier auditor, `cascade.audit_sample_rate`); then a draft (cheapest single, next-tier finisher). The next tier up is fixed: system_one→specialised→cheap_generalist→frontier, tailored→frontier, frontier has none (so frontier gets no compositions). Helpers must pass the QoS gate and fit the family. Compositions are offered only after every single has an attempt and are omitted when no next-tier model is QoS-qualified.
 
 ### RoutingDecision
 
@@ -248,7 +250,7 @@ tier-drop disqualify --ledger DIR --registry r.json --family F --tier T --reason
                    # operator-authored record; REASON is any Disqualification reason; registry_as_of from the registry, decided_at from the clock
                    # plan and decide drop records whose expires_at is earlier than the CLI clock before calling the engine
 tier-drop ledger verify --ledger DIR
-tier-drop ledger show   --ledger DIR [--family F] [--kind attempts|decisions|disqualifications|eval-runs|tasks]
+tier-drop ledger show   --ledger DIR [--family F] [--kind attempts|decisions|disqualifications|eval-runs|eval-splits|tasks]
 tier-drop eval split    --items items.json [--policy p.json] [--ledger DIR]   # prints the EvalSplit; appends it to eval-splits.jsonl when --ledger is given
 tier-drop eval summarise --ledger DIR --family F --tier T --candidate c.json [--task t.json]
 tier-drop dataset export --ledger DIR --purpose process|train|send_remote|export [--family F]
