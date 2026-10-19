@@ -1,0 +1,6 @@
+{
+  "schema_version": "reveng.scope/1",
+  "mode": "full",
+  "epic_ids": [],
+  "rationale": "Horizon full per plan/commission.md: every requirement in plan/requirements.md gets an executable implementation contract and a paired verification contract; nothing is deferred inside the horizon (plan/slice-coverage.md)."
+}
