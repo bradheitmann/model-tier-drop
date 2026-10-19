@@ -435,7 +435,7 @@
     {
       "id": "SRC-plan-contracts",
       "uri": "repo:plan/contracts.md",
-      "content_sha256": "a55b952293ce21ca339d19fd4f0d3a9b467a3fe0b32d4b262991d44c2d02bdd1",
+      "content_sha256": "764d9f59705173e7742b0b6e3557cf47d9b741ce306d8e401647fdce2927a801",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -446,7 +446,7 @@
     {
       "id": "SRC-plan-coverage",
       "uri": "repo:plan/slice-coverage.md",
-      "content_sha256": "d898fab01aef1cd1c8860c22797994d2206e30994a3aabaace59e66ee4e911fb",
+      "content_sha256": "aaa14487ac5a0db6b603a8653aebaa778a0db6015249d37b7e52f2af264009a3",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -457,7 +457,7 @@
     {
       "id": "SRC-plan-implementation",
       "uri": "repo:plan/implementation-plan.md",
-      "content_sha256": "6f80c07125ae8f12e244006baa420dcda5f1f7478e604dbc16eacfb6a4b0cc58",
+      "content_sha256": "a25551e27186f99582e36bf6521b409e9770dc85595887598ff39ed4da6204e8",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -468,7 +468,7 @@
     {
       "id": "SRC-plan-requirements",
       "uri": "repo:plan/requirements.md",
-      "content_sha256": "8597e55ed35f657b14b13c6d0e8a38675b754b8245922df6fbe90f69f4cb145b",
+      "content_sha256": "e30ed85785827f9012a6e604caa78dd1989162615b6a0bb74c9b86ed0b755000",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -479,7 +479,7 @@
     {
       "id": "SRC-plan-technology",
       "uri": "repo:plan/technology-decisions.md",
-      "content_sha256": "1b83828cc69e78e555011591ed28b01581e3fc6b479262bb539ae7417d261865",
+      "content_sha256": "4513ca8c004912fbb0840aebaee8ea804db684be8a14f0dd9089605225e3d038",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -1201,7 +1201,7 @@
       "id": "R-12",
       "node_type": "t.requirement",
       "label": "plan_next ladder and candidates",
-      "statement": "plan_next returns the lowest non-disqualified tier on the task's ladder and an ordered list of untried candidates: singles (model × reasoning level) first, then a panel (up to policy.panel.max_members, judge = cheapest QoS-qualified model of the next tier up), cascade and draft compositions. It skips tiers with structural reasons (shape mismatch for tier 1, no bound model for tiers 2 and 5, nothing QoS-qualified) and reports exhausted when no tier remains.",
+      "statement": "plan_next returns the lowest non-disqualified tier on the task's ladder and an ordered list of untried candidates: singles (model × reasoning level) first, then a panel (up to policy.panel.max_members, judge = cheapest QoS-qualified model of the next tier up), a cascade with audited pass-through (next-tier auditor, policy.cascade.audit_sample_rate) and a draft composition (next-tier finisher). It skips tiers with structural reasons (shape mismatch for tier 1, no bound model for tiers 2 and 5, nothing QoS-qualified, an in-force disqualification) and reports exhausted when no tier remains. The next tier up is fixed: system_one→specialised→cheap_generalist→frontier, tailored→frontier, frontier has none. Trial order of singles inside a tier honours the owner's preferences before cost: open-weight models first (policy.prefer_open_weight), then models on local deployments (policy.prefer_local), then cost ascending, then the registry's reasoning-level order.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1233,7 +1233,7 @@
       "id": "R-13",
       "node_type": "t.requirement",
       "label": "Floors checked before ranking",
-      "statement": "check_floors compares an attempt's metric vector with the task's floors (set before results) and reports each failure with the observed value; a missing required metric is a failure, not a pass.",
+      "statement": "check_floors compares an attempt's metric vector with the task's floors (set before results) and reports each failure with the observed value; a missing required metric is a failure, not a pass. validate_attempt rejects an attempt whose recorded_at precedes the task's created_at (floors must exist before results), whose task or family does not match, or whose candidate names an unknown model or a tier other than attempt.tier.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1257,7 +1257,7 @@
         ],
         "critical": true,
         "kind": "functional",
-        "applicability": "Release 0.1.0; crates/core check_floors."
+        "applicability": "Release 0.1.0; crates/core check_floors and validate_attempt."
       },
       "contract": null
     },
@@ -1265,7 +1265,7 @@
       "id": "R-14",
       "node_type": "t.requirement",
       "label": "Disqualification on evidence",
-      "statement": "assess_disqualification produces a Disqualification for (family, tier) when the evidence meets the policy (min_attempts reached and pass rate at or below max_pass_rate), or when a structural reason applies; it binds the registry as_of date so a newer registry invalidates it.",
+      "statement": "assess_disqualification produces a Disqualification for (family, tier) only when the tier's candidates are covered (every single and every offered composition has at least one attempt in the family, unless policy.disqualify.require_full_coverage is false) and the evidence meets the policy (min_attempts reached and pass rate at or below max_pass_rate); structural reasons are reported as plan skips and in the routing decision, not written by the engine as records; the record binds the registry as_of date so a newer registry invalidates it; expiry is applied by the caller that owns the clock.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1329,7 +1329,7 @@
       "id": "R-16",
       "node_type": "t.requirement",
       "label": "Append-only hashed ledger",
-      "statement": "The ledger is append-only JSONL under one directory (tasks, attempts, decisions, disqualifications, eval-runs); every record carries schema_version and a record_sha256 over its canonical JSON; ledger verify detects any altered line.",
+      "statement": "The ledger is append-only JSONL under one directory (tasks, attempts, decisions, disqualifications, eval-runs, eval-splits); every record carries schema_version and a record_sha256 over its canonical JSON; ledger verify detects any altered line in any of the six files.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1457,7 +1457,7 @@
       "id": "R-20",
       "node_type": "t.requirement",
       "label": "CLI surface and exit codes",
-      "statement": "The CLI tier-drop exposes: registry validate|example, plan, qos, attempt record, decide, disqualify, ledger verify|show, eval split|summarise, dataset export, schemas. All input and output is JSON; exit codes are 0 success, 1 validation failure, 2 usage error.",
+      "statement": "The CLI tier-drop exposes: registry validate|example, policy default, plan, qos, attempt record, decide, disqualify, ledger verify|show, eval split|summarise, dataset export, schemas. All input and output is JSON; exit codes are 0 success, 1 validation failure, 2 usage error. attempt record accepts every outcome (answered, abstained, failed, timed_out); attempt record and decide append the task to tasks.jsonl when its id is new; the CLI drops expired disqualifications using its clock before calling the engine.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1489,7 +1489,7 @@
       "id": "R-21",
       "node_type": "t.requirement",
       "label": "JSON Schema for every record",
-      "statement": "tier-drop schemas prints JSON Schema for every record type (registry, task, policy, attempt, disqualification, routing decision, eval item, eval run) so other languages can validate the same files.",
+      "statement": "tier-drop schemas prints JSON Schema for every record type (registry, policy, task, attempt, disqualification, routing_decision, eval_item, eval_split, eval_run, plan) so other languages can validate the same files.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1617,7 +1617,7 @@
       "id": "R-32",
       "node_type": "t.requirement",
       "label": "Engine operations as MCP tools",
-      "statement": "The Worker exposes the engine's pure operations as tools: skill_read, registry_example, registry_validate, qos_gate, plan_next, check_floors, assess_disqualification, decide, split_holdout, summarise_eval, schemas; each tool returns content[0].text and structuredContent, with isError: true on validation failure.",
+      "statement": "The Worker exposes the engine's pure operations as twelve tools: skill_read, registry_example, registry_validate, qos_gate, plan_next, check_floors, validate_attempt, assess_disqualification, decide, split_holdout, summarise_eval, schemas; each tool returns content[0].text and structuredContent, with isError: true on validation failure.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -2033,7 +2033,7 @@
       "id": "R-55",
       "node_type": "t.requirement",
       "label": "Owner wording and language rules",
-      "statement": "No file mentions the owner's private organisation name (search pattern O[K]OA); no file uses the forbidden owner-framing phrase (search pattern needs[ ]you); no file introduces Python or plain JavaScript (generated build/ and dist/ excepted).",
+      "statement": "No file contains the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); no file introduces Python or plain JavaScript (generated build/ and dist/ excepted).",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -2302,7 +2302,7 @@
           "Crate stubs contain no engine logic; later slices own their crates.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "Delete the branch.",
@@ -2370,8 +2370,8 @@
         ],
         "steps": [
           "Implement the types of plan/technology-decisions.md \"Data contracts\" in crates/core/src/ as modules: tier, registry, task, candidate, attempt, disqualification, decision, plan, eval, policy, canonical (canonical JSON + record_sha256), rights. #[serde(deny_unknown_fields)], schemars::JsonSchema derives on every record type.",
-          "Implement functions with exactly these signatures (module paths free): validate_registry(&Registry) -> Vec<Issue> (Issue { code: String, message: String }); validate_task(&Task, &Policy) -> Vec<Issue> (floors cover required_floors; strict-review rule R-22); qos_gate(&Registry, &Task, &Policy) -> QosGateResult; ladder(&Task, &Registry, &Policy) -> Vec<Tier>; plan_next(&Task, &Registry, &[Disqualification], &[Attempt], &Policy) -> Plan; check_floors(&Task, &Attempt, &Policy) -> FloorResult; assess_disqualification(family: &str, tier: Tier, &[Attempt], &Task, registry_as_of: &str, &Policy) -> Option<Disqualification>; decide(&Task, &Registry, &[Disqualification], &[Attempt], &Policy) -> RoutingDecision; split_holdout(&[EvalItem], &Policy) -> EvalSplit; summarise_eval taking (family, tier, &Candidate, &[Attempt], &[Floor]) and returning EvalRun; dataset_filter<'a>(&'a [Attempt], Purpose) -> Vec<&'a Attempt> (Purpose::{Process, Train, SendRemote, Export}); canonical_json(&serde_json::Value) -> String, record_sha256(&serde_json::Value) -> String (excludes the record_sha256 key); schemas() -> BTreeMap<&'static str, schemars::Schema> for the names listed under the CLI schemas command; Policy::default() equals registry/policy.default.json; Registry::example() parses registry/registry.example.json (both via include_str!).",
-          "Write registry/registry.example.json: the commission's indicative models as of 2026-10-19 across tiers 1–4 (Jev, Laya; a Docling model, a Qwen OCR model, a ScaleDown model; DeepSeek 4.1 Flash, Qwen 3.8 27B, GLM-5.3-flash; GLM-5.3, Qwen 3.8 Max, Mistral 4, Kimi K3, Opus 5.5, GPT-6.1-Sol), one tailored example bound to a family, two embedding helpers, deployments with ids only (local-mbp, local-mini, zai, anthropic, openai, deepseek), plausible placeholder costs and QoS marked as example values in notes. No hostnames, no keys.",
+          "Implement functions with exactly these signatures (module paths free): validate_registry(&Registry) -> Vec<Issue> (Issue { code: String, message: String }); validate_task(&Task, &Policy) -> Vec<Issue> (floors cover required_floors; strict-review rule R-22); qos_gate(&Registry, &Task, &Policy) -> QosGateResult; ladder(&Task, &Registry, &Policy) -> Vec<Tier>; plan_next(&Task, &Registry, &[Disqualification], &[Attempt], &Policy) -> Plan; check_floors(&Task, &Attempt, &Policy) -> FloorResult; validate_attempt(&Task, &Attempt, &Registry) -> Vec<Issue> (issues: task_id_mismatch, family_mismatch, tier_mismatch when the candidate's tier differs from attempt.tier, unknown_model for any model id in the candidate, recorded_before_task_created when attempt.recorded_at < task.created_at, so floors provably predate results); assess_disqualification(family: &str, tier: Tier, &[Attempt], &Task, &Registry, registry_as_of: &str, &Policy) -> Option<Disqualification> (the registry is needed to enumerate the tier's candidates for the coverage rule); decide(&Task, &Registry, &[Disqualification], &[Attempt], &Policy) -> RoutingDecision; split_holdout(&[EvalItem], &Policy) -> EvalSplit; summarise_eval taking (family, tier, &Candidate, &[Attempt], &[Floor]) and returning EvalRun; dataset_filter<'a>(&'a [Attempt], Purpose) -> Vec<&'a Attempt> (Purpose::{Process, Train, SendRemote, Export}); canonical_json(&serde_json::Value) -> String, record_sha256(&serde_json::Value) -> String (excludes the record_sha256 key); schemas() -> BTreeMap<&'static str, schemars::Schema> for the names listed under the CLI schemas command; Policy::default() equals registry/policy.default.json; Registry::example() parses registry/registry.example.json (both via include_str!).",
+          "Write registry/registry.example.json: the commission's indicative models as of 2026-10-19 across tiers 1–4 (Jev, Laya; a Docling model, a Qwen OCR model, a ScaleDown model; DeepSeek 4.1 Flash, Qwen 3.8 27B, GLM-5.3-flash; GLM-5.3, Qwen 3.8 Max, Mistral 4, Kimi K3, Opus 5.5, GPT-6.1-Sol), one tailored example bound to a family, two embedding helpers, deployments with ids only (local-mbp, local-mini, zai, anthropic, openai, deepseek, mistral, moonshot, alibaba), plausible placeholder costs and QoS marked as example values in the registry's optional top-level notes. No hostnames, no keys.",
           "Unit tests per requirement, named so cargo test -p tier-drop-core registry|qos|plan|floors|disqualify|decide|holdout|eval|dataset|review each select at least one test. Property-style tests for split_holdout determinism and whole-family assignment.",
           "cargo fmt, cargo clippy -p tier-drop-core --all-targets -- -D warnings, cargo test -p tier-drop-core."
         ],
@@ -2517,7 +2517,7 @@
           "The library has no std::fs, std::time, rand or network use; all ids and timestamps are parameters.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "Revert the branch.",
@@ -2581,8 +2581,9 @@
         "steps": [
           "clap derive CLI exactly as the \"CLI surface\" table in plan/technology-decisions.md.",
           "Ledger module: append-only JSONL writes with O_APPEND, canonical JSON lines, record_sha256 filled before write, verify recomputing hashes and reporting file:line, show filtering.",
-          "attempt record reads the attempt from stdin, validates it against the task and registry, fills record_sha256, appends, prints the FloorResult, then calls assess_disqualification over the family's attempts for that tier and appends a Disqualification when returned (print it too).",
-          "decide loads the ledger's in-force disqualifications and the task's attempts, calls decide, appends and prints.",
+          "attempt record reads the attempt from stdin (any outcome), validates it with validate_attempt (exit 1 with the issues on failure), fills schema_version and record_sha256, appends, prints the FloorResult, then calls assess_disqualification over the family's attempts for that tier and appends a Disqualification when returned (print it too). It appends the task to tasks.jsonl when its task_id is not yet present (so does decide).",
+          "decide loads the ledger's disqualifications, drops those whose expires_at is non-null and earlier than the CLI's clock (SystemTime::now() formatted as RFC 3339 UTC; the engine has no clock), takes the task's attempts, calls decide, appends and prints. plan filters the same way.",
+          "(4a) disqualify --ledger DIR --registry r.json --family F --tier T --reason <shape_mismatch|no_provisioned_candidates|no_qos_qualified_candidates|rights_forbid_remote|floors_not_met|operator> --evidence id[,id…] --detail \"…\" [--expires-at RFC3339] writes an operator-authored record with registry_as_of from the registry and decided_at from the clock.",
           "Integration tests in crates/cli/tests/ using std::process::Command on the built binary (env!(\"CARGO_BIN_EXE_tier-drop\")) over a temporary directory: the README walkthrough end to end; ledger tamper detection (T-16); schemas routing_decision title (T-21); exit codes (T-20).",
           "Write the README \"Walkthrough\" section only (keep the rest): the exact commands a stranger runs (create registry from the example, write a task, plan, record two attempts, decide, verify ledger, export dataset)."
         ],
@@ -2686,7 +2687,7 @@
           "Only the README Walkthrough section is written; the rest of README.md is kept.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "Revert the branch.",
@@ -2747,7 +2748,7 @@
         "steps": [
           "skill/SKILL.md with frontmatter name: model-tier-drop, description (one sentence, when to use), whenToUse, metadata: { version: \"0.1.0\", harnesses: [claude-code, codex, dsh, pi, any] }. Body sections, in this order: The rule (five tiers, embeddings are helpers, QoS gate, ranking order, strict review default); Before you route (write the task record with floors first, copy the registry, check rights); Procedure (numbered: load in-force disqualifications; plan → candidates; execute each candidate through your harness; record every attempt including failures and abstentions; when the plan says the tier is done, let attempt record assess disqualification; decide; append nothing by hand); Composition patterns (panel, cascade, draft, embedding helpers, with when to use each); Records you leave behind (routing decision, attempts, disqualifications, eval runs, with the ledger paths); Eval harness and datasets (pointer to references); Install (CLI via cargo install --path crates/cli; hosted MCP URL and how to add it in Claude Code, Codex, dsh, Pi; skill symlink paths per harness). Keep SKILL.md under 300 lines; detail goes in references.",
           "References: references/tiers.md (what each tier is for, what disqualifies it, examples of structural skips), references/routing-record.md (every RoutingDecision field with meaning), references/composition.md, references/eval-harness.md (metric vector, held-out split by source family with the hash rule, EvalRun → Disqualification, strict review default and the sampled exception with its conditions), references/dataset.md (attempt record as dataset row, rights by purpose, export, what a tier-5 candidate family looks like: high volume, stable, pass rate, sample size), references/registry.md (registry fields, how to add a deployment, QoS fields and that they are measured values, model names are configuration).",
-          "Wording rules: plain and specific; never the forbidden owner-framing phrase (pattern needs[ ]you); harness names only in Install; model names only when labelled indicative as of 2026-10-19."
+          "Wording rules: plain and specific; never the forbidden phrase (needs[ ]you); harness names only in the frontmatter harnesses list and under Install; model names only when labelled indicative as of 2026-10-19."
         ],
         "outputs": [
           {
@@ -2793,7 +2794,7 @@
             "program": "shell.bash",
             "args": [
               "-c",
-              "awk '/^## Install/{f=1} !f && /mcp__|Bash\\(|Claude Code|Codex|dsh|Pi /{print FILENAME\":\"NR\": \"$0; bad=1} END{exit bad}' skill/SKILL.md"
+              "awk 'NR==1 && /^---$/{fm=1;next} fm && /^---$/{fm=0;next} fm && /^[[:space:]]*harnesses:/{next} /^## Install/{f=1} !f && /mcp__|Bash\\(|Claude Code|Codex|dsh|Pi /{print FILENAME\":\"NR\": \"$0; bad=1} END{exit bad}' skill/SKILL.md"
             ],
             "cwd": ".",
             "env": {},
@@ -2852,7 +2853,7 @@
             "id": "S-04.C5",
             "program": "shell.grep",
             "args": [
-              "-rn",
+              "-rnE",
               "needs[ ]you",
               "skill"
             ],
@@ -2870,10 +2871,10 @@
           }
         ],
         "risk_controls": [
-          "Harness names appear only under ## Install; model names only when labelled indicative as of 2026-10-19.",
+          "Harness names appear only in the frontmatter harnesses line and under ## Install; model names only when labelled indicative as of 2026-10-19.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "Revert the branch.",
@@ -2889,7 +2890,7 @@
       "id": "S-05",
       "node_type": "t.slice",
       "label": "S-05 MCP Worker",
-      "statement": "Implement the stateless workers-rs MCP Worker serving the eleven engine tools and the embedded skill with request hygiene, verified under wrangler dev.",
+      "statement": "Implement the stateless workers-rs MCP Worker serving the twelve engine tools and the embedded skill with request hygiene, verified under wrangler dev.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -2924,7 +2925,7 @@
           "S-04"
         ],
         "verifies": null,
-        "objective": "Implement the stateless workers-rs MCP Worker serving the eleven engine tools and the embedded skill with request hygiene, verified under wrangler dev.",
+        "objective": "Implement the stateless workers-rs MCP Worker serving the twelve engine tools and the embedded skill with request hygiene, verified under wrangler dev.",
         "read_prefixes": [
           "plan",
           "crates/core",
@@ -2937,7 +2938,7 @@
         "steps": [
           "crates/worker/Cargo.toml: own [workspace] table (detached), worker = \"0.8\", tier-drop-core = { path = \"../core\" }, serde_json; crate-type = [\"cdylib\"].",
           "wrangler.jsonc: name: \"model-tier-drop-mcp\", main: \"build/worker/shim.mjs\", compatibility_date: \"2026-10-16\", build.command: \"cargo install -q worker-build --locked && worker-build --release\", workers_dev: false, preview_urls: false, routes: [{ pattern: \"model-tier-drop-mcp.bradheitmann.ai\", custom_domain: true }], observability: { enabled: true }. No account id in the file (wrangler takes it from the login).",
-          "src/lib.rs: #[event(fetch)] handler; src/mcp.rs: JSON-RPC parsing and the method switch mirroring the reference (initialize, server/discover, ping, tools/list with ttlMs: 3600000, cacheScope: \"public\", tools/call, notifications → 202, batches → -32600, unknown → -32601, _meta stateless version check); src/tools.rs: the eleven tools with inputSchema (additionalProperties: false), dispatching to tier_drop_core; src/assets.rs: include_str! of ../../skill/SKILL.md, every ../../skill/references/*.md, ../../registry/registry.example.json; GET routes; security headers; body cap 262144; Origin check; Accept and Content-Type checks.",
+          "src/lib.rs: #[event(fetch)] handler; src/mcp.rs: JSON-RPC parsing and the method switch mirroring the reference (initialize, server/discover, ping, tools/list with ttlMs: 3600000, cacheScope: \"public\", tools/call, notifications → 202, batches → -32600, unknown → -32601, _meta stateless version check); src/tools.rs: the twelve tools with inputSchema (additionalProperties: false), dispatching to tier_drop_core; src/assets.rs: include_str! of ../../skill/SKILL.md, every ../../skill/references/*.md, ../../registry/registry.example.json; GET routes; security headers; body cap 262144; Origin check; Accept and Content-Type checks.",
           "README.md in the crate: build, wrangler dev, deploy, rollback (wrangler rollback), the curl transcript.",
           "Local verification: worker-build --release; wrangler dev --port 8787 in the background; curl initialize, tools/list, tools/call plan_next (registry example + a classify task), GET /skill/SKILL.md sha256 equality; Origin 403; 413 on a 300 KiB body."
         ],
@@ -2964,7 +2965,7 @@
           },
           {
             "path": "crates/worker/src/tools.rs",
-            "purpose": "The eleven tools with closed input schemas.",
+            "purpose": "The twelve tools with closed input schemas.",
             "media_type": "text/x-rust"
           },
           {
@@ -3050,7 +3051,7 @@
             "program": "shell.bash",
             "args": [
               "-c",
-              "set -euo pipefail; curl -s -X POST http://127.0.0.1:8787/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}' | jq -e '(.result | has(\"ttlMs\") and has(\"cacheScope\")) and (.result.tools | length == 11)'"
+              "set -euo pipefail; curl -s -X POST http://127.0.0.1:8787/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}' | jq -e '(.result | has(\"ttlMs\") and has(\"cacheScope\")) and (.result.tools | length == 12)'"
             ],
             "cwd": ".",
             "env": {},
@@ -3127,7 +3128,7 @@
           "Checks S-05.C4 to S-05.C9 run against wrangler dev --port 8787 started in the background from crates/worker.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "wrangler rollback after deploy; revert the branch before.",
@@ -3283,7 +3284,7 @@
           "If the custom domain fails, fall back to workers.dev and record the reason (D-07).",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "wrangler rollback.",
@@ -3456,7 +3457,7 @@
           "Ledger, registry and policy paths come only from trusted plugin config, never from tool arguments.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "Revert the branch; the temporary DSH_HOME is deleted.",
@@ -3683,7 +3684,7 @@
           "Owner documents are referenced by logical uri and sha256 only; their text and paths are not copied into the repository.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "Revert the branch.",
@@ -3847,7 +3848,7 @@
           "Three-attempt budget for making CI green; a fourth attempt is escalated, never taken silently.",
           "Rust by default; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
           "Work only in the slice's worktree and branch; never touch main."
         ],
         "rollback": "The repository can be made private with gh repo edit --visibility private if a defect is found after publication.",
@@ -4302,7 +4303,7 @@
       "id": "T-12",
       "node_type": "t.test",
       "label": "T-12 acceptance test for R-12",
-      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core plan. Observation: for a generate task, tier 1 is skipped with shape_mismatch; for a family with a tailored model, the first tier is tailored; after all singles of tier 3 are tried and failed, the plan offers a tier-3 panel with a tier-4 judge; with every tier disqualified the result is exhausted. Fails if any of the four observations does not hold.",
+      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core plan. Observation: for a generate task, tier 1 is skipped with shape_mismatch; for a family with a tailored model, the first tier is tailored; in tier 4 an open-weight model is offered before a cheaper closed-weight one, and with prefer_open_weight: false cost decides; after all singles of tier 3 are tried and failed, the plan offers a tier-3 panel with a tier-4 judge, then a cascade whose audit_sample_rate equals the policy value, then a draft; with every tier disqualified the result is exhausted. Fails if any of these observations does not hold.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4321,7 +4322,7 @@
       "id": "T-13",
       "node_type": "t.test",
       "label": "T-13 acceptance test for R-13",
-      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core floors. Observation: an attempt lacking completeness fails on completeness with observed: null. Fails if that attempt passes or its failure omits the metric.",
+      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core floors. Observation: an attempt lacking completeness fails on completeness with observed: null; an attempt recorded before the task was created yields the issue recorded_before_task_created. Fails if that attempt passes, its failure omits the metric, or the early attempt is not rejected with that issue.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4340,7 +4341,7 @@
       "id": "T-14",
       "node_type": "t.test",
       "label": "T-14 acceptance test for R-14",
-      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core disqualify. Observation: four failing attempts with min_attempts: 5 yield none; five yield floors_not_met with the five attempt ids as evidence; a disqualification whose registry_as_of predates the registry is ignored by plan_next. Fails if any of the three observations does not hold.",
+      "statement": "Setup: crates/core builds. Action: cargo test -p tier-drop-core disqualify. Observation: four failing attempts with min_attempts: 5 yield none; five yield floors_not_met with the five attempt ids as evidence when every candidate is covered, and none when one single is untried; a disqualification whose registry_as_of predates the registry is ignored by plan_next. Fails if any of these observations does not hold.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4454,7 +4455,7 @@
       "id": "T-20",
       "node_type": "t.test",
       "label": "T-20 acceptance test for R-20",
-      "statement": "Setup: the CLI built and a temporary directory. Action: cargo test -p tier-drop-cli plus the README walkthrough on a temporary directory. Observation: the walkthrough ends with a decisions.jsonl line whose winner is non-null. Fails if any command exits non-zero or the winner is null.",
+      "statement": "Setup: the CLI built and a temporary directory. Action: cargo test -p tier-drop-cli plus the README walkthrough on a temporary directory. Observation: the walkthrough ends with a decisions.jsonl line whose winner is non-null; an abstained attempt is accepted and appears in dataset export --purpose process; tasks.jsonl holds the task once after two ledger-writing commands. Fails if any command exits non-zero, the winner is null, the abstained attempt is rejected or missing from the export, or tasks.jsonl holds the task other than once.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4473,7 +4474,7 @@
       "id": "T-21",
       "node_type": "t.test",
       "label": "T-21 acceptance test for R-21",
-      "statement": "Setup: the CLI built. Action: tier-drop schemas routing_decision | jq .title. Observation: RoutingDecision. Fails on any other output or a non-zero exit.",
+      "statement": "Setup: the CLI built. Action: tier-drop schemas routing_decision | jq .title. Observation: RoutingDecision; tier-drop schemas | jq 'keys | length' is 10. Fails on any other output or a non-zero exit.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4549,7 +4550,7 @@
       "id": "T-32",
       "node_type": "t.test",
       "label": "T-32 acceptance test for R-32",
-      "statement": "Setup: wrangler dev running the Worker locally. Action: tools/call plan_next with the registry example and a classify task. Observation: structuredContent.tier == \"system_one\" and candidates non-empty. Fails if the tier differs or candidates are empty.",
+      "statement": "Setup: wrangler dev running the Worker locally. Action: tools/call plan_next with the registry example and a classify task; tools/call validate_attempt with an attempt recorded before the task's created_at. Observation: structuredContent.tier == \"system_one\" and candidates non-empty; the second call returns valid: false with issue recorded_before_task_created. Fails if the tier differs, candidates are empty, or the second call does not return that issue.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4720,7 +4721,7 @@
       "id": "T-51",
       "node_type": "t.test",
       "label": "T-51 acceptance test for R-51",
-      "statement": "Setup: the final tree. Action: gitleaks detect --redact --source . on the final tree and grep -rniE 'tail[0-9a-f]+\\.ts\\.net|account_id' --exclude-dir=target --exclude-dir=node_modules . Observation: no findings. Fails on any finding.",
+      "statement": "Setup: the final tree. Action: gitleaks detect --redact --source . on the final tree and grep -rniE 'tail[0-9a-f]+\\.ts\\.ne[t]|account[_]id' --exclude-dir=target --exclude-dir=node_modules . (the bracketed characters keep the pattern from matching its own text). Observation: no findings. Fails on any finding.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4796,7 +4797,7 @@
       "id": "T-55",
       "node_type": "t.test",
       "label": "T-55 acceptance test for R-55",
-      "statement": "Setup: the final tree. Action: grep -rn with the pattern O[K]OA, grep -rn with the pattern needs[ ]you, and lang-guard scan . Observation: no matches. Fails on any match.",
+      "statement": "Setup: the final tree. Action: grep -rnE \"O[K]OA\" ., grep -rnE \"needs[ ]you\" ., lang-guard scan . (excluding target, node_modules, build, dist). Observation: no matches. Fails on any match.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4866,11 +4867,11 @@
           "qa/V-01"
         ],
         "steps": [
-          "Confirm the plan files exist and each requirement in plan/requirements.md has at least one T- test.",
+          "Confirm the six plan files exist and each requirement in plan/requirements.md has at least one T- test.",
           "Confirm every commission sentence in \"What must exist from the beginning\" maps to a requirement.",
           "Run cargo build --workspace.",
           "Run gitleaks detect --redact --source .",
-          "Search the tree for the private organisation name (pattern O[K]OA) and confirm it is absent.",
+          "Run grep -rnE \"O[K]OA\" . and confirm it is empty (the owner's forbidden organisation name is absent).",
           "Confirm .github/workflows/ci.yml parses as YAML and names fmt, clippy, test, wasm build, adapter check and gitleaks.",
           "Write the verdict (accept or reject with failing check and defect list) to qa/V-01/verdict.md."
         ],
@@ -4964,9 +4965,7 @@
             "id": "V-01.C10",
             "program": "shell.grep",
             "args": [
-              "-rn",
-              "--exclude-dir=.git",
-              "--exclude-dir=target",
+              "-rnE",
               "O[K]OA",
               "."
             ],
@@ -5016,7 +5015,7 @@
         "risk_controls": [
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-01; the implementation branch is unchanged.",
         "evidence_required": [
@@ -5220,7 +5219,7 @@
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "Adversarial tests live in a scratch file that is not committed.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-02 and the scratch test file; the implementation branch is unchanged.",
         "evidence_required": [
@@ -5386,7 +5385,7 @@
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "Tampering happens only on a temporary copy of the ledger.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-03 and the temporary directories; the implementation branch is unchanged.",
         "evidence_required": [
@@ -5468,7 +5467,7 @@
             "program": "shell.bash",
             "args": [
               "-c",
-              "awk '/^## Install/{f=1} !f && /mcp__|Bash\\(|Claude Code|Codex|dsh|Pi /{print FILENAME\":\"NR\": \"$0; bad=1} END{exit bad}' skill/SKILL.md"
+              "awk 'NR==1 && /^---$/{fm=1;next} fm && /^---$/{fm=0;next} fm && /^[[:space:]]*harnesses:/{next} /^## Install/{f=1} !f && /mcp__|Bash\\(|Claude Code|Codex|dsh|Pi /{print FILENAME\":\"NR\": \"$0; bad=1} END{exit bad}' skill/SKILL.md"
             ],
             "cwd": ".",
             "env": {},
@@ -5527,7 +5526,7 @@
             "id": "V-04.C5",
             "program": "shell.grep",
             "args": [
-              "-rn",
+              "-rnE",
               "needs[ ]you",
               "skill"
             ],
@@ -5547,7 +5546,7 @@
         "risk_controls": [
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-04; the implementation branch is unchanged.",
         "evidence_required": [
@@ -5656,7 +5655,7 @@
             "program": "shell.bash",
             "args": [
               "-c",
-              "set -euo pipefail; curl -s -X POST http://127.0.0.1:8787/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}' | jq -e '(.result | has(\"ttlMs\") and has(\"cacheScope\")) and (.result.tools | length == 11) and all(.result.tools[]; .inputSchema.additionalProperties == false)'"
+              "set -euo pipefail; curl -s -X POST http://127.0.0.1:8787/mcp -H 'Content-Type: application/json' -H 'Accept: application/json, text/event-stream' -d '{\"jsonrpc\":\"2.0\",\"id\":2,\"method\":\"tools/list\"}' | jq -e '(.result | has(\"ttlMs\") and has(\"cacheScope\")) and (.result.tools | length == 12) and all(.result.tools[]; .inputSchema.additionalProperties == false)'"
             ],
             "cwd": ".",
             "env": {},
@@ -5720,7 +5719,7 @@
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "QA starts and stops its own wrangler dev on port 8787; it does not deploy.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Stop the local wrangler dev and delete qa/V-05; the implementation branch is unchanged.",
         "evidence_required": [
@@ -5778,7 +5777,7 @@
         ],
         "steps": [
           "Perform its own live initialize, tools/list, tools/call decide with a two-attempt payload, and GET /registry/example.json, from a fresh shell.",
-          "Confirm no account identifier appears in any committed file: grep -rE '[0-9a-f]{32}' --exclude-dir=target --exclude-dir=node_modules --exclude=Cargo.lock --exclude=pnpm-lock.yaml . returns only sha256 values that are record hashes in tests, if any.",
+          "Confirm no account identifier appears in any committed file: grep -rEo '\\b[0-9a-f]{32}\\b' --exclude-dir=target --exclude-dir=node_modules --exclude-dir=.git --exclude=Cargo.lock --exclude=pnpm-lock.yaml . is empty; the word boundaries keep 64-character sha256 digests in plan/graph.json, plan/build.json and tests from matching.",
           "Write the verdict to qa/V-06/verdict.md."
         ],
         "outputs": [
@@ -5835,8 +5834,29 @@
             "stdout_sha256": null
           },
           {
-            "kind": "file_exists",
+            "kind": "command",
             "id": "V-06.C4",
+            "program": "shell.grep",
+            "args": [
+              "-rEo",
+              "\\b[0-9a-f]{32}\\b",
+              "--exclude-dir=target",
+              "--exclude-dir=node_modules",
+              "--exclude-dir=.git",
+              "--exclude=Cargo.lock",
+              "--exclude=pnpm-lock.yaml",
+              "."
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 1,
+            "timeout_seconds": 120,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "file_exists",
+            "id": "V-06.C5",
             "path": "qa/V-06/verdict.md"
           }
         ],
@@ -5844,7 +5864,7 @@
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "Read-only against the live Worker; QA never deploys or rolls back.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-06; the deployment and the implementation branch are unchanged.",
         "evidence_required": [
@@ -5973,7 +5993,7 @@
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "The isolated DSH_HOME is a temporary directory; ~/.dsh is never touched.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-07 and the temporary DSH_HOME; the implementation branch is unchanged.",
         "evidence_required": [
@@ -6147,7 +6167,7 @@
           "The compiler is rebuilt in QA's own disposable directory; the skill directory is never modified.",
           "The verifier-deletion experiment runs on a scratch copy only.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-08 and the scratch files; the implementation branch is unchanged.",
         "evidence_required": [
@@ -6278,7 +6298,7 @@
           "Run in a separate QA context that never implemented the slice; do not edit implementation files; a verdict is accept or reject with the failing check and defect list.",
           "QA uses only the public clone and the README; no prior context.",
           "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
-          "Never write the owner's private organisation name (search pattern O[K]OA) or the forbidden owner-framing phrase (search pattern needs[ ]you) into any file; plain, specific prose."
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose."
         ],
         "rollback": "Delete qa/V-09 and the temporary clone; the published repository is unchanged.",
         "evidence_required": [
@@ -9437,6 +9457,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-02 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9455,6 +9480,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-03 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9473,6 +9503,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-04 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9491,6 +9526,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-05 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9509,6 +9549,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-05 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9524,13 +9569,13 @@
       "rationale": "This slice needs the prerequisite slice's outputs merged first.",
       "evidence": [
         {
-          "source_id": "SRC-plan-implementation",
-          "locator": "## Execution graph (merge order: S-03 and S-05, then S-06); ## Waves (S-03 in wave 2, S-06 in wave 3)",
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-06 — Depends on",
           "role": "declares"
         },
         {
-          "source_id": "SRC-plan-contracts",
-          "locator": "## S-03 and ## S-06 write prefixes (both write README.md)",
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
           "role": "supports"
         }
       ],
@@ -9550,6 +9595,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-06 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9568,6 +9618,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-07 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9586,6 +9641,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-07 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9604,6 +9664,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-07 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9622,6 +9687,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-08 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9640,6 +9710,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-09 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9658,6 +9733,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-09 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9676,6 +9756,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-09 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9694,6 +9779,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## S-09 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9712,6 +9802,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-01 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9730,6 +9825,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-02 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9748,6 +9848,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-03 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9766,6 +9871,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-04 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9784,6 +9894,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-05 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9802,6 +9917,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-06 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9820,6 +9940,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-07 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9838,6 +9963,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-08 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
@@ -9856,6 +9986,11 @@
           "source_id": "SRC-plan-contracts",
           "locator": "## V-09 — Depends on",
           "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-implementation",
+          "locator": "## Execution graph — Dependencies",
+          "role": "supports"
         }
       ],
       "qualifiers": {}
