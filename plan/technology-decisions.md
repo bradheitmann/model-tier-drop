@@ -28,7 +28,7 @@ Alternatives considered and rejected: (a) the engine calling models directly, re
 
 | Decision | Choice | Evidence (2026-10-19) | Exit |
 |---|---|---|---|
-| Engine language | Rust 2021, rustc 1.88.0, `serde`, `serde_json`, `sha2`, `schemars` | Owner rule: Rust default. Toolchain present. | None needed. |
+| Engine language | Rust 2021, toolchain pinned 1.98.1 (MSRV 1.91), `serde`, `serde_json`, `sha2`, `schemars` 1.x | Owner rule: Rust default. Toolchain present. | None needed. |
 | CLI | `clap` derive, JSON on stdin/stdout, JSONL ledger | Harness-neutral interface; dsh and Pi adapters shell out to it. | Any harness can call the MCP instead. |
 | Worker | `worker` 0.8.7 (workers-rs), `worker-build` 0.8.7, wrangler 4.98.0, `compatibility_date: 2026-10-16` | crates.io check; reference deployment pattern (`observability`, custom domain, stateless MCP, `ttlMs`/`cacheScope`). Generated `build/worker/shim.mjs` is build output, git-ignored, not authored JavaScript. | Strict TypeScript Worker with the same handlers if workers-rs fails on the host. |
 | MCP protocol | JSON-RPC 2.0 over POST `/mcp`, JSON responses, handshake versions 2025-03-26/2025-06-18/2025-11-25 and stateless `_meta` 2026-07-28 | Copied from the reference Worker which Claude Code, Codex, dsh and Pi (via `mcp-remote`) already consume. | None. |
@@ -63,7 +63,8 @@ Registry {
   as_of: "YYYY-MM-DD",                       // date the model names were indicative
   deployments: [Deployment],
   models: [Model],
-  embeddings: [EmbeddingModel]
+  embeddings: [EmbeddingModel],
+  notes: string | null                       // optional free text (the example says its values are not measurements)
 }
 Deployment { id, provider, locality: "local" | "remote", qos: QosObserved | null }
 QosObserved { availability: f64, p95_latency_ms: u64, error_rate: f64, window_started: date, window_ended: date, sample_count: u64 }
@@ -91,7 +92,7 @@ Policy {
   required_floors: ["quality", "accuracy", "completeness"],
   quality_band: 0.02,
   cost_band: 0.10,
-  disqualify: { min_attempts: 5, max_pass_rate: 0.5 },
+  disqualify: { min_attempts: 5, max_pass_rate: 0.5, require_full_coverage: true },
   panel: { max_members: 3 },
   cascade: { audit_sample_rate: 0.1 },
   allow_unmeasured_qos: false,
@@ -163,16 +164,18 @@ Disqualification {
 }
 ```
 
-A disqualification is **in force** for a task when `family` matches, `registry_as_of >= registry.as_of`, and `expires_at` is null or in the future.
+A disqualification is **in force** for a task when `family` matches and `registry_as_of >= registry.as_of` (string comparison of `YYYY-MM-DD`). The engine has no clock, so it honours any `expires_at`; the CLI drops records whose `expires_at` is earlier than its clock before calling the engine, and MCP callers pass only the records they consider current. The engine writes `floors_not_met` records only; structural reasons (`shape_mismatch`, `no_provisioned_candidates`, `no_qos_qualified_candidates`, `disqualified`) appear as plan skips and in the routing decision's `tiers[]`. `rights_forbid_remote` is an exclusion reason inside the QoS gate detail, and a valid `reason` for operator-authored records. `floors_not_met` requires, with `policy.disqualify.require_full_coverage` true, that every candidate the tier offers for the task has at least one attempt in the family, then `n >= min_attempts` and `pass_rate <= max_pass_rate`. Ids are deterministic: `disqualification_id = "dq-" + first 16 hex of sha256(family|tier|sorted attempt ids)`; `decided_at` = latest `recorded_at` among the evidence attempts.
 
 ### Plan (output of `plan_next`)
 
 ```
-{ kind: "try",       tier: Tier, candidates: [Candidate], skipped: [ { tier, reason, detail } ] }
+{ kind: "try",       tier: Tier, candidates: [Candidate], skipped: [ { tier, reason, detail } ], detail: string }
 { kind: "exhausted", skipped: [ { tier, reason, detail } ] }
 ```
 
-Candidate order inside a tier: untried singles ordered by (cost ascending, then reasoning level order as listed in the registry); then one panel of the cheapest `panel.max_members` QoS-qualified models at their lowest level with the cheapest QoS-qualified next-tier model as judge; then a cascade (cheapest single, next-tier auditor, `cascade.audit_sample_rate`); then a draft (cheapest single, next-tier finisher). Compositions are offered only after every single has an attempt. Compositions are omitted when no next-tier model is QoS-qualified.
+Skip reasons: `shape_mismatch`, `no_provisioned_candidates`, `no_qos_qualified_candidates` (the QoS and rights exclusions are listed in `detail`), `disqualified` (the in-force record id in `detail`). A `try` with an empty `candidates` list means every candidate of the tier has an attempt and the tier awaits disqualification assessment; the plan never moves up without a Disqualification.
+
+Candidate order inside a tier: untried singles ordered by (cost ascending, then reasoning level order as listed in the registry; cost = input plus output price per million tokens); then one panel of the cheapest `panel.max_members` (at least two) QoS-qualified models at their lowest level with the cheapest QoS-qualified next-tier model as judge; then a cascade (cheapest single, next-tier auditor, `cascade.audit_sample_rate`); then a draft (cheapest single, next-tier finisher). The next tier up is fixed: system_one→specialised→cheap_generalist→frontier, tailored→frontier, frontier has none (so frontier gets no compositions). Helpers must pass the QoS gate and fit the family. Compositions are offered only after every single has an attempt and are omitted when no next-tier model is QoS-qualified.
 
 ### RoutingDecision
 
@@ -189,7 +192,7 @@ RoutingDecision {
 }
 ```
 
-`quality` = mean of the attempt's metrics named in `policy.required_floors`. Ranking: sort by quality descending; candidates within `quality_band` of the best form a band ordered by `cost_usd` ascending; within `cost_band` (relative) of the cheapest, order by `latency_ms` ascending. Only attempts with `outcome: answered` and `floor_result.passed` are ranked. The winner is the first of the ranking in the lowest tier that has a qualified attempt.
+`quality` = mean of the attempt's metrics named in `policy.required_floors` (a missing metric counts as 0). `ranking` holds every qualified attempt of the task across tiers, grouped by ladder tier lowest first; inside a tier: sort by quality descending; candidates within `quality_band` of the best form a band ordered by `cost_usd` ascending; within `cost_band` (relative) of the cheapest, order by `latency_ms` ascending. Only attempts with `outcome: answered` and `floor_result.passed` are ranked. The winner is the first entry of the lowest ladder tier that has a qualified attempt; a tier with an in-force disqualification never supplies the winner. `tiers[]` lists every ladder tier (and `tailored` as a trailing `skipped` entry when unbound) with status `disqualified` (refs = record ids), `skipped` (detail = structural reason, or `not_tried` for an open tier above the winner with no attempts), `tried` (refs = attempt ids) or `selected` (ref = the winning attempt). Deterministic, no clock: `decision_id = "rd-" + first 16 hex of sha256(task_id|sorted attempt ids)`; `decided_at` = latest `recorded_at` among the task's attempts, or `task.created_at` when none; `policy_sha256 = record_sha256(policy)`. Re-running `decide` without new attempts yields an identical record; ledger order shows the latest.
 
 ### Eval records
 
@@ -216,9 +219,9 @@ EvalRun   { eval_run_id, family, tier, candidate, attempt_ids: [string], n: u64,
 
 One canonical JSON record per line. Canonical JSON: keys sorted, no whitespace, numbers as serde_json prints them, `record_sha256` excluded from the hashed bytes. `ledger verify` recomputes every hash and reports `file:line` on mismatch.
 
-### Canonical JSON and ids
+### Canonical JSON, ids and versions
 
-`canonical_json(value)` sorts object keys recursively. Ids are caller-supplied strings; the CLI generates `ulid`-shaped ids (`crockford base32`, 26 chars) when absent.
+`canonical_json(value)` sorts object keys recursively and prints compact JSON. Task and attempt ids are caller-supplied strings; the CLI generates `ulid`-shaped ids (`crockford base32`, 26 chars) when absent. Disqualification, decision and eval-run ids are derived hashes (above). Every ledger record (`Task`, `Attempt`, `Disqualification`, `RoutingDecision`, `EvalRun`, `EvalSplit`) carries `schema_version` (`tier-drop.task/1`, `tier-drop.attempt/1`, `tier-drop.disqualification/1`, `tier-drop.routing_decision/1`, `tier-drop.eval_run/1`, `tier-drop.eval_split/1`); it may be omitted on input and is filled with the default, and it is part of the hashed bytes. `record_sha256` may be omitted on input; the engine and CLI fill it.
 
 ## CLI surface (`tier-drop`)
 
@@ -229,9 +232,12 @@ tier-drop policy default                          # prints the embedded default 
 tier-drop plan     --task t.json --registry r.json [--ledger DIR] [--policy p.json]
 tier-drop qos      --task t.json --registry r.json [--policy p.json]
 tier-drop attempt record --ledger DIR --task t.json --registry r.json [--policy p.json] < attempt.json
-                   # validates, hashes, appends, prints FloorResult; appends a Disqualification when the policy threshold is met
-tier-drop decide   --task t.json --registry r.json --ledger DIR [--policy p.json]      # appends and prints RoutingDecision
-tier-drop disqualify --ledger DIR --family F --tier T --reason operator --detail "…" --registry r.json
+                   # any outcome; validates, fills schema_version and record_sha256, appends, prints FloorResult;
+                   # appends a Disqualification when coverage and the policy threshold are met; appends the task to tasks.jsonl when new
+tier-drop decide   --task t.json --registry r.json --ledger DIR [--policy p.json]      # appends and prints RoutingDecision; appends the task when new
+tier-drop disqualify --ledger DIR --registry r.json --family F --tier T --reason REASON --evidence id[,id…] --detail "…" [--expires-at RFC3339]
+                   # operator-authored record; REASON is any Disqualification reason; registry_as_of from the registry, decided_at from the clock
+                   # plan and decide drop records whose expires_at is earlier than the CLI clock before calling the engine
 tier-drop ledger verify --ledger DIR
 tier-drop ledger show   --ledger DIR [--family F] [--kind attempts|decisions|disqualifications|eval-runs|tasks]
 tier-drop eval split    --items items.json [--policy p.json]
@@ -252,7 +258,7 @@ Exit codes: 0 ok; 1 validation or floor failure (the JSON output still describes
 | `qos_gate` | `{ task, registry, policy? }` | `{ qualified: [model_id], excluded: [ { model_id, deployment_id, reason } ] }` |
 | `plan_next` | `{ task, registry, disqualifications?, attempts?, policy? }` | Plan |
 | `check_floors` | `{ task, attempt, policy? }` | FloorResult |
-| `assess_disqualification` | `{ family, tier, attempts, registry_as_of, policy? }` | `{ disqualification: Disqualification \| null }` |
+| `assess_disqualification` | `{ family, tier, task, attempts, registry_as_of, policy? }` | `{ disqualification: Disqualification \| null }` |
 | `decide` | `{ task, registry, disqualifications?, attempts, policy? }` | RoutingDecision |
 | `split_holdout` | `{ items, policy? }` | EvalSplit |
 | `summarise_eval` | `{ family, tier, candidate, attempts, floors }` | EvalRun |

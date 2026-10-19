@@ -1,8 +1,5 @@
 name: ci
-on:
-  push:
-    branches: [main]
-  pull_request:
+on: [push, pull_request]
 jobs:
   rust:
     runs-on: ubuntu-latest
