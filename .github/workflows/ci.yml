@@ -14,6 +14,7 @@ jobs:
       - run: cargo clippy --workspace --all-targets -- -D warnings
       - run: cargo test --workspace
       - run: cargo fmt --all --check --manifest-path crates/worker/Cargo.toml
+      - run: cargo test --manifest-path crates/worker/Cargo.toml
       - name: worker (wasm32) clippy
         run: cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings
       - name: worker build

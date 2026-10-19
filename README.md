@@ -149,10 +149,13 @@ Symlink `skill/` as `model-tier-drop` where your harness reads skills: `~/.claud
 
 ## dsh adapter
 
+The adapter targets dsh `0.1.6-alpha.2` (Node 24 or newer, pnpm). Newer dsh releases refuse it as incompatible until its pins are updated, so pin the version in every `npx` call:
+
 ```sh
 pnpm --dir adapters/dsh install && pnpm --dir adapters/dsh build
-npx -y @deepseek-ai/dsh plugin --profile <profile> add "$PWD/adapters/dsh"
-ln -s "$PWD/skill" ~/.dsh/skills/model-tier-drop
+npx -y @deepseek-ai/dsh@0.1.6-alpha.2 --profile <profile> --from-default-profile headless --dump-config > /dev/null   # creates the profile if it does not exist
+npx -y @deepseek-ai/dsh@0.1.6-alpha.2 plugin --profile <profile> add "$PWD/adapters/dsh"
+mkdir -p ~/.dsh/skills && ln -s "$PWD/skill" ~/.dsh/skills/model-tier-drop
 ```
 
 `plugin add` applies the package's bundle patch, which mounts the five local tools (`tier_drop_plan`, `tier_drop_qos`, `tier_drop_record_attempt`, `tier_drop_decide`, `tier_drop_ledger_show`) and the hosted MCP (`mcp__tier-drop__*`). The ledger directory, registry and policy paths come from the profile's configuration, never from tool arguments. [`adapters/dsh/README.md`](adapters/dsh/README.md) has the configuration rows, the trust boundary and the verification record; [`adapters/README.md`](adapters/README.md) describes the Pi route (an extension that calls `tier-drop`, `mcp-remote` for the server, a skill symlink), which is described and not built.
@@ -178,7 +181,7 @@ cargo build -p tier-drop-cli && pnpm --dir adapters/dsh install && pnpm --dir ad
 gitleaks detect --redact --source .
 ```
 
-The same commands run in CI (`.github/workflows/ci.yml`). Rules for contributors and agents are in [`AGENTS.md`](AGENTS.md). The plan under `plan/` is the contract the code was built against; change it before changing what it binds.
+CI (`.github/workflows/ci.yml`) runs the same checks on every push and pull request; gitleaks runs there through its GitHub action. The adapter needs Node 24 or newer and pnpm. Rules for contributors and agents are in [`AGENTS.md`](AGENTS.md). The plan under `plan/` is the contract the code was built against; change it before changing what it binds.
 
 ## Status
 
