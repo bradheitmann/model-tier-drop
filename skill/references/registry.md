@@ -63,7 +63,7 @@ These are measurements over a stated window, not targets or vendor claims. Compu
 | `display_name` | Human-readable name. |
 | `tier` | `system_one`, `specialised`, `cheap_generalist`, `frontier` or `tailored`. |
 | `deployment_id` | The deployment that serves it. Must exist. |
-| `open_weight` | True when the weights are open. |
+| `open_weight` | True when the weights are open. With `policy.prefer_open_weight` true, open-weight singles are tried before closed ones in the same tier. |
 | `reasoning_levels` | Levels the plan tries, in order. `["none"]` when the model has no levels. Never empty. |
 | `shapes` | Task shapes it serves. Empty (`[]`) means any shape, which suits generalists. A tier-1 model must list its shapes explicitly, and only `classify`, `choose`, `route`, `yes_no`. |
 | `families` | Families it serves. Empty means any family. Required non-empty for `specialised` and `tailored`. |

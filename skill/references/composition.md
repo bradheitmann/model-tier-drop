@@ -4,6 +4,14 @@ Before a tier is left behind, the evidence must show that no single model and re
 
 The tier under test is the tier of the panel members, the cascade's first model or the drafter. The judge, auditor or finisher is a helper from the next tier up, in the fixed order `system_one` → `specialised` → `cheap_generalist` → `frontier`, with `tailored` → `frontier`. `frontier` has no next tier up, so it has no compositions. The helper is the cheapest model of the next tier up that passes the QoS gate and serves the task's family. When no such helper exists, the plan offers no compositions for the tier, and the disqualification coverage rule does not require them.
 
+## Single, for comparison
+
+```
+{ "kind": "single", "model_id": "...", "reasoning_level": "..." }
+```
+
+Singles are tried first, ordered by open-weight before closed (`policy.prefer_open_weight`), local before remote (`policy.prefer_local`), then cost ascending, then reasoning-level order. Compositions do not use that order: panel members, the cascade's first model, the drafter and every helper are chosen by cost alone, cheapest first.
+
 ## Panel
 
 ```
