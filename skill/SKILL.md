@@ -126,7 +126,7 @@ The routing decision states which tiers were tried, why each was disqualified or
 
 **Command line tool.** From a clone of the repository: `cargo install --path crates/cli`. This installs `tier-drop`. Check with `tier-drop schemas routing_decision`.
 
-**Hosted MCP.** Planned URL: `https://model-tier-drop-mcp.bradheitmann.ai/mcp` (Streamable HTTP, JSON responses, stateless, no authentication, nothing stored). The same server serves this file at `GET /skill/SKILL.md`, each reference at `GET /skill/references/<name>.md`, the example registry at `GET /registry/example.json` and schemas at `GET /schemas/<name>.json`.
+**Hosted MCP.** Live since 2026-10-19 at `https://model-tier-drop-mcp.bradheitmann.ai/mcp` (Streamable HTTP, JSON responses, stateless, no authentication, nothing stored). The same server serves this file at `GET /skill/SKILL.md`, each reference at `GET /skill/references/<name>.md`, the example registry at `GET /registry/example.json` and schemas at `GET /schemas/<name>.json`.
 
 - Claude Code: `claude mcp add --transport http tier-drop https://model-tier-drop-mcp.bradheitmann.ai/mcp`. Tools then appear as `mcp__tier-drop__plan_next` and so on.
 - Codex: add to `~/.codex/config.toml`:
