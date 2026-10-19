@@ -138,6 +138,10 @@ pub struct Task {
     pub metadata: BTreeMap<String, String>,
     /// RFC 3339 UTC creation time supplied by the caller.
     pub created_at: String,
+    /// SHA-256 over the canonical JSON without this field; empty until the caller seals the
+    /// record (the CLI fills it before appending to the ledger).
+    #[serde(default)]
+    pub record_sha256: String,
 }
 
 impl Task {
@@ -303,5 +307,18 @@ mod tests {
             codes(&validate_task(&t, &p)),
             vec!["missing_required_floor", "floor_out_of_range"]
         );
+    }
+
+    #[test]
+    fn floors_task_record_carries_schema_version_and_record_sha256() {
+        let mut v = serde_json::to_value(task_classify()).unwrap();
+        assert_eq!(v["schema_version"], "tier-drop.task/1");
+        assert_eq!(v["record_sha256"], "");
+        let obj = v.as_object_mut().unwrap();
+        obj.remove("schema_version");
+        obj.remove("record_sha256");
+        let t: Task = serde_json::from_value(v).unwrap();
+        assert_eq!(t.schema_version, TASK_SCHEMA_VERSION);
+        assert!(t.record_sha256.is_empty());
     }
 }

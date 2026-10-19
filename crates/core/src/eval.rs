@@ -91,6 +91,9 @@ pub struct EvalSplit {
     pub train_source_families: Vec<String>,
     /// Every item's assignment, sorted by item id.
     pub items: Vec<SplitItem>,
+    /// SHA-256 over the canonical JSON without this field.
+    #[serde(default)]
+    pub record_sha256: String,
 }
 
 /// Schema version written on every `EvalRun` record.
@@ -166,9 +169,10 @@ pub fn split_holdout(items: &[EvalItem], policy: &Policy) -> EvalSplit {
         })
         .collect();
     assigned.sort_by(|a, b| a.item_id.cmp(&b.item_id));
+    // The split is sealed below, once every field is set.
     // decision: EvalSplit has one `family`; mixed input lists every distinct family, sorted.
     let families: BTreeSet<&str> = items.iter().map(|i| i.family.as_str()).collect();
-    EvalSplit {
+    let mut split = EvalSplit {
         schema_version: EVAL_SPLIT_SCHEMA_VERSION.to_string(),
         family: families.into_iter().collect::<Vec<_>>().join(","),
         seed,
@@ -176,7 +180,10 @@ pub fn split_holdout(items: &[EvalItem], policy: &Policy) -> EvalSplit {
         holdout_source_families: holdout.into_iter().map(str::to_string).collect(),
         train_source_families: train.into_iter().map(str::to_string).collect(),
         items: assigned,
-    }
+        record_sha256: String::new(),
+    };
+    split.record_sha256 = seal(&split);
+    split
 }
 
 /// Summarise the attempts matching (family, tier, candidate) into an `EvalRun`.
@@ -414,6 +421,10 @@ mod tests {
         assert_eq!(run.record_sha256, record_sha256(&v));
         let split = split_holdout(&items(3, 1), &Policy::default());
         assert_eq!(split.schema_version, "tier-drop.eval_split/1");
+        assert_eq!(
+            split.record_sha256,
+            record_sha256(&serde_json::to_value(&split).unwrap())
+        );
         assert_eq!(
             serde_json::to_value(&split).unwrap()["schema_version"],
             "tier-drop.eval_split/1"

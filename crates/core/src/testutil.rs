@@ -41,6 +41,7 @@ fn base_task(task_id: &str, family: &str, shape: TaskShape) -> Task {
         review: Review::Strict,
         metadata: BTreeMap::new(),
         created_at: "2026-10-19T10:00:00Z".into(),
+        record_sha256: String::new(),
     }
 }
 

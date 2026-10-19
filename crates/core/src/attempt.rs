@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::candidate::Candidate;
 use crate::policy::Policy;
+use crate::registry::{Issue, Registry};
 use crate::rights::Rights;
 use crate::task::{Floor, Task};
 use crate::tier::Tier;
@@ -171,10 +172,134 @@ pub fn check_floors(task: &Task, attempt: &Attempt, policy: &Policy) -> FloorRes
     check_against(attempt, &floors)
 }
 
+/// Consistency checks of an attempt against its task and the registry; an empty list means valid.
+///
+/// Codes: `task_id_mismatch`, `family_mismatch`, `unknown_model` (any model the candidate names,
+/// judge, auditor and finisher included), `tier_mismatch` (the candidate's registry tier differs
+/// from `attempt.tier`) and `recorded_before_task_created` (`recorded_at < task.created_at`,
+/// compared as RFC 3339 UTC strings). The last one is how a ledger shows the floors, written with
+/// the task, predate the results.
+pub fn validate_attempt(task: &Task, attempt: &Attempt, registry: &Registry) -> Vec<Issue> {
+    let mut issues = Vec::new();
+    let mut push = |code: &str, message: String| {
+        issues.push(Issue {
+            code: code.to_string(),
+            message,
+        })
+    };
+    if attempt.task_id != task.task_id {
+        push(
+            "task_id_mismatch",
+            format!(
+                "attempt {} names task `{}`, expected `{}`",
+                attempt.attempt_id, attempt.task_id, task.task_id
+            ),
+        );
+    }
+    if attempt.family != task.family {
+        push(
+            "family_mismatch",
+            format!(
+                "attempt {} names family `{}`, expected `{}`",
+                attempt.attempt_id, attempt.family, task.family
+            ),
+        );
+    }
+    for id in attempt.candidate.model_ids() {
+        if registry.model(id).is_none() {
+            push(
+                "unknown_model",
+                format!("attempt {} names unknown model `{id}`", attempt.attempt_id),
+            );
+        }
+    }
+    if let Some(tier) = attempt.candidate.tier(registry) {
+        if tier != attempt.tier {
+            push(
+                "tier_mismatch",
+                format!(
+                    "attempt {} records tier `{}` but its candidate is in tier `{}`",
+                    attempt.attempt_id,
+                    attempt.tier.as_str(),
+                    tier.as_str()
+                ),
+            );
+        }
+    }
+    if attempt.recorded_at.as_str() < task.created_at.as_str() {
+        push(
+            "recorded_before_task_created",
+            format!(
+                "attempt {} recorded at {} before task {} was created at {}",
+                attempt.attempt_id, attempt.recorded_at, task.task_id, task.created_at
+            ),
+        );
+    }
+    issues
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::candidate::ModelRef;
     use crate::testutil::{attempt, good, single, task_classify};
+
+    fn issue_codes(t: &Task, a: &Attempt) -> Vec<String> {
+        validate_attempt(t, a, &Registry::example())
+            .into_iter()
+            .map(|i| i.code)
+            .collect()
+    }
+
+    #[test]
+    fn floors_validate_attempt_clean_attempt_has_no_issues() {
+        let t = task_classify();
+        let a = attempt(&t, "a1", single("jev", "none"), Outcome::Answered, good());
+        assert!(a.recorded_at > t.created_at);
+        assert_eq!(issue_codes(&t, &a), Vec::<String>::new());
+    }
+
+    #[test]
+    fn floors_validate_attempt_recorded_before_task_created() {
+        let t = task_classify();
+        let mut a = attempt(&t, "a1", single("jev", "none"), Outcome::Answered, good());
+        a.recorded_at = "2026-10-19T09:59:59Z".into();
+        assert_eq!(issue_codes(&t, &a), vec!["recorded_before_task_created"]);
+    }
+
+    #[test]
+    fn floors_validate_attempt_unknown_model_and_mismatches() {
+        let t = task_classify();
+        let a = attempt(
+            &t,
+            "a1",
+            single("no-such-model", "none"),
+            Outcome::Answered,
+            good(),
+        );
+        assert_eq!(issue_codes(&t, &a), vec!["unknown_model"]);
+        // an unknown judge inside a panel is caught too
+        let panel = Candidate::Panel {
+            members: vec![ModelRef {
+                model_id: "jev".into(),
+                reasoning_level: "none".into(),
+            }],
+            judge: ModelRef {
+                model_id: "ghost-judge".into(),
+                reasoning_level: "none".into(),
+            },
+        };
+        let p = attempt(&t, "a2", panel, Outcome::Answered, good());
+        assert_eq!(issue_codes(&t, &p), vec!["unknown_model"]);
+        let mut m = attempt(&t, "a3", single("jev", "none"), Outcome::Answered, good());
+        m.task_id = "other-task".into();
+        m.family = "other.family".into();
+        m.tier = Tier::Frontier;
+        assert_eq!(
+            issue_codes(&t, &m),
+            vec!["task_id_mismatch", "family_mismatch", "tier_mismatch"]
+        );
+    }
 
     #[test]
     fn floors_missing_completeness_fails_with_null_observed() {

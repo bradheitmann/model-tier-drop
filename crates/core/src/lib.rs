@@ -42,7 +42,8 @@ use std::collections::BTreeMap;
 
 pub use attempt::ATTEMPT_SCHEMA_VERSION;
 pub use attempt::{
-    check_floors, Attempt, FloorFailure, FloorResult, Judge, JudgeKind, Outcome, Tokens,
+    check_floors, validate_attempt, Attempt, FloorFailure, FloorResult, Judge, JudgeKind, Outcome,
+    Tokens,
 };
 pub use candidate::{Candidate, ModelRef};
 pub use canonical::{canonical_json, record_sha256, sha256_hex};

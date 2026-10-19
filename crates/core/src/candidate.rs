@@ -78,6 +78,24 @@ impl Candidate {
             .map(|m| m.tier)
     }
 
+    /// Every model id the candidate names: members, judge, auditor and finisher included.
+    pub fn model_ids(&self) -> Vec<&str> {
+        match self {
+            Candidate::Single { model_id, .. } => vec![model_id.as_str()],
+            Candidate::Panel { members, judge } => members
+                .iter()
+                .map(|m| m.model_id.as_str())
+                .chain(std::iter::once(judge.model_id.as_str()))
+                .collect(),
+            Candidate::Cascade { first, auditor, .. } => {
+                vec![first.model_id.as_str(), auditor.model_id.as_str()]
+            }
+            Candidate::Draft { drafter, finisher } => {
+                vec![drafter.model_id.as_str(), finisher.model_id.as_str()]
+            }
+        }
+    }
+
     /// True for `single`.
     pub fn is_single(&self) -> bool {
         matches!(self, Candidate::Single { .. })
