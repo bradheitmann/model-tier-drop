@@ -58,10 +58,20 @@ pub struct Tokens {
     pub output: u64,
 }
 
+/// Schema version written on every `Attempt` record.
+pub const ATTEMPT_SCHEMA_VERSION: &str = "tier-drop.attempt/1";
+
+fn default_attempt_schema_version() -> String {
+    ATTEMPT_SCHEMA_VERSION.to_string()
+}
+
 /// One recorded try of a candidate on a task.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct Attempt {
+    /// Record schema version; defaults to `tier-drop.attempt/1` when omitted on input.
+    #[serde(default = "default_attempt_schema_version")]
+    pub schema_version: String,
     /// Caller-supplied attempt id.
     pub attempt_id: String,
     /// The task tried.
@@ -240,5 +250,23 @@ mod tests {
         assert_eq!(v["candidate"]["kind"], "single");
         let back: Attempt = serde_json::from_value(v).unwrap();
         assert_eq!(back, a);
+    }
+
+    #[test]
+    fn attempt_without_schema_version_deserializes_with_default() {
+        let t = task_classify();
+        let a = attempt(&t, "a1", single("jev", "none"), Outcome::Answered, good());
+        let mut v = serde_json::to_value(&a).unwrap();
+        assert_eq!(v["schema_version"], "tier-drop.attempt/1");
+        v.as_object_mut().unwrap().remove("schema_version");
+        let back: Attempt = serde_json::from_value(v).unwrap();
+        assert_eq!(back.schema_version, ATTEMPT_SCHEMA_VERSION);
+        assert_eq!(back, a);
+        let reserialised = serde_json::to_value(&back).unwrap();
+        assert_eq!(reserialised["schema_version"], "tier-drop.attempt/1");
+        let mut tv = serde_json::to_value(&t).unwrap();
+        tv.as_object_mut().unwrap().remove("schema_version");
+        let task: Task = serde_json::from_value(tv).unwrap();
+        assert_eq!(task.schema_version, "tier-drop.task/1");
     }
 }

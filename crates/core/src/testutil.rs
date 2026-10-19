@@ -20,6 +20,7 @@ pub fn all_rights() -> Rights {
 
 fn base_task(task_id: &str, family: &str, shape: TaskShape) -> Task {
     Task {
+        schema_version: crate::task::TASK_SCHEMA_VERSION.to_string(),
         task_id: task_id.into(),
         family: family.into(),
         shape,
@@ -86,6 +87,7 @@ pub fn attempt(
         .tier(&Registry::example())
         .unwrap_or(Tier::CheapGeneralist);
     Attempt {
+        schema_version: crate::attempt::ATTEMPT_SCHEMA_VERSION.to_string(),
         attempt_id: id.into(),
         task_id: task.task_id.clone(),
         family: task.family.clone(),

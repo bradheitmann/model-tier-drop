@@ -102,10 +102,20 @@ pub enum Review {
     },
 }
 
+/// Schema version written on every `Task` record.
+pub const TASK_SCHEMA_VERSION: &str = "tier-drop.task/1";
+
+fn default_task_schema_version() -> String {
+    TASK_SCHEMA_VERSION.to_string()
+}
+
 /// One model-using task, written (with its floors) before any attempt.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct Task {
+    /// Record schema version; defaults to `tier-drop.task/1` when omitted on input.
+    #[serde(default = "default_task_schema_version")]
+    pub schema_version: String,
     /// Caller-supplied task id.
     pub task_id: String,
     /// The activity (task family) disqualifications are recorded against.

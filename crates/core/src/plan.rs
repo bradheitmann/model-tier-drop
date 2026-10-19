@@ -348,10 +348,12 @@ mod tests {
     use super::*;
     use crate::attempt::Outcome;
     use crate::disqualification::DisqualificationReason;
+    use crate::disqualification::DISQUALIFICATION_SCHEMA_VERSION;
     use crate::testutil::{attempt, bad, single, task_classify, task_generate, task_invoice};
 
     fn dq(family: &str, tier: Tier, as_of: &str, id: &str) -> Disqualification {
         Disqualification {
+            schema_version: DISQUALIFICATION_SCHEMA_VERSION.to_string(),
             disqualification_id: id.into(),
             family: family.into(),
             tier,

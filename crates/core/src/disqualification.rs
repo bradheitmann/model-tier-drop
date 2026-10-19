@@ -30,10 +30,20 @@ pub enum DisqualificationReason {
     Operator,
 }
 
+/// Schema version written on every `Disqualification` record.
+pub const DISQUALIFICATION_SCHEMA_VERSION: &str = "tier-drop.disqualification/1";
+
+fn default_disqualification_schema_version() -> String {
+    DISQUALIFICATION_SCHEMA_VERSION.to_string()
+}
+
 /// A recorded disqualification of (family, tier), bound to the registry date it was decided under.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct Disqualification {
+    /// Record schema version; defaults to `tier-drop.disqualification/1` when omitted on input.
+    #[serde(default = "default_disqualification_schema_version")]
+    pub schema_version: String,
     /// `dq-` followed by 16 hex characters.
     pub disqualification_id: String,
     /// The task family (activity).
@@ -111,6 +121,7 @@ pub fn assess_disqualification(
         .to_string();
     Some(
         Disqualification {
+            schema_version: DISQUALIFICATION_SCHEMA_VERSION.to_string(),
             disqualification_id: short_id("dq-", &material),
             family: family.to_string(),
             tier,
@@ -163,6 +174,7 @@ pub fn structural_disqualification(
     let material = format!("{}|{}|{reason_name}", task.family, tier.as_str());
     Some(
         Disqualification {
+            schema_version: DISQUALIFICATION_SCHEMA_VERSION.to_string(),
             disqualification_id: short_id("dq-", &material),
             family: task.family.clone(),
             tier,
@@ -341,5 +353,33 @@ mod tests {
         let d = structural_disqualification(&local_only, Tier::Frontier, &r, &p).unwrap();
         assert_eq!(d.reason, DisqualificationReason::RightsForbidRemote);
         assert_eq!(d.registry_as_of, r.as_of);
+    }
+
+    #[test]
+    fn disqualify_record_carries_schema_version_inside_the_hash() {
+        let t = task_generate();
+        let d = assess_disqualification(
+            &t.family,
+            Tier::CheapGeneralist,
+            &failing(5),
+            &t,
+            "2026-10-19",
+            &Policy::default(),
+        )
+        .unwrap();
+        assert_eq!(d.schema_version, "tier-drop.disqualification/1");
+        let mut v = serde_json::to_value(&d).unwrap();
+        assert_eq!(v["schema_version"], "tier-drop.disqualification/1");
+        assert_eq!(d.record_sha256, record_sha256(&v));
+        v["schema_version"] = serde_json::json!("tier-drop.disqualification/2");
+        assert_ne!(d.record_sha256, record_sha256(&v));
+        let s = structural_disqualification(
+            &t,
+            Tier::SystemOne,
+            &Registry::example(),
+            &Policy::default(),
+        )
+        .unwrap();
+        assert_eq!(s.schema_version, DISQUALIFICATION_SCHEMA_VERSION);
     }
 }

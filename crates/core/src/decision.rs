@@ -84,10 +84,20 @@ pub struct RankEntry {
     pub latency_ms: u64,
 }
 
+/// Schema version written on every `RoutingDecision` record.
+pub const ROUTING_DECISION_SCHEMA_VERSION: &str = "tier-drop.routing_decision/1";
+
+fn default_routing_decision_schema_version() -> String {
+    ROUTING_DECISION_SCHEMA_VERSION.to_string()
+}
+
 /// The routing record left behind every task.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct RoutingDecision {
+    /// Record schema version; defaults to `tier-drop.routing_decision/1` when omitted on input.
+    #[serde(default = "default_routing_decision_schema_version")]
+    pub schema_version: String,
     /// `rd-` followed by 16 hex characters.
     pub decision_id: String,
     /// The task.
@@ -294,6 +304,7 @@ pub fn decide(
         .unwrap_or(task.created_at.as_str())
         .to_string();
     let mut d = RoutingDecision {
+        schema_version: ROUTING_DECISION_SCHEMA_VERSION.to_string(),
         decision_id: short_id("rd-", &format!("{}|{}", task.task_id, ids.join("|"))),
         task_id: task.task_id.clone(),
         family: task.family.clone(),
@@ -487,5 +498,18 @@ mod tests {
         assert!(d.winner.is_none());
         assert_eq!(d.ladder, Tier::ladder_default());
         assert_eq!(d, decide(&t, &r, &[], &[], &p));
+    }
+
+    #[test]
+    fn decide_record_carries_schema_version_inside_the_hash() {
+        let t = task_generate();
+        let a = scored(&t, "a1", "qwen-3.8-27b", 0.95, 0.001, 100);
+        let d = decide(&t, &Registry::example(), &[], &[a], &Policy::default());
+        assert_eq!(d.schema_version, "tier-drop.routing_decision/1");
+        let mut v = serde_json::to_value(&d).unwrap();
+        assert_eq!(v["schema_version"], "tier-drop.routing_decision/1");
+        assert_eq!(d.record_sha256, record_sha256(&v));
+        v["schema_version"] = serde_json::json!("other");
+        assert_ne!(d.record_sha256, record_sha256(&v));
     }
 }

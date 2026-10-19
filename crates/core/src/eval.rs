@@ -65,10 +65,20 @@ pub struct SplitItem {
     pub split: Split,
 }
 
+/// Schema version written on every `EvalSplit` record.
+pub const EVAL_SPLIT_SCHEMA_VERSION: &str = "tier-drop.eval_split/1";
+
+fn default_eval_split_schema_version() -> String {
+    EVAL_SPLIT_SCHEMA_VERSION.to_string()
+}
+
 /// A deterministic held-out split by source family.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct EvalSplit {
+    /// Record schema version; defaults to `tier-drop.eval_split/1` when omitted on input.
+    #[serde(default = "default_eval_split_schema_version")]
+    pub schema_version: String,
     /// The items' task family (distinct families joined with `,` when mixed).
     pub family: String,
     /// The seed used.
@@ -83,10 +93,20 @@ pub struct EvalSplit {
     pub items: Vec<SplitItem>,
 }
 
+/// Schema version written on every `EvalRun` record.
+pub const EVAL_RUN_SCHEMA_VERSION: &str = "tier-drop.eval_run/1";
+
+fn default_eval_run_schema_version() -> String {
+    EVAL_RUN_SCHEMA_VERSION.to_string()
+}
+
 /// A summary of attempts for one (family, tier, candidate).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct EvalRun {
+    /// Record schema version; defaults to `tier-drop.eval_run/1` when omitted on input.
+    #[serde(default = "default_eval_run_schema_version")]
+    pub schema_version: String,
     /// `er-` followed by 16 hex characters.
     pub eval_run_id: String,
     /// The task family.
@@ -149,6 +169,7 @@ pub fn split_holdout(items: &[EvalItem], policy: &Policy) -> EvalSplit {
     // decision: EvalSplit has one `family`; mixed input lists every distinct family, sorted.
     let families: BTreeSet<&str> = items.iter().map(|i| i.family.as_str()).collect();
     EvalSplit {
+        schema_version: EVAL_SPLIT_SCHEMA_VERSION.to_string(),
         family: families.into_iter().collect::<Vec<_>>().join(","),
         seed,
         fraction,
@@ -207,6 +228,7 @@ pub fn summarise_eval(
         .unwrap_or_default()
         .to_string();
     let mut run = EvalRun {
+        schema_version: EVAL_RUN_SCHEMA_VERSION.to_string(),
         eval_run_id: short_id("er-", &material),
         family: family.to_string(),
         tier,
@@ -378,5 +400,23 @@ mod tests {
         let empty = summarise_eval("none", Tier::Frontier, &c, &a, &t.floors);
         assert_eq!(empty.n, 0);
         assert_eq!(empty.pass_rate, 0.0);
+    }
+
+    #[test]
+    fn eval_run_and_split_carry_schema_version() {
+        let t = task_generate();
+        let c = single("qwen-3.8-27b", "none");
+        let a = vec![attempt(&t, "e1", c.clone(), Outcome::Answered, good())];
+        let run = summarise_eval(&t.family, Tier::CheapGeneralist, &c, &a, &t.floors);
+        assert_eq!(run.schema_version, "tier-drop.eval_run/1");
+        let v = serde_json::to_value(&run).unwrap();
+        assert_eq!(v["schema_version"], "tier-drop.eval_run/1");
+        assert_eq!(run.record_sha256, record_sha256(&v));
+        let split = split_holdout(&items(3, 1), &Policy::default());
+        assert_eq!(split.schema_version, "tier-drop.eval_split/1");
+        assert_eq!(
+            serde_json::to_value(&split).unwrap()["schema_version"],
+            "tier-drop.eval_split/1"
+        );
     }
 }

@@ -26,18 +26,22 @@ mod testutil;
 
 use std::collections::BTreeMap;
 
+pub use attempt::ATTEMPT_SCHEMA_VERSION;
 pub use attempt::{
     check_floors, Attempt, FloorFailure, FloorResult, Judge, JudgeKind, Outcome, Tokens,
 };
 pub use candidate::{Candidate, ModelRef};
 pub use canonical::{canonical_json, record_sha256, sha256_hex};
+pub use decision::ROUTING_DECISION_SCHEMA_VERSION;
 pub use decision::{decide, RankEntry, RoutingDecision, Score, TierRecord, TierStatus, Winner};
+pub use disqualification::DISQUALIFICATION_SCHEMA_VERSION;
 pub use disqualification::{
     assess_disqualification, structural_disqualification, Disqualification, DisqualificationReason,
 };
 pub use eval::{
     split_holdout, summarise_eval, EvalItem, EvalRun, EvalSplit, Oracle, Split, SplitItem,
 };
+pub use eval::{EVAL_RUN_SCHEMA_VERSION, EVAL_SPLIT_SCHEMA_VERSION};
 pub use plan::{ladder, plan_next, Plan, SkipReason, SkippedTier};
 pub use policy::{CascadePolicy, DisqualifyPolicy, HoldoutPolicy, PanelPolicy, Policy};
 pub use qos::{qos_gate, ExclusionReason, QosExclusion, QosGateResult};
@@ -46,6 +50,7 @@ pub use registry::{
     Registry, Speed,
 };
 pub use rights::{dataset_filter, Purpose, Rights};
+pub use task::TASK_SCHEMA_VERSION;
 pub use task::{validate_task, Floor, QosRequirement, Review, Task, TaskShape};
 pub use tier::Tier;
 
