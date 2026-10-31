@@ -1,0 +1,22 @@
+# One entry per guarantee. A guarantee without a proof is a wish; without a cost it is a trap.
+- id: G1
+  statement: "Evidence before climbing: plan_next leaves a tier only when an in-force disqualification for the task's family is recorded, and a disqualification needs every single and composition in the tier tried with at least policy.disqualify.min_attempts failures; the next tier up is always exactly one step."
+  owner: "PM-MODEL-TIER-DROP"
+  proof: "crates/core unit tests plan_exhausted_tier_waits_for_disqualification_instead_of_moving_up and disqualify_coverage_all_candidates_tried_and_threshold_met_yields_some, under cargo test --workspace"
+  cost_per_run: "under a second; part of cargo test --workspace in CI"
+  if_dropped: "Tasks climb to expensive tiers on a single failure or a hunch, and the cheaper-tier evidence is never collected"
+  status: proven
+- id: G2
+  statement: "Pure engine: crates/core performs no model call, filesystem, clock or network access, and builds for wasm32 so the same engine runs in the CLI and the hosted MCP."
+  owner: "PM-MODEL-TIER-DROP"
+  proof: "CI: cargo clippy for crates/worker on wasm32-unknown-unknown with -D warnings; Slice Zero test local_cli_and_live_mcp_plan_the_same (the CLI and the live MCP agree byte for byte)"
+  cost_per_run: "about 5 minutes of CI per push; Slice Zero about a second plus one HTTPS request"
+  if_dropped: "Routing decisions depend on hidden I/O, so the same inputs give different plans in different harnesses and records cannot be replayed"
+  status: proven
+- id: G3
+  statement: "Sealed records with rights: every decision, attempt, disqualification and eval record is append-only JSONL with a per-record sha256, and each attempt carries process/train/send_remote/export rights that dataset export honours."
+  owner: "PM-MODEL-TIER-DROP"
+  proof: "crates/cli test ledger_verify_names_the_tampered_attempt_line and crates/core test dataset_filter_train_omits_attempt_without_train_right"
+  cost_per_run: "under a second; part of cargo test --workspace in CI"
+  if_dropped: "Tampered or rights-violating rows enter the eval and training data and cannot be told apart from honest ones"
+  status: proven

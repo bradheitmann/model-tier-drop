@@ -1,0 +1,15 @@
+#:schema ../schemas/charter-toml.schema.json
+charter_version = "1"
+spec_version = "1"
+project = "model-tier-drop"
+owner = "Brad Heitmann (owner); operated by PM-MODEL-TIER-DROP (Claude Code, reveng cmux workspace)"
+# The tiniest end-to-end live run that must be green before anything scales.
+[slice_zero]
+description = "The README walkthrough task is planned by the local tier-drop CLI over the example registry and by the live hosted MCP's plan_next over the same inputs; the two plans are identical"
+command = "cargo test -p tier-drop-cli --test slice_zero -- --ignored --nocapture"
+proven_on = "2026-10-31"          # ISO date when it last ran green on real infrastructure, else empty
+# Verification is a loop: budget it.
+[verification_budget]
+qa_attempts_per_slice = 3
+repair_cycles_per_slice = 1
+review_families_required = 2   # author and verifier from different model families
