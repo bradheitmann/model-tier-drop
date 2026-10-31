@@ -37,6 +37,18 @@ jobs:
       - run: cargo build -p tier-drop-cli
       - run: pnpm --dir adapters/dsh install --frozen-lockfile
       - run: pnpm --dir adapters/dsh check
+  charter:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.98.1
+      - name: install charter (pinned rev)
+        run: cargo install --locked --git https://github.com/bradheitmann/charter --rev 4e9017ce5cf1a5fe8d5ff558730c92d4202e1a84 charter
+      - run: charter check --strict
   gitleaks:
     runs-on: ubuntu-latest
     steps:
