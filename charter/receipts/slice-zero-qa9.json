@@ -1,0 +1,24 @@
+{"schema_version":"reveng.qa-receipt/1","slice":"slice-zero","attempt":1,
+ "verdict":"accepted","candidate":"6ee481047559c8972fab0fe228ed1f19f61e1a7e","base":"aa4765c9b1be3f248e4a6647c74f92fc32eac688",
+ "verifier_identity_requested":"B/QA-9 OpenCode MiMo-V2.6-Flash (thinking)",
+ "toolchain":"1.98.1 (repo rust-toolchain.toml channel; reveng's 1.88.0 pin does not apply to this repo)",
+ "verifies":"slice-zero model-tier-drop at frozen tip 6ee4810 — proofs 1-3 rerun green, 3/3 fail-without mutants RED then restored green, gates green",
+ "checks":[
+  {"id":"C01","description":"Frozen tip verified before work: primary checkout HEAD rev-parse = 6ee4810 (charter-init branch), not moved","classification":"executed","command":"git rev-parse --short=7 HEAD","exit_code":0,"outcome":"pass","details":"primary checkout never edited; one pre-existing untracked CAPTAIN-BRAIN-DAMAGE-HANDOFF.md left untouched"},
+  {"id":"C02","description":"Proof 1 slice-zero-live GREEN: local CLI over the example registry and the live hosted MCP plan_next over the same task give identical plans; printed 'slice-zero ok: ... tier=\"system_one\" candidates=2'","classification":"executed","command":"cargo test -p tier-drop-cli --test slice_zero -- --ignored --nocapture","exit_code":0,"outcome":"pass","details":"td-p1.log; host call is the deterministic planning endpoint, no inference"},
+  {"id":"C03","description":"Proof 2 ladder-evidence GREEN: plan_exhausted_tier_waits... and disqualify_coverage_all_candidates_tried... both 1 passed","classification":"executed","command":"cargo test -p tier-drop-core <each>","exit_code":0,"outcome":"pass","details":"td-p2a.log, td-p2b.log"},
+  {"id":"C04","description":"Proof 3 sealed-records GREEN: ledger_verify_names_the_tampered_attempt_line and dataset_filter_train_omits_attempt_without_train_right both 1 passed","classification":"executed","command":"cargo test -p tier-drop-cli --test cli <name>; cargo test -p tier-drop-core <name>","exit_code":0,"outcome":"pass","details":"td-p3a.log, td-p3b.log"},
+  {"id":"C05","description":"Fail-without mutants 3/3 RED with the DONE's predicted failures, each restored byte-clean and re-green: (1) plan.rs:205 tie-break reversed -> 'local CLI and live MCP disagree' exit 101; (2) plan_next returns continue on exhausted tier (moves up without disqualification) -> plan_exhausted... panic plan.rs:607 exit 101; (3) rights.rs:41 Purpose::Train => true (drop train-right) -> dataset_filter... panic rights.rs:73 exit 101","classification":"executed","command":"td-mut{1,2,3}.log; td-restore{1,2,3}.log (all 0); git status clean after restores","exit_code":101,"outcome":"pass","details":"restore reruns r1/r2/r3 green"},
+  {"id":"C06","description":"Repo gates per DONE: cargo fmt --all --check =0; cargo clippy --workspace --all-targets -D warnings =0; cargo test --workspace 82 passed/0 failed exit 0","classification":"executed","command":"td-fmt.log, td-clippy.log, td-workspace.log","exit_code":0,"outcome":"pass","details":""},
+  {"id":"C07","description":"charter check --strict GREEN (charter binary run directly on this repo; no charter-check.sh wrapper exists here per SPEC.md): exit 0, 'charter: ok', zero refusals","classification":"executed","command":"charter --root <wt> check --strict","exit_code":0,"outcome":"pass","details":"binary built 2026-10-30 20:38 from reveng tools/charter"},
+  {"id":"C08","description":"gitleaks protect --staged --redact: exit 0, 'no leaks found'","classification":"executed","command":"gitleaks protect --staged --redact","exit_code":0,"outcome":"pass","details":""}
+ ],
+ "new_defects":[],
+ "proof_obligations":[
+  {"proof":"D1 slice-zero-live","fail_without":"mutant tie-break reversal RED","reopen_compare":"baseline rerun + restore rerun green, 'slice-zero ok:' line tier=system_one candidates=2","status":"met"},
+  {"proof":"D2 ladder-evidence","fail_without":"mutant tier-advance RED","reopen_compare":"td-p2a/2b green, restore green","status":"met"},
+  {"proof":"D3 sealed-records","fail_without":"mutant train-right drop RED","reopen_compare":"td-p3a/3b green, restore green","status":"met"}
+ ],
+ "out_of_scope_acknowledged":["adjacent-escalation seam pending contract amendment","charter check in CI + hooks await PM-CHARTER install recipe","INTENT.md intent card pending owner ratification"],
+ "evidence_paths":["reports/qa/tierdrop-slice-zero-receipt.json","reports/qa/td-*.log"],
+ "issued_at":"2026-10-31T04:35:00Z"}

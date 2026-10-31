@@ -1,0 +1,24 @@
+# Intent card — model-tier-drop
+- Ratification: pending-owner. Drafted 2026-10-31 by PM-MODEL-TIER-DROP from the Captain Brain Damage handoff (2026-10-29), the owner decisions of 2026-10-31 recorded in reveng (`charter/owner-decisions/2026-10-31-*.md`) and this repository's plan/ and code.
+- Underlying job (not the symptom): Make every model-using task run on the cheapest tier that does it well enough. A task moves up the ladder one tier at a time, and only after recorded evidence shows that the lower tier cannot meet the floors written before any result was seen. Every attempt leaves a record that later becomes eval and training data.
+- Beneficiary: Brad (owner and operator), and the agents and systems that route model work (detail follows).
+  - REVENG/Prefab: ledger item 20 / R-MB-6, the model tier ladder; reveng consumes it and does not rebuild it.
+  - Mister Clean: the evaluation-backed router, which reads tier-drop's ladder data and attempt records and owns the choice among escalation moves.
+  - Any harness (Claude Code, Codex, dsh, Pi) through the skill, the CLI and the hosted MCP.
+- Situation: Work goes to expensive models by default. Accounts run out mid-work. Free and local inference is available but goes unused without evidence that it is good enough. On 2026-10-31 the owner added a failure-escalation rule that has to compose with this ladder.
+- Outcome (observable): The skill, the pure Rust engine, the CLI with its JSONL ledger, the hosted MCP and the dsh adapter are live (they are today, at main aa4765c). Next, the engine answers "which adjacent moves does this failure unlock?" for the router (higher reasoning; same tier, other family; one tier up; one tier down to a bound specialist), and never answers with a jump of two tiers.
+- Non-goals: everything another repository owns (detail follows).
+  - Not the run-time router and not the choice among escalation moves (Mister Clean).
+  - Not model or provider facts such as limits, prices and free tiers (model-atlas); the registry cites them.
+  - Not serving or fleet configuration (llm-serve).
+  - The engine never calls a model and never touches the filesystem, the clock or the network.
+  - Frontier use is not made opt-in. Owner, 2026-10-31: if the user provided the inference, it is on the table. This supersedes the Captain handoff's opt-in suggestion.
+- The 3 guarantees that matter: G1 evidence before climbing, G2 a pure engine, G3 sealed records with their data rights (one row each in GUARANTEES.yaml).
+- Largest uncertainty: how the owner's single-failure adjacent escalation (a router decision made after one failed run from a recommended start) fits the ladder's full-coverage disqualification rule, and where tier boundaries fall for real models while they are still fuzzy.
+- Premise check — symptom named by the requester: "use the cheapest model that works and stop defaulting to frontier." **Job it actually serves:** spend model capacity where evidence shows it is needed, and keep the evidence (attempts, floors, rights) that lets routing and tailored models improve.
+- Evidence lines: what this card is grounded in (detail follows).
+  - plan/commission.md and plan/requirements.md (R-01 to R-55), plan/contracts.md (S-01 to S-09 and V-01 to V-09, all merged).
+  - CAPTAIN-BRAIN-DAMAGE-HANDOFF.md (untracked, 2026-10-29) and MASTER-BOOT "model-budget mandate".
+  - reveng owner decision 2026-10-31-model-routing-and-escalation.md §2 to §4.
+  - reveng reports/specs/SEAMS-SURVEY-2026-10-30.md C2.
+  - Slice Zero run 2026-10-31: the local CLI and the live MCP produce identical plans.

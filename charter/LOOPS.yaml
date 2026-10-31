@@ -1,0 +1,22 @@
+# Every retry / re-verify / until-accepted / for-each / on-failure in the design.
+- id: L1
+  where: "Inside one tier (skill procedure steps 3-6; core plan_next)"
+  trigger: "An attempt for the tier fails the task's floors"
+  bound: "5 failed attempts minimum (policy.disqualify.min_attempts) and at most one attempt per untried candidate the plan lists for the tier: singles, then one panel, one cascade and one draft"
+  cost_per_trip: "One model run by the harness at the candidate's cost; the engine itself costs nothing"
+  stop_condition: "A candidate meets every floor (decide picks a winner) or the tier is disqualified on recorded evidence"
+  who_decides_extension: owner
+- id: L2
+  where: "Up the ladder (core ladder and plan_next)"
+  trigger: "The current tier is disqualified for the task's family"
+  bound: "4 steps at most: 5 tiers, one step at a time, never two"
+  cost_per_trip: "The next tier's attempts (L1), at a higher cost per run"
+  stop_condition: "A winner is found, or plan_next reports exhausted"
+  who_decides_extension: owner
+- id: L3
+  where: "Slice verification (plan/contracts.md S-nn / V-nn pairs)"
+  trigger: "Paired QA on a slice refuses the candidate"
+  bound: "3 QA attempts and 1 repair cycle per slice (charter.toml verification_budget)"
+  cost_per_trip: "One QA context from a different model family than the author, plus one repair"
+  stop_condition: "QA accepts on the exact frozen tip, or the slice goes to the owner (S5)"
+  who_decides_extension: owner
