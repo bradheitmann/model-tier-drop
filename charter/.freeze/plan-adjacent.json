@@ -258,7 +258,7 @@
     },
     {
       "path": "plan/amendments/2026-10-31-adjacent-escalation.md",
-      "sha256": "4ec4f09ddc1bce30eaabfa6bd38c67c1fa1bb99cd3e5ebe500c4da4403138e8f"
+      "sha256": "2dbab0e07715b914404de82c82fd9ac395186058287d4f146801cb1743eb52d0"
     },
     {
       "path": "plan/build.json",
@@ -270,7 +270,7 @@
     },
     {
       "path": "plan/contracts.md",
-      "sha256": "265fbe0ed6ff819d3badf3c80b65d62c761a9368aa4b3149fdc67b47a0c3cb70"
+      "sha256": "75c093918b47d60c1b22a64c0628a8cb479329b0457f38cf29eac7058a288362"
     },
     {
       "path": "plan/contracts/S-01.json",
@@ -354,7 +354,7 @@
     },
     {
       "path": "plan/requirements.md",
-      "sha256": "367b6a020e40d3384308f92efd5bc34e557209df2dbb2de7afbca2b3d00f0200"
+      "sha256": "7ea8f36c977fa6196132b69d7da1745b0dff28b7a4b6877d1a6ed836fec36206"
     },
     {
       "path": "plan/scope.json",
@@ -362,7 +362,7 @@
     },
     {
       "path": "plan/slice-coverage.md",
-      "sha256": "74120ba4f25ae7121a09c5c9b1b6b7faf22fa81e6ea10c5c1dc24a9aa5fb5945"
+      "sha256": "f8c0fb566e4e95a55e7fea32fdf9d51abc90edebfaf41a390ddb4a3a2775201c"
     },
     {
       "path": "plan/sources.md",
@@ -417,8 +417,8 @@
       "sha256": "805b46c78eb936b4cda845c1640cfe279b36b3a4d34f7f3a808e9ca2a4281e47"
     }
   ],
-  "head": "f3f7cc9dbc3c753227b81650aa4f1d2af1f246b7",
-  "manifest_sha256": "632325f114ef31f2a5f11b315f460d3960aba4be981a98c8b9d49d4bec78149b",
+  "head": "27b72c98531962211d796a9396e2a4f19ca150f2",
+  "manifest_sha256": "26a2ac33dd4160db69f5a88e5444e2e596f47bbabb3c1a525daf8ae418f4de48",
   "schema_version": "charter.freeze/1",
   "slice": "plan-adjacent"
 }

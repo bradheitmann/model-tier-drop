@@ -174,7 +174,7 @@ Steps:
 4. `reveng compile plan/graph.json plan/scope.json plan/build` then move `build.json` and `contracts/` under `plan/`; run twice and diff.
 5. `plan/sources.md`: the source list with hashes and how to recompute them.
 
-Checks: `/tmp/reveng-core/target/release/reveng compile plan/graph.json plan/scope.json /tmp/out1` exit 0 and again to `/tmp/out2`; `diff -r /tmp/out1 /tmp/out2` empty; `jq '.slices | length' plan/build.json` = 18; `jq -r '.selected_requirement_ids[]' plan/build.json | sort` equals the sorted R-ids in `plan/requirements.md`.
+Checks: `/tmp/reveng-core/target/release/reveng compile plan/graph.json plan/scope.json /tmp/out1` exit 0 and again to `/tmp/out2`; `diff -r /tmp/out1 /tmp/out2` empty; `jq '.slices | length' plan/build.json` equals the number of `## S-` and `## V-` headings in `plan/contracts.md` (18 at S-08; 22 after S-10); `jq -r '.selected_requirement_ids[]' plan/build.json | sort` equals the sorted R-ids in `plan/requirements.md`.
 Rollback: revert the branch. Evidence: compile output JSON, diff result, the two jq outputs.
 
 ## V-08 Verify plan graph — kind: verify — verifies S-08
@@ -207,18 +207,18 @@ Depends on: S-01 to S-09 merged (main 30ffe92 or later). Write prefixes: `crates
 Steps:
 1. `crates/core`: add `Model.lineage: Option<String>` (`#[serde(default)]`); add module `adjacent` with `ModelRef`, `AdjacentMoves`, `Move`, `MoveKind`, `PassedOver` and `adjacent(&ModelRef, &Task, &Registry, &[Disqualification], &Policy) -> AdjacentMoves`, reusing `ladder`, `qos_gate` and the existing single-candidate ordering (no second copy of either); register `adjacent_moves` in `schemas()`.
 2. Unit tests named `adjacent_*` covering every observation in T-23, plus a test for each reading of the owner decision point (passed-over tiers count as one step; the alternative returns nothing), with the alternative behind a test-only flag or as a documented assertion of the current reading.
-3. `registry/registry.example.json`: set `lineage` on every model (indicative, as of the registry date).
+3. `registry/registry.example.json`: set `lineage` on every model (indicative, as of the registry date). Test fixtures for `more_reasoning` use a model with at least three reasoning levels (T-23).
 4. CLI `tier-drop adjacent` per `plan/technology-decisions.md`; integration test over the example registry; update `schemas_lists_ten…` to eleven (rename the test).
 5. Worker: tool `adjacent` with a closed `inputSchema`; update the tool count to thirteen in code, tests, module docs and `crates/worker/README.md`.
 6. `skill/SKILL.md`: section "After a failure: adjacent moves" (R-07). `README.md`: the tool list and the CLI line.
 7. `plan/graph.json`: add R-07, R-23, R-24, T-07, T-23, T-24, S-10, V-10, S-11, V-11 with their edges; recompile `plan/build.json` and `plan/contracts/` as in S-08 and diff two compiles.
 
-Checks: `cargo fmt --all --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace`; `cargo test --manifest-path crates/worker/Cargo.toml`; `cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings`; `tier-drop schemas | jq 'keys | length'` = 11; `charter check --strict`; `gitleaks protect --staged --redact`.
+Checks: `cargo fmt --all --check` exit 0; `cargo clippy --workspace --all-targets -- -D warnings` exit 0; `cargo test --workspace` exit 0; `cargo test --manifest-path crates/worker/Cargo.toml` exit 0; `cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings` exit 0; `tier-drop schemas | jq "keys | length"` = 11; `jq ".slices | length" plan/build.json` = 22; `charter check --strict` exit 0; `gitleaks protect --staged --redact` exit 0.
 Rollback: revert the branch. Evidence: outputs, the `adjacent` output for the README task from the tier-3 example model at its first level.
 
 ## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10
 
-QA (a model family different from the author's) reruns every S-10 check on the frozen tip, then, by hand over the example registry: confirms no move spans two effective ladder steps for every model × level as `from`; confirms a remote target is absent with `send_remote: false`; confirms `one_tier_down_specialist` never names an unbound non-`system_one` model; confirms the core crate gained no `std::fs`, `std::net`, `std::time` or `SystemTime` use; mutants: (a) make `one_tier_up` look two steps up (an `adjacent_*` test must fail), (b) drop the QoS filter from targets (a test must fail), (c) return all higher reasoning levels instead of the next (a test must fail).
+QA (a model family different from the author's) reruns every S-10 check on the frozen tip, then, by hand over the example registry: confirms no move spans two effective ladder steps for every model × level as `from`; confirms a remote target is absent with `send_remote: false`; confirms `one_tier_down_specialist` never names an unbound non-`system_one` model; confirms the core crate gained no `std::fs`, `std::net`, `std::time` or `SystemTime` use; mutants: (a) make `one_tier_up` look two steps up (an `adjacent_*` test must fail), (b) drop the QoS filter from targets (a test must fail), (c) return all higher reasoning levels instead of the next (the three-level `more_reasoning` test of T-23 must fail).
 
 ## S-11 Deploy the adjacent tool — kind: implement — epic E3
 
