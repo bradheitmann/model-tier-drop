@@ -10,11 +10,11 @@
 | `SRC-owner-req` | `owner:REQ-MODEL-TIER-DROP-2026-10-19.md` | user_instruction | `a326303ff98abd1bcab19ad88f3d968bae42cd8e408ea1714dd6e1ea1ab344f8` |
 | `SRC-owner-review-profile` | `owner:DECISION-D-REVIEW-PROFILE-2026-10-19.md` | user_instruction | `b6cafd734ffa5374423ba3c539a989955545eaa57d5f960175e9b983077102b1` |
 | `SRC-owner-python-adapter` | `owner:DECISION-D-PYTHON-ADAPTER-2026-10-19.md` | user_instruction | `60ce24f625895a50fe713337cf0f6bb348d73cd17601f1af277432b9ffcda03f` |
-| `SRC-plan-requirements` | `repo:plan/requirements.md` | generated | `367b6a020e40d3384308f92efd5bc34e557209df2dbb2de7afbca2b3d00f0200` |
-| `SRC-plan-contracts` | `repo:plan/contracts.md` | generated | `265fbe0ed6ff819d3badf3c80b65d62c761a9368aa4b3149fdc67b47a0c3cb70` |
+| `SRC-plan-requirements` | `repo:plan/requirements.md` | generated | `7ea8f36c977fa6196132b69d7da1745b0dff28b7a4b6877d1a6ed836fec36206` |
+| `SRC-plan-contracts` | `repo:plan/contracts.md` | generated | `75c093918b47d60c1b22a64c0628a8cb479329b0457f38cf29eac7058a288362` |
 | `SRC-plan-technology` | `repo:plan/technology-decisions.md` | generated | `e46697197f255be61f16a84e6c9075435af85caab05fb9aea868a48efc0e29be` |
 | `SRC-plan-implementation` | `repo:plan/implementation-plan.md` | generated | `a25551e27186f99582e36bf6521b409e9770dc85595887598ff39ed4da6204e8` |
-| `SRC-plan-coverage` | `repo:plan/slice-coverage.md` | generated | `74120ba4f25ae7121a09c5c9b1b6b7faf22fa81e6ea10c5c1dc24a9aa5fb5945` |
+| `SRC-plan-coverage` | `repo:plan/slice-coverage.md` | generated | `f8c0fb566e4e95a55e7fea32fdf9d51abc90edebfaf41a390ddb4a3a2775201c` |
 
 ### How to recompute
 
@@ -66,6 +66,7 @@ S-10 adds the amendment of 2026-10-31 to the graph.
 - Dependencies: S-10 waits for S-01 to S-09, because it edits prefixes those slices own (`crates/core`, `crates/cli`, `crates/worker/src`, `crates/worker/README.md`, `skill/SKILL.md`, `README.md`, `plan/build.json`, `plan/contracts`, `plan/graph.json`, `Cargo.lock`). V-10 waits for S-10. S-11 waits for V-10, which also orders it after S-10 over `crates/worker/README.md`.
 - Revision stays 1. The amendment extends the same plan, the compiler does not read `revision`, and no parent root is recorded, so the graph keeps the identity S-08 gave it.
 - Result: 22 slices (11 implement, 11 verify) and 38 selected requirements, none deferred. Two compiles into new directories were byte-identical (`diff -r`), and `plan/build.json` and `plan/contracts/*.json` are byte copies of the first.
+- Repair cycle 1 (plan-adjacent `27b72c9`, merged into the S-10 branch as `1b2ac91`). The plan text changed in four places, so the graph follows: T-23 states the three-level `more_reasoning` observation; S-08.C7 compares `.slices | length` with the number of `## S-` and `## V-` headings in `plan/contracts.md` instead of the literal 18; S-10 step 3 names the three-level test fixture; and S-10's checks state their expected results, adding `crates/worker` fmt (C4) and `jq '.slices | length' plan/build.json` = 22 (C8); V-10's mutant (c) names the three-level test of T-23. `plan/amendments/2026-10-31-adjacent-escalation.md` changed its status line only and is not a graph source. `plan/requirements.md`, `plan/contracts.md` and `plan/slice-coverage.md` hashes were refreshed again; `plan/technology-decisions.md` and `plan/implementation-plan.md` did not change.
 
 ## Earlier conflicts, now resolved
 

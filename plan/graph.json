@@ -435,7 +435,7 @@
     {
       "id": "SRC-plan-contracts",
       "uri": "repo:plan/contracts.md",
-      "content_sha256": "265fbe0ed6ff819d3badf3c80b65d62c761a9368aa4b3149fdc67b47a0c3cb70",
+      "content_sha256": "75c093918b47d60c1b22a64c0628a8cb479329b0457f38cf29eac7058a288362",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -446,7 +446,7 @@
     {
       "id": "SRC-plan-coverage",
       "uri": "repo:plan/slice-coverage.md",
-      "content_sha256": "74120ba4f25ae7121a09c5c9b1b6b7faf22fa81e6ea10c5c1dc24a9aa5fb5945",
+      "content_sha256": "f8c0fb566e4e95a55e7fea32fdf9d51abc90edebfaf41a390ddb4a3a2775201c",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -468,7 +468,7 @@
     {
       "id": "SRC-plan-requirements",
       "uri": "repo:plan/requirements.md",
-      "content_sha256": "367b6a020e40d3384308f92efd5bc34e557209df2dbb2de7afbca2b3d00f0200",
+      "content_sha256": "7ea8f36c977fa6196132b69d7da1745b0dff28b7a4b6877d1a6ed836fec36206",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -3745,7 +3745,7 @@
             "program": "shell.bash",
             "args": [
               "-c",
-              "set -euo pipefail; test \"$(jq '.slices | length' plan/build.json)\" = 18"
+              "set -euo pipefail; want=$(grep -cE '^## (S|V)-[0-9]+ ' plan/contracts.md); got=$(jq '.slices | length' plan/build.json); test \"$got\" = \"$want\""
             ],
             "cwd": ".",
             "env": {},
@@ -4969,7 +4969,7 @@
       "id": "T-23",
       "node_type": "t.test",
       "label": "T-23 acceptance test for R-23",
-      "statement": "Setup: the core crate built over the example registry. Action: `cargo test -p tier-drop-core adjacent`. Observation: from a tier-3 model at its first of two levels, the first move is `more_reasoning` to its second level, and from its last level there is none; a tier-3 model of another lineage appears as `same_tier_other_lineage` and one of the same lineage does not; `one_tier_up` from tier 3 lists only tier-4 models and never a tier-5 or higher-step model; `one_tier_down_specialist` lists a tier-2 model bound to the task's family and never an unbound tier-3 or tier-2 model; with tier 2 empty for the family, `one_tier_up` from tier 1 lists tier-3 models with `passed_over: [{tier: specialised, reason: no_fitting_candidates}]`; a remote target is absent when `send_remote` is false; an unknown model id yields issue `unknown_model` and an empty `moves`. Fails if any of those observations does not hold, or if a move spans two effective tiers.",
+      "statement": "Setup: the core crate built over the example registry. Action: `cargo test -p tier-drop-core adjacent`. Observation: from a tier-3 model with three reasoning levels at its first level, the first move is `more_reasoning` to its second level and no `more_reasoning` move names its third level; from its last level there is none; a tier-3 model of another lineage appears as `same_tier_other_lineage` and one of the same lineage does not; `one_tier_up` from tier 3 lists only tier-4 models and never a tier-5 or higher-step model; `one_tier_down_specialist` lists a tier-2 model bound to the task's family and never an unbound tier-3 or tier-2 model; with tier 2 empty for the family, `one_tier_up` from tier 1 lists tier-3 models with `passed_over: [{tier: specialised, reason: no_fitting_candidates}]`; a remote target is absent when `send_remote` is false; an unknown model id yields issue `unknown_model` and an empty `moves`. Fails if any of those observations does not hold, or if a move spans two effective tiers.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -6573,7 +6573,7 @@
         "steps": [
           "crates/core: add Model.lineage: Option<String> (#[serde(default)]); add module adjacent with ModelRef, AdjacentMoves, Move, MoveKind, PassedOver and adjacent(&ModelRef, &Task, &Registry, &[Disqualification], &Policy) -> AdjacentMoves, reusing ladder, qos_gate and the existing single-candidate ordering (no second copy of either); register adjacent_moves in schemas().",
           "Unit tests named adjacent_* covering every observation in T-23, plus a test for each reading of the owner decision point (passed-over tiers count as one step; the alternative returns nothing), with the alternative behind a test-only flag or as a documented assertion of the current reading.",
-          "registry/registry.example.json: set lineage on every model (indicative, as of the registry date).",
+          "registry/registry.example.json: set lineage on every model (indicative, as of the registry date). Test fixtures for more_reasoning use a model with at least three reasoning levels (T-23).",
           "CLI tier-drop adjacent per plan/technology-decisions.md; integration test over the example registry; update schemas_lists_ten… to eleven (rename the test).",
           "Worker: tool adjacent with a closed inputSchema; update the tool count to thirteen in code, tests, module docs and crates/worker/README.md.",
           "skill/SKILL.md: section \"After a failure: adjacent moves\" (R-07). README.md: the tool list and the CLI line.",
@@ -6650,25 +6650,30 @@
           {
             "kind": "command",
             "id": "S-10.C1",
-            "program": "shell.bash",
+            "program": "rust.cargo",
             "args": [
-              "-c",
-              "set -euo pipefail; cargo fmt --all --check; cargo clippy --workspace --all-targets -- -D warnings; cargo test --workspace"
+              "fmt",
+              "--all",
+              "--check"
             ],
             "cwd": ".",
             "env": {},
             "expected_exit": 0,
-            "timeout_seconds": 3600,
+            "timeout_seconds": 600,
             "max_output_bytes": 8388608,
             "stdout_sha256": null
           },
           {
             "kind": "command",
             "id": "S-10.C2",
-            "program": "shell.bash",
+            "program": "rust.cargo",
             "args": [
-              "-c",
-              "set -euo pipefail; cargo fmt --all --check --manifest-path crates/worker/Cargo.toml; cargo test --manifest-path crates/worker/Cargo.toml; cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings"
+              "clippy",
+              "--workspace",
+              "--all-targets",
+              "--",
+              "-D",
+              "warnings"
             ],
             "cwd": ".",
             "env": {},
@@ -6682,12 +6687,23 @@
             "id": "S-10.C3",
             "program": "rust.cargo",
             "args": [
-              "run",
-              "-q",
-              "-p",
-              "tier-drop-cli",
-              "--",
-              "schemas"
+              "test",
+              "--workspace"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 3600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C4",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; cargo fmt --all --check --manifest-path crates/worker/Cargo.toml"
             ],
             "cwd": ".",
             "env": {},
@@ -6698,7 +6714,67 @@
           },
           {
             "kind": "command",
-            "id": "S-10.C4",
+            "id": "S-10.C5",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; cargo test --manifest-path crates/worker/Cargo.toml"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 3600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C6",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 3600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C7",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; test \"$(cargo run -q -p tier-drop-cli -- schemas | jq 'keys | length')\" = 11"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C8",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; test \"$(jq '.slices | length' plan/build.json)\" = 22"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 120,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C9",
             "program": "shell.bash",
             "args": [
               "-c",
@@ -6713,7 +6789,7 @@
           },
           {
             "kind": "command",
-            "id": "S-10.C5",
+            "id": "S-10.C10",
             "program": "git.gitleaks",
             "args": [
               "protect",
@@ -6729,7 +6805,7 @@
           },
           {
             "kind": "command",
-            "id": "S-10.C6",
+            "id": "S-10.C11",
             "program": "shell.bash",
             "args": [
               "-c",
@@ -6816,7 +6892,7 @@
           "Confirm a remote target is absent with send_remote: false.",
           "Confirm one_tier_down_specialist never names an unbound non-system_one model.",
           "Confirm the core crate gained no std::fs, std::net, std::time or SystemTime use.",
-          "Apply the three mutants (one_tier_up two steps up; the QoS filter dropped from targets; all higher reasoning levels returned) and confirm an adjacent_ test fails for each.",
+          "Apply the three mutants (one_tier_up two steps up; the QoS filter dropped from targets; all higher reasoning levels returned, which the three-level more_reasoning test of T-23 must catch) and confirm an adjacent_ test fails for each.",
           "Write the verdict to qa/V-10/verdict.md."
         ],
         "outputs": [

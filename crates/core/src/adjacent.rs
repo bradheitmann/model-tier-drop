@@ -505,6 +505,35 @@ mod tests {
         assert!(refs_of(&top.moves, MoveKind::MoreReasoning).is_empty());
     }
 
+    /// T-23: from a tier-3 model with three reasoning levels at its first level, the first move is
+    /// `more_reasoning` to its second level, and no `more_reasoning` move names its third level; at
+    /// its last level there is none.
+    #[test]
+    fn adjacent_more_reasoning_from_a_three_level_tier3_model_names_only_the_next() {
+        let mut r = Registry::example();
+        let qwen = r
+            .models
+            .iter_mut()
+            .find(|m| m.id == "qwen-3.8-27b")
+            .unwrap();
+        assert_eq!(qwen.tier, Tier::CheapGeneralist);
+        qwen.reasoning_levels = vec!["none".into(), "thinking".into(), "deep".into()];
+
+        let a = ask(&from("qwen-3.8-27b", "none"), &task_generate(), &r, &[]);
+        assert!(a.issues.is_empty(), "{:?}", a.issues);
+        assert_eq!(a.moves[0].kind, MoveKind::MoreReasoning);
+        assert_eq!(
+            refs_of(&a.moves, MoveKind::MoreReasoning),
+            vec!["qwen-3.8-27b@thinking"]
+        );
+        assert!(!refs_of(&a.moves, MoveKind::MoreReasoning)
+            .iter()
+            .any(|m| m.ends_with("@deep")));
+
+        let last = ask(&from("qwen-3.8-27b", "deep"), &task_generate(), &r, &[]);
+        assert!(refs_of(&last.moves, MoveKind::MoreReasoning).is_empty());
+    }
+
     /// A model with one reasoning level has no `more_reasoning` move.
     #[test]
     fn adjacent_more_reasoning_absent_for_a_single_level_model() {
