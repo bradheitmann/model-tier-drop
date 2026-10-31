@@ -9,7 +9,7 @@ Not proven / known gaps:
 - `charter receipt` refuses the QA-9 receipt because it lacks frozen.manifest_sha256. `charter freeze` was not run before QA. When run after QA, the manifest also covered ignored and untracked files (6922 node_modules files, crates/worker/build, the untracked Captain handoff), so a clean clone cannot reproduce it. It was not committed and has been moved to reveng reports/qa/tierdrop-slice-zero-freeze-DEFECTIVE-includes-ignored.json for PM-CHARTER. The commit sha in the receipt is the reproducible identity.
 - INTENT.md is pending owner ratification.
 - No charter check in CI and no charter hooks yet: adoption steps 3 and 5 are the next small slice, using PM-CHARTER's recipe pin 4e9017ce.
-- The adjacent-escalation amendment is being drafted on branch plan-adjacent (worktree ~/.config/superpowers/worktrees/model-tier-drop/plan-adjacent).
+- The adjacent-escalation amendment is on branch plan-adjacent (frozen f3f7cc9, in independent QA). S-10 is being implemented on branch s10 (dispatch e003b28).
 Exact last-green command(s):
 - `cargo test -p tier-drop-cli --test slice_zero -- --ignored --nocapture`
 - `cargo test --workspace` (82 passed)
@@ -27,4 +27,4 @@ Open owner decisions:
 - Adjacent moves: does skipping a tier with no fitting model or a disqualification count as one step? (plan/amendments/2026-10-31-adjacent-escalation.md, owner decision point.)
 Where everything is (branches, lanes, receipts):
 - main; branch charter-init (merged by this landing); branch plan-adjacent in its worktree (owner PM-MODEL-TIER-DROP).
-- charter binary: ~/.local/bin/charter 0.1.0, built from charter 4e9017c (now pushed).
+- charter binary: charter 0.1.0 built from charter commit 4e9017c. charter-ci (CI step at that rev) is held: the charter repository is private, so public CI cannot install it (owner decision pending).
