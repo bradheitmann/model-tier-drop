@@ -76,6 +76,7 @@ Model {
   cost: { input_usd_per_mtok: f64, output_usd_per_mtok: f64 },
   speed: { output_tokens_per_second: f64 | null, median_latency_ms: u64 | null },
   context_window: u64,
+  lineage: string | null,                    // optional; maker and architecture family (model-atlas card `lineage.maker` and `lineage.architecture`); amendment 2026-10-31
   notes: string
 }
 EmbeddingModel { id, deployment_id, dimensions: u64, notes }
@@ -185,6 +186,25 @@ Skip reasons: `shape_mismatch`, `no_provisioned_candidates`, `no_qos_qualified_c
 
 Candidate order inside a tier: untried singles ordered by (open-weight before closed-weight when `policy.prefer_open_weight`, local deployment before remote when `policy.prefer_local`, then cost ascending, then reasoning level order as listed in the registry; cost = input plus output price per million tokens). This is the owner's tier text: open-weight first in tier 4, own equipment preferred in tier 3. Then one panel of the cheapest `panel.max_members` (at least two) QoS-qualified models at their lowest level with the cheapest QoS-qualified next-tier model as judge; then a cascade (cheapest single, next-tier auditor, `cascade.audit_sample_rate`); then a draft (cheapest single, next-tier finisher). The next tier up is fixed: system_one→specialised→cheap_generalist→frontier, tailored→frontier, frontier has none (so frontier gets no compositions). Helpers must pass the QoS gate and fit the family. Compositions are offered only after every single has an attempt and are omitted when no next-tier model is QoS-qualified.
 
+### AdjacentMoves (output of `adjacent`; amendment 2026-10-31)
+
+```
+ModelRef { model_id, reasoning_level }
+AdjacentMoves {
+  schema_version: "tier-drop.adjacent_moves/1",
+  task_id, family,
+  from: { model_id, reasoning_level, tier: Tier },
+  ladder: [Tier],
+  moves: [ { kind: "more_reasoning" | "same_tier_other_lineage" | "one_tier_up" | "one_tier_down_specialist",
+             to: ModelRef, tier_from: Tier, tier_to: Tier,
+             passed_over: [ { tier: Tier, reason: "no_fitting_candidates" | "disqualified" } ],
+             lineage_known: bool } ],
+  issues: [Issue]
+}
+```
+
+Normative rules are in `plan/amendments/2026-10-31-adjacent-escalation.md`: the effective ladder is `ladder(task)` without tiers that have no fitting model or have an in-force disqualification for the family; a fitting model serves the task's shape and family and passes `qos_gate`; moves come in kind order, then the single-candidate order above; `more_reasoning` names only the next level; up and down are one effective step; `one_tier_down_specialist` targets are bound to the task's family or are `system_one`. Issues `unknown_model` and `unknown_reasoning_level` empty `moves`; `from_not_fitting` does not. Not a ledger record; no hash.
+
 ### RoutingDecision
 
 ```
@@ -241,6 +261,8 @@ tier-drop registry validate <registry.json>
 tier-drop registry example                        # prints registry/registry.example.json
 tier-drop policy default                          # prints the embedded default policy
 tier-drop plan     --task t.json --registry r.json [--ledger DIR] [--policy p.json]
+tier-drop adjacent --from from.json --task t.json --registry r.json [--ledger DIR] [--policy p.json]
+                   # from.json is a ModelRef; prints AdjacentMoves; the ledger supplies in-force disqualifications (amendment 2026-10-31)
 tier-drop qos      --task t.json --registry r.json [--policy p.json]
 tier-drop attempt record --ledger DIR --task t.json --registry r.json [--policy p.json] < attempt.json
                    # any outcome; validates, fills schema_version and record_sha256, appends, prints FloorResult;
@@ -254,7 +276,7 @@ tier-drop ledger show   --ledger DIR [--family F] [--kind attempts|decisions|dis
 tier-drop eval split    --items items.json [--policy p.json] [--ledger DIR]   # prints the EvalSplit; appends it to eval-splits.jsonl when --ledger is given
 tier-drop eval summarise --ledger DIR --family F --tier T --candidate c.json [--task t.json]
 tier-drop dataset export --ledger DIR --purpose process|train|send_remote|export [--family F]
-tier-drop schemas [NAME]                          # all, or one of: registry policy task attempt disqualification routing_decision eval_item eval_split eval_run plan
+tier-drop schemas [NAME]                          # all, or one of: registry policy task attempt disqualification routing_decision eval_item eval_split eval_run plan adjacent_moves
 ```
 
 Exit codes: 0 ok; 1 validation or floor failure (the JSON output still describes it); 2 usage error.
@@ -268,6 +290,7 @@ Exit codes: 0 ok; 1 validation or floor failure (the JSON output still describes
 | `registry_validate` | `{ registry }` | `{ valid, issues: [Issue] }` (`Issue { code, message }`) |
 | `qos_gate` | `{ task, registry, policy? }` | `{ qualified: [model_id], excluded: [ { model_id, deployment_id, reason } ] }` |
 | `plan_next` | `{ task, registry, disqualifications?, attempts?, policy? }` | Plan |
+| `adjacent` | `{ from, task, registry, disqualifications?, policy? }` (`from` is a ModelRef; amendment 2026-10-31) | AdjacentMoves |
 | `check_floors` | `{ task, attempt, policy? }` | FloorResult |
 | `assess_disqualification` | `{ family, tier, task, registry, attempts, policy? }` (`registry_as_of` is taken from the registry) | `{ disqualification: Disqualification \| null }` |
 | `validate_attempt` | `{ task, attempt, registry }` | `{ valid, issues: [Issue] }` |

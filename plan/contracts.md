@@ -196,3 +196,37 @@ Rollback: the repository can be made private with `gh repo edit --visibility pri
 ## V-09 Verify publication — kind: verify — verifies S-09
 
 QA clones `https://github.com/bradheitmann/model-tier-drop` into a temporary directory with no prior context, follows the README top to bottom, runs the CI commands and the walkthrough, confirms licence and visibility, and confirms the live MCP URL in the README answers `initialize`.
+
+---
+
+## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)
+
+Requirements: R-07, R-20 (adjacent command), R-21 (eleven schemas), R-23, R-24, R-32 (thirteen tools). Normative design: `plan/amendments/2026-10-31-adjacent-escalation.md` and "AdjacentMoves" in `plan/technology-decisions.md`.
+Depends on: S-01 to S-09 merged (main 30ffe92 or later). Write prefixes: `crates/core/`, `crates/cli/`, `crates/worker/src/`, `crates/worker/README.md`, `registry/registry.example.json`, `skill/SKILL.md`, `README.md`, `plan/graph.json`, `plan/build.json`, `plan/contracts/`, `plan/sources.md`, `Cargo.lock`.
+
+Steps:
+1. `crates/core`: add `Model.lineage: Option<String>` (`#[serde(default)]`); add module `adjacent` with `ModelRef`, `AdjacentMoves`, `Move`, `MoveKind`, `PassedOver` and `adjacent(&ModelRef, &Task, &Registry, &[Disqualification], &Policy) -> AdjacentMoves`, reusing `ladder`, `qos_gate` and the existing single-candidate ordering (no second copy of either); register `adjacent_moves` in `schemas()`.
+2. Unit tests named `adjacent_*` covering every observation in T-23, plus a test for each reading of the owner decision point (passed-over tiers count as one step; the alternative returns nothing), with the alternative behind a test-only flag or as a documented assertion of the current reading.
+3. `registry/registry.example.json`: set `lineage` on every model (indicative, as of the registry date).
+4. CLI `tier-drop adjacent` per `plan/technology-decisions.md`; integration test over the example registry; update `schemas_lists_ten…` to eleven (rename the test).
+5. Worker: tool `adjacent` with a closed `inputSchema`; update the tool count to thirteen in code, tests, module docs and `crates/worker/README.md`.
+6. `skill/SKILL.md`: section "After a failure: adjacent moves" (R-07). `README.md`: the tool list and the CLI line.
+7. `plan/graph.json`: add R-07, R-23, R-24, T-07, T-23, T-24, S-10, V-10, S-11, V-11 with their edges; recompile `plan/build.json` and `plan/contracts/` as in S-08 and diff two compiles.
+
+Checks: `cargo fmt --all --check`; `cargo clippy --workspace --all-targets -- -D warnings`; `cargo test --workspace`; `cargo test --manifest-path crates/worker/Cargo.toml`; `cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings`; `tier-drop schemas | jq 'keys | length'` = 11; `charter check --strict`; `gitleaks protect --staged --redact`.
+Rollback: revert the branch. Evidence: outputs, the `adjacent` output for the README task from the tier-3 example model at its first level.
+
+## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10
+
+QA (a model family different from the author's) reruns every S-10 check on the frozen tip, then, by hand over the example registry: confirms no move spans two effective ladder steps for every model × level as `from`; confirms a remote target is absent with `send_remote: false`; confirms `one_tier_down_specialist` never names an unbound non-`system_one` model; confirms the core crate gained no `std::fs`, `std::net`, `std::time` or `SystemTime` use; mutants: (a) make `one_tier_up` look two steps up (an `adjacent_*` test must fail), (b) drop the QoS filter from targets (a test must fail), (c) return all higher reasoning levels instead of the next (a test must fail).
+
+## S-11 Deploy the adjacent tool — kind: implement — epic E3
+
+Requirements: R-32, R-35. Depends on: V-10 accepted. Write prefixes: `crates/worker/README.md` (deployment record only).
+Steps: deploy the Worker from the V-10-accepted S-10 tip (`wrangler deploy` as in S-06), BEFORE S-10 merges to main: the deployed Worker rejects unknown fields, so the Slice Zero test (`crates/cli/tests/slice_zero.rs`) fails between a merge that adds `lineage` to the example registry and the deploy. Record the deployment id and the live checks.
+Checks: live `tools/list` has 13 tools; live `tools/call adjacent` for the README task returns `isError: false`; `cargo test -p tier-drop-cli --test slice_zero -- --ignored` passes on the S-10 tip against the live MCP.
+Rollback: `wrangler rollback` to the previous deployment (recorded in S-06). Evidence: deployment id, the three live outputs.
+
+## V-11 Verify the adjacent deployment — kind: verify — verifies S-11
+
+QA reruns the three live checks from a fresh clone of the S-10 tip and confirms the deployment id in `crates/worker/README.md` matches `wrangler deployments list`.
