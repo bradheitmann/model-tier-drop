@@ -435,7 +435,7 @@
     {
       "id": "SRC-plan-contracts",
       "uri": "repo:plan/contracts.md",
-      "content_sha256": "764d9f59705173e7742b0b6e3557cf47d9b741ce306d8e401647fdce2927a801",
+      "content_sha256": "265fbe0ed6ff819d3badf3c80b65d62c761a9368aa4b3149fdc67b47a0c3cb70",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -446,7 +446,7 @@
     {
       "id": "SRC-plan-coverage",
       "uri": "repo:plan/slice-coverage.md",
-      "content_sha256": "aaa14487ac5a0db6b603a8653aebaa778a0db6015249d37b7e52f2af264009a3",
+      "content_sha256": "74120ba4f25ae7121a09c5c9b1b6b7faf22fa81e6ea10c5c1dc24a9aa5fb5945",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -468,7 +468,7 @@
     {
       "id": "SRC-plan-requirements",
       "uri": "repo:plan/requirements.md",
-      "content_sha256": "e3cad5cbef9e88d0dfe6931a3081c53945bd6024b35d7525bd4ee19815345c08",
+      "content_sha256": "367b6a020e40d3384308f92efd5bc34e557209df2dbb2de7afbca2b3d00f0200",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -479,7 +479,7 @@
     {
       "id": "SRC-plan-technology",
       "uri": "repo:plan/technology-decisions.md",
-      "content_sha256": "1f460ad85b0b88b0d22b36f9dfb83fce2f3b6603810837297b2150a42c672a10",
+      "content_sha256": "e46697197f255be61f16a84e6c9075435af85caab05fb9aea868a48efc0e29be",
       "kind": "generated",
       "published_date": "2026-10-19",
       "accessed_date": "2026-10-19",
@@ -1457,7 +1457,7 @@
       "id": "R-20",
       "node_type": "t.requirement",
       "label": "CLI surface and exit codes",
-      "statement": "The CLI tier-drop exposes: registry validate|example, policy default, plan, qos, attempt record, decide, disqualify, ledger verify|show, eval split|summarise, dataset export, schemas. All input and output is JSON; exit codes are 0 success, 1 validation failure, 2 usage error. attempt record accepts every outcome (answered, abstained, failed, timed_out); attempt record and decide append the task to tasks.jsonl when its id is new; the CLI drops expired disqualifications using its clock before calling the engine.",
+      "statement": "The CLI `tier-drop` exposes: `registry validate|example`, `policy default`, `plan`, `adjacent` (amendment 2026-10-31), `qos`, `attempt record`, `decide`, `disqualify`, `ledger verify|show`, `eval split|summarise`, `dataset export`, `schemas`. All input and output is JSON; exit codes are 0 success, 1 validation failure, 2 usage error. `attempt record` accepts every outcome (`answered`, `abstained`, `failed`, `timed_out`); `attempt record` and `decide` append the task to `tasks.jsonl` when its id is new; the CLI drops expired disqualifications using its clock before calling the engine.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1489,7 +1489,7 @@
       "id": "R-21",
       "node_type": "t.requirement",
       "label": "JSON Schema for every record",
-      "statement": "tier-drop schemas prints JSON Schema for every record type (registry, policy, task, attempt, disqualification, routing_decision, eval_item, eval_split, eval_run, plan) so other languages can validate the same files.",
+      "statement": "`tier-drop schemas` prints JSON Schema for every record type (`registry`, `policy`, `task`, `attempt`, `disqualification`, `routing_decision`, `eval_item`, `eval_split`, `eval_run`, `plan`, `adjacent_moves`) so other languages can validate the same files.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -1617,7 +1617,7 @@
       "id": "R-32",
       "node_type": "t.requirement",
       "label": "Engine operations as MCP tools",
-      "statement": "The Worker exposes the engine's pure operations as twelve tools: skill_read, registry_example, registry_validate, qos_gate, plan_next, check_floors, validate_attempt, assess_disqualification, decide, split_holdout, summarise_eval, schemas; each tool returns content[0].text and structuredContent, with isError: true on validation failure.",
+      "statement": "The Worker exposes the engine's pure operations as thirteen tools: `skill_read`, `registry_example`, `registry_validate`, `qos_gate`, `plan_next`, `adjacent` (amendment 2026-10-31), `check_floors`, `validate_attempt`, `assess_disqualification`, `decide`, `split_holdout`, `summarise_eval`, `schemas`; each tool returns `content[0].text` and `structuredContent`, with `isError: true` on validation failure.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -2058,6 +2058,102 @@
         "critical": false,
         "kind": "compliance",
         "applicability": "Release 0.1.0; every file in the repository except generated build/ and dist/."
+      },
+      "contract": null
+    },
+    {
+      "id": "R-07",
+      "node_type": "t.requirement",
+      "label": "Skill section for adjacent moves",
+      "statement": "The skill has a section \"After a failure: adjacent moves\" (amendment 2026-10-31): a router that started from a recommended candidate asks `adjacent` for the lawful next moves; the router, not tier-drop, chooses among them; the move taken is recorded as an ordinary attempt; frontier models are used when available, with no opt-in.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E1 (R-07)",
+          "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-technology",
+          "locator": "### AdjacentMoves (output of `adjacent`; amendment 2026-10-31)",
+          "role": "supports"
+        }
+      ],
+      "attributes": {},
+      "requirement": {
+        "epic_id": "E1",
+        "acceptance_test_ids": [
+          "T-07"
+        ],
+        "critical": false,
+        "kind": "functional",
+        "applicability": "Release 0.1.0; skill/SKILL.md section \"After a failure: adjacent moves\"."
+      },
+      "contract": null
+    },
+    {
+      "id": "R-23",
+      "node_type": "t.requirement",
+      "label": "Adjacent escalation moves",
+      "statement": "`adjacent(from, task, registry, disqualifications, policy)` returns `AdjacentMoves` (amendment 2026-10-31): `more_reasoning` (the same model at the next reasoning level only), `same_tier_other_lineage`, `one_tier_up` and `one_tier_down_specialist`, in that order, each target a fitting model (shape, family, QoS gate). Up and down are one step on the task's effective ladder. A tier passed over because it has no fitting model or is disqualified for the family is listed in the move's `passed_over`. No move ever spans two effective steps. An unknown `from` model or level yields issues and no moves. The function is pure.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-23)",
+          "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-technology",
+          "locator": "### AdjacentMoves (output of `adjacent`; amendment 2026-10-31)",
+          "role": "supports"
+        }
+      ],
+      "attributes": {},
+      "requirement": {
+        "epic_id": "E2",
+        "acceptance_test_ids": [
+          "T-23"
+        ],
+        "critical": true,
+        "kind": "functional",
+        "applicability": "Release 0.1.0; crates/core adjacent, crates/cli adjacent, crates/worker adjacent tool."
+      },
+      "contract": null
+    },
+    {
+      "id": "R-24",
+      "node_type": "t.requirement",
+      "label": "Optional model lineage",
+      "statement": "`Model` gains an optional `lineage` string (maker and architecture family; a model-atlas card fact). `validate_registry` accepts it absent. `registry/registry.example.json` sets it on every model.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-24)",
+          "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-technology",
+          "locator": "### Registry (`registry/registry.example.json`)",
+          "role": "supports"
+        }
+      ],
+      "attributes": {},
+      "requirement": {
+        "epic_id": "E2",
+        "acceptance_test_ids": [
+          "T-24"
+        ],
+        "critical": false,
+        "kind": "functional",
+        "applicability": "Release 0.1.0; crates/core registry and registry/registry.example.json."
       },
       "contract": null
     },
@@ -4148,6 +4244,44 @@
       "contract": null
     },
     {
+      "id": "ST-10",
+      "node_type": "t.story",
+      "label": "Adjacent escalation moves",
+      "statement": "The engine enumerates the lawful adjacent moves from a failing candidate, and the CLI, the MCP Worker and the skill expose them without a second copy of the ladder, the QoS gate or the candidate order.",
+      "lifecycle": "active",
+      "epistemic": "derived",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-08 Plan graph and compiled build — Steps 2 (one story per slice group)",
+          "role": "derives"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": null
+    },
+    {
+      "id": "ST-11",
+      "node_type": "t.story",
+      "label": "Adjacent tool deployed",
+      "statement": "The deployed Worker serves the adjacent tool, so the local CLI and the live MCP answer the same plan over the same records.",
+      "lifecycle": "active",
+      "epistemic": "derived",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-08 Plan graph and compiled build — Steps 2 (one story per slice group)",
+          "role": "derives"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": null
+    },
+    {
       "id": "T-01",
       "node_type": "t.test",
       "label": "T-01 acceptance test for R-01",
@@ -4474,7 +4608,7 @@
       "id": "T-21",
       "node_type": "t.test",
       "label": "T-21 acceptance test for R-21",
-      "statement": "Setup: the CLI built. Action: tier-drop schemas routing_decision | jq .title. Observation: RoutingDecision; tier-drop schemas | jq 'keys | length' is 10. Fails on any other output or a non-zero exit.",
+      "statement": "Setup: the CLI built. Action: `tier-drop schemas routing_decision | jq .title`. Observation: `RoutingDecision`; `tier-drop schemas | jq 'keys | length'` is 11. Fails on any other output, a count other than 11, or a non-zero exit.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4550,7 +4684,7 @@
       "id": "T-32",
       "node_type": "t.test",
       "label": "T-32 acceptance test for R-32",
-      "statement": "Setup: wrangler dev running the Worker locally. Action: tools/call plan_next with the registry example and a classify task; tools/call validate_attempt with an attempt recorded before the task's created_at. Observation: structuredContent.tier == \"system_one\" and candidates non-empty; the second call returns valid: false with issue recorded_before_task_created. Fails if the tier differs, candidates are empty, or the second call does not return that issue.",
+      "statement": "Setup: wrangler dev running the Worker locally. Action: `tools/list`; `tools/call plan_next` with the registry example and a classify task; `tools/call validate_attempt` with an attempt recorded before the task's created_at. Observation: `tools/list` names thirteen tools including `adjacent`, and every inputSchema has `additionalProperties: false`; plan_next returns tier `system_one` with non-empty candidates; the second call returns `valid: false` with issue `recorded_before_task_created`. Fails if the tool count or a closed inputSchema differs, the tier differs, the candidates are empty, or the validate_attempt result does not carry that issue.",
       "lifecycle": "active",
       "epistemic": "declared",
       "authority": "delegated",
@@ -4805,6 +4939,63 @@
         {
           "source_id": "SRC-plan-requirements",
           "locator": "## Functional requirements — E5 (T-55)",
+          "role": "declares"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": null
+    },
+    {
+      "id": "T-07",
+      "node_type": "t.test",
+      "label": "T-07 acceptance test for R-07",
+      "statement": "Setup: skill/SKILL.md in the repository. Action: read `skill/SKILL.md`. Observation: the section \"After a failure: adjacent moves\" says the router asks `adjacent` for the lawful next moves and chooses among them, that the move taken is recorded as an ordinary attempt, and that frontier models are used when available with no opt-in. Fails if the section is missing, if it tells the agent to choose a move by itself without a router or the user, or if it describes frontier use as opt-in.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E1 (T-07)",
+          "role": "declares"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": null
+    },
+    {
+      "id": "T-23",
+      "node_type": "t.test",
+      "label": "T-23 acceptance test for R-23",
+      "statement": "Setup: the core crate built over the example registry. Action: `cargo test -p tier-drop-core adjacent`. Observation: from a tier-3 model at its first of two levels, the first move is `more_reasoning` to its second level, and from its last level there is none; a tier-3 model of another lineage appears as `same_tier_other_lineage` and one of the same lineage does not; `one_tier_up` from tier 3 lists only tier-4 models and never a tier-5 or higher-step model; `one_tier_down_specialist` lists a tier-2 model bound to the task's family and never an unbound tier-3 or tier-2 model; with tier 2 empty for the family, `one_tier_up` from tier 1 lists tier-3 models with `passed_over: [{tier: specialised, reason: no_fitting_candidates}]`; a remote target is absent when `send_remote` is false; an unknown model id yields issue `unknown_model` and an empty `moves`. Fails if any of those observations does not hold, or if a move spans two effective tiers.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (T-23)",
+          "role": "declares"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": null
+    },
+    {
+      "id": "T-24",
+      "node_type": "t.test",
+      "label": "T-24 acceptance test for R-24",
+      "statement": "Setup: the core crate built and the example registry in the repository. Action: `cargo test -p tier-drop-core registry` and `tier-drop registry validate registry/registry.example.json`. Observation: a registry without `lineage` still validates; the example validates and every model has a lineage. Fails if the parse rejects a missing lineage, if the example is invalid, or if any example model has no lineage.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (T-24)",
           "role": "declares"
         }
       ],
@@ -6307,6 +6498,621 @@
           "Licence and visibility output.",
           "Live initialize response from the README URL.",
           "Verdict with defect list."
+        ]
+      }
+    },
+    {
+      "id": "S-10",
+      "node_type": "t.slice",
+      "label": "S-10 Adjacent escalation moves",
+      "statement": "Add the pure adjacent function to the core, the adjacent CLI command and MCP tool, the model lineage field and its value in the example registry, the skill section and the recompiled plan graph.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-coverage",
+          "locator": "## Slice coverage table",
+          "role": "supports"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": {
+        "id": "S-10",
+        "kind": "implement",
+        "epic_id": "E2",
+        "story_id": "ST-10",
+        "requirement_ids": [
+          "R-07",
+          "R-20",
+          "R-21",
+          "R-23",
+          "R-24",
+          "R-32"
+        ],
+        "depends_on": [
+          "S-01",
+          "S-02",
+          "S-03",
+          "S-04",
+          "S-05",
+          "S-06",
+          "S-07",
+          "S-08",
+          "S-09"
+        ],
+        "verifies": null,
+        "objective": "Add the pure adjacent function to the core, the adjacent CLI command and MCP tool, the model lineage field and its value in the example registry, the skill section and the recompiled plan graph.",
+        "read_prefixes": [
+          "plan",
+          "crates",
+          "skill",
+          "adapters",
+          "registry"
+        ],
+        "write_prefixes": [
+          "crates/core",
+          "crates/cli",
+          "crates/worker/src",
+          "crates/worker/README.md",
+          "registry/registry.example.json",
+          "skill/SKILL.md",
+          "README.md",
+          "plan/graph.json",
+          "plan/build.json",
+          "plan/contracts",
+          "plan/sources.md",
+          "Cargo.lock"
+        ],
+        "steps": [
+          "crates/core: add Model.lineage: Option<String> (#[serde(default)]); add module adjacent with ModelRef, AdjacentMoves, Move, MoveKind, PassedOver and adjacent(&ModelRef, &Task, &Registry, &[Disqualification], &Policy) -> AdjacentMoves, reusing ladder, qos_gate and the existing single-candidate ordering (no second copy of either); register adjacent_moves in schemas().",
+          "Unit tests named adjacent_* covering every observation in T-23, plus a test for each reading of the owner decision point (passed-over tiers count as one step; the alternative returns nothing), with the alternative behind a test-only flag or as a documented assertion of the current reading.",
+          "registry/registry.example.json: set lineage on every model (indicative, as of the registry date).",
+          "CLI tier-drop adjacent per plan/technology-decisions.md; integration test over the example registry; update schemas_lists_ten… to eleven (rename the test).",
+          "Worker: tool adjacent with a closed inputSchema; update the tool count to thirteen in code, tests, module docs and crates/worker/README.md.",
+          "skill/SKILL.md: section \"After a failure: adjacent moves\" (R-07). README.md: the tool list and the CLI line.",
+          "plan/graph.json: add R-07, R-23, R-24, T-07, T-23, T-24, S-10, V-10, S-11, V-11 with their edges; recompile plan/build.json and plan/contracts/ as in S-08 and diff two compiles."
+        ],
+        "outputs": [
+          {
+            "path": "crates/core/src/adjacent.rs",
+            "purpose": "The pure adjacent function, its record types and its tests.",
+            "media_type": "text/rust"
+          },
+          {
+            "path": "crates/core/src/registry.rs",
+            "purpose": "Model.lineage and its registry test.",
+            "media_type": "text/rust"
+          },
+          {
+            "path": "crates/cli/src/main.rs",
+            "purpose": "The adjacent command.",
+            "media_type": "text/rust"
+          },
+          {
+            "path": "crates/cli/tests/cli.rs",
+            "purpose": "The adjacent integration test and the eleven-schema test.",
+            "media_type": "text/rust"
+          },
+          {
+            "path": "crates/worker/src/tools.rs",
+            "purpose": "The adjacent MCP tool and the thirteen-tool test.",
+            "media_type": "text/rust"
+          },
+          {
+            "path": "crates/worker/README.md",
+            "purpose": "The tool list, the schema route list and the local transcript.",
+            "media_type": "text/markdown"
+          },
+          {
+            "path": "registry/registry.example.json",
+            "purpose": "A lineage on every example model.",
+            "media_type": "application/json"
+          },
+          {
+            "path": "skill/SKILL.md",
+            "purpose": "The section \"After a failure: adjacent moves\".",
+            "media_type": "text/markdown"
+          },
+          {
+            "path": "README.md",
+            "purpose": "The tool list and the CLI line.",
+            "media_type": "text/markdown"
+          },
+          {
+            "path": "plan/graph.json",
+            "purpose": "The adjacent nodes and edges.",
+            "media_type": "application/json"
+          },
+          {
+            "path": "plan/build.json",
+            "purpose": "The recompiled build.",
+            "media_type": "application/json"
+          },
+          {
+            "path": "plan/contracts",
+            "purpose": "The recompiled slice contracts.",
+            "media_type": "application/json"
+          },
+          {
+            "path": "plan/sources.md",
+            "purpose": "The source list and how to recompile.",
+            "media_type": "text/markdown"
+          }
+        ],
+        "checks": [
+          {
+            "kind": "command",
+            "id": "S-10.C1",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; cargo fmt --all --check; cargo clippy --workspace --all-targets -- -D warnings; cargo test --workspace"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 3600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C2",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; cargo fmt --all --check --manifest-path crates/worker/Cargo.toml; cargo test --manifest-path crates/worker/Cargo.toml; cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 3600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C3",
+            "program": "rust.cargo",
+            "args": [
+              "run",
+              "-q",
+              "-p",
+              "tier-drop-cli",
+              "--",
+              "schemas"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C4",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; charter check --strict"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C5",
+            "program": "git.gitleaks",
+            "args": [
+              "protect",
+              "--staged",
+              "--redact"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-10.C6",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; if git grep -nE 'O[K]OA|needs[ ]you'; then exit 1; fi"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 120,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          }
+        ],
+        "risk_controls": [
+          "adjacent reuses ladder, qos_gate and the single-candidate order from crates/core instead of a second copy, so plan_next and adjacent cannot disagree about which models fit a task.",
+          "crates/core gains no std::fs, std::net, std::time or SystemTime use: adjacent reads its arguments and returns a value.",
+          "Rust only; strict TypeScript only in adapters/dsh; no Python and no authored .js, .mjs or .cjs files.",
+          "No secret, phone number, account identifier or internal hostname in any file; run gitleaks protect --staged --redact before each commit.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you); plain, specific prose.",
+          "Work only in the slice's worktree and branch; never touch main.",
+          "Three attempts per failing gate, then stop and report."
+        ],
+        "rollback": "Revert the branch.",
+        "evidence_required": [
+          "The outputs of the S-10 checks.",
+          "The adjacent output for the README walkthrough task from the tier-3 example model at its first reasoning level.",
+          "The mutant runs that turn the adjacent_ tests red."
+        ]
+      }
+    },
+    {
+      "id": "V-10",
+      "node_type": "t.slice",
+      "label": "V-10 Verify adjacent escalation moves",
+      "statement": "Rerun every S-10 check on the frozen tip by hand, confirm no move spans two effective steps and that the gate, the down-specialist rule and the core's purity hold, and run the three mutants.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10",
+          "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-coverage",
+          "locator": "## Slice coverage table",
+          "role": "supports"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": {
+        "id": "V-10",
+        "kind": "verify",
+        "epic_id": "E2",
+        "story_id": "ST-10",
+        "requirement_ids": [
+          "R-07",
+          "R-20",
+          "R-21",
+          "R-23",
+          "R-24",
+          "R-32"
+        ],
+        "depends_on": [
+          "S-10"
+        ],
+        "verifies": "S-10",
+        "objective": "Independently confirm the adjacent moves are lawful: one effective step, fitting targets only, the next reasoning level only, and unchanged core purity.",
+        "read_prefixes": [
+          "plan",
+          "crates",
+          "skill",
+          "registry",
+          "qa"
+        ],
+        "write_prefixes": [
+          "qa/V-10"
+        ],
+        "steps": [
+          "Rerun every S-10 check on the frozen tip.",
+          "By hand over the example registry, with every model and level as from: confirm no move spans two effective ladder steps.",
+          "Confirm a remote target is absent with send_remote: false.",
+          "Confirm one_tier_down_specialist never names an unbound non-system_one model.",
+          "Confirm the core crate gained no std::fs, std::net, std::time or SystemTime use.",
+          "Apply the three mutants (one_tier_up two steps up; the QoS filter dropped from targets; all higher reasoning levels returned) and confirm an adjacent_ test fails for each.",
+          "Write the verdict to qa/V-10/verdict.md."
+        ],
+        "outputs": [
+          {
+            "path": "qa/V-10/verdict.md",
+            "purpose": "QA verdict for S-10.",
+            "media_type": "text/markdown"
+          }
+        ],
+        "checks": [
+          {
+            "kind": "command",
+            "id": "V-10.C1",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; cargo test -p tier-drop-core adjacent; cargo test --workspace"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 3600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "V-10.C2",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; test -z \"$(git diff 2c380d5 -- crates/core | grep -E 'std::(fs|net|time)|SystemTime' || true)\""
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 120,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "V-10.C3",
+            "program": "git.gitleaks",
+            "args": [
+              "detect",
+              "--redact"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          }
+        ],
+        "risk_controls": [
+          "QA is a model family different from the implementer's and does not edit the branch.",
+          "The three mutants are applied in a scratch copy and restored; the frozen tip is unchanged.",
+          "Rust only; no Python and no authored JavaScript files.",
+          "No secret, phone number, account identifier or internal hostname in the verdict.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you)."
+        ],
+        "rollback": "Revert the branch.",
+        "evidence_required": [
+          "The outputs of the S-10 checks rerun on the frozen tip.",
+          "The hand check over every model and level as from.",
+          "The three mutant runs and the adjacent_ test each one turned red."
+        ]
+      }
+    },
+    {
+      "id": "S-11",
+      "node_type": "t.slice",
+      "label": "S-11 Deploy the adjacent tool",
+      "statement": "Deploy the Worker from the V-10-accepted S-10 tip and record the live checks, before S-10 merges to main.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-11 Deploy the adjacent tool — kind: implement — epic E3",
+          "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-coverage",
+          "locator": "## Slice coverage table",
+          "role": "supports"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": {
+        "id": "S-11",
+        "kind": "implement",
+        "epic_id": "E3",
+        "story_id": "ST-11",
+        "requirement_ids": [
+          "R-32",
+          "R-35"
+        ],
+        "depends_on": [
+          "V-10"
+        ],
+        "verifies": null,
+        "objective": "Deploy the Worker from the V-10-accepted S-10 tip and record the live checks, before S-10 merges to main.",
+        "read_prefixes": [
+          "plan",
+          "crates",
+          "registry",
+          "skill"
+        ],
+        "write_prefixes": [
+          "crates/worker/README.md"
+        ],
+        "steps": [
+          "Deploy the Worker from the V-10-accepted S-10 tip (wrangler deploy as in S-06), BEFORE S-10 merges to main: the deployed Worker rejects unknown fields, so the Slice Zero test (crates/cli/tests/slice_zero.rs) fails between a merge that adds lineage to the example registry and the deploy.",
+          "Record the deployment id and the live checks in crates/worker/README.md."
+        ],
+        "outputs": [
+          {
+            "path": "crates/worker/README.md",
+            "purpose": "The deployment record for the adjacent tool.",
+            "media_type": "text/markdown"
+          }
+        ],
+        "checks": [
+          {
+            "kind": "command",
+            "id": "S-11.C1",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; curl -sS -m 30 https://model-tier-drop-mcp.bradheitmann.ai/mcp -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}' | jq -e '.result.tools | length == 13'"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 120,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-11.C2",
+            "program": "rust.cargo",
+            "args": [
+              "test",
+              "-p",
+              "tier-drop-cli",
+              "--test",
+              "slice_zero",
+              "--",
+              "--ignored"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "S-11.C3",
+            "program": "git.gitleaks",
+            "args": [
+              "protect",
+              "--staged",
+              "--redact"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          }
+        ],
+        "risk_controls": [
+          "The deploy happens only from the V-10-accepted tip, before S-10 merges to main.",
+          "Credentials come from the environment and are never written to disk or the repository; identifiers are redacted in the record.",
+          "Rust only; no Python and no authored JavaScript files.",
+          "No secret, phone number, account identifier or internal hostname in any file.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you).",
+          "wrangler rollback returns to the deployment recorded in S-06."
+        ],
+        "rollback": "wrangler rollback to the previous deployment (recorded in S-06).",
+        "evidence_required": [
+          "The deployment id (identifiers redacted).",
+          "The live tools/list count, the live tools/call adjacent result and the Slice Zero output."
+        ]
+      }
+    },
+    {
+      "id": "V-11",
+      "node_type": "t.slice",
+      "label": "V-11 Verify the adjacent deployment",
+      "statement": "Rerun the three live checks from a fresh clone of the S-10 tip and confirm the recorded deployment id matches wrangler deployments list.",
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-11 Verify the adjacent deployment — kind: verify — verifies S-11",
+          "role": "declares"
+        },
+        {
+          "source_id": "SRC-plan-coverage",
+          "locator": "## Slice coverage table",
+          "role": "supports"
+        }
+      ],
+      "attributes": {},
+      "requirement": null,
+      "contract": {
+        "id": "V-11",
+        "kind": "verify",
+        "epic_id": "E3",
+        "story_id": "ST-11",
+        "requirement_ids": [
+          "R-32",
+          "R-35"
+        ],
+        "depends_on": [
+          "S-11"
+        ],
+        "verifies": "S-11",
+        "objective": "Independently confirm the deployed Worker serves thirteen tools, answers tools/call adjacent and keeps the Slice Zero equality.",
+        "read_prefixes": [
+          "plan",
+          "crates",
+          "registry",
+          "skill",
+          "qa"
+        ],
+        "write_prefixes": [
+          "qa/V-11"
+        ],
+        "steps": [
+          "Clone the S-10 tip into a fresh temporary directory.",
+          "Rerun the three live checks from crates/worker/README.md.",
+          "Confirm the deployment id in crates/worker/README.md matches wrangler deployments list.",
+          "Write the verdict to qa/V-11/verdict.md."
+        ],
+        "outputs": [
+          {
+            "path": "qa/V-11/verdict.md",
+            "purpose": "QA verdict for S-11.",
+            "media_type": "text/markdown"
+          }
+        ],
+        "checks": [
+          {
+            "kind": "command",
+            "id": "V-11.C1",
+            "program": "shell.bash",
+            "args": [
+              "-c",
+              "set -euo pipefail; curl -sS -m 30 https://model-tier-drop-mcp.bradheitmann.ai/mcp -H 'content-type: application/json' -H 'accept: application/json, text/event-stream' -d '{\"jsonrpc\":\"2.0\",\"id\":1,\"method\":\"tools/list\"}' | jq -e '.result.tools | length == 13'"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 120,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          },
+          {
+            "kind": "command",
+            "id": "V-11.C2",
+            "program": "git.gitleaks",
+            "args": [
+              "detect",
+              "--redact"
+            ],
+            "cwd": ".",
+            "env": {},
+            "expected_exit": 0,
+            "timeout_seconds": 600,
+            "max_output_bytes": 8388608,
+            "stdout_sha256": null
+          }
+        ],
+        "risk_controls": [
+          "QA is a model family different from the implementer's and does not edit the branch.",
+          "The checks run from a fresh clone, not from the implementer's working tree.",
+          "No secret, phone number, account identifier or internal hostname in the verdict; deployment identifiers are redacted.",
+          "Never write the owner's forbidden organisation name (grep pattern O[K]OA) or the forbidden phrase (grep pattern needs[ ]you)."
+        ],
+        "rollback": "Revert the branch.",
+        "evidence_required": [
+          "The three live outputs from the fresh clone.",
+          "The deployment id comparison with wrangler deployments list."
         ]
       }
     }
@@ -12250,6 +13056,816 @@
           "role": "supports"
         }
       ],
+      "qualifiers": {}
+    },
+    {
+      "id": "e:allocated_to:R-07:E1",
+      "edge_type": "r.allocated_to",
+      "from": "R-07",
+      "to": "E1",
+      "rationale": "The epic owns this requirement.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E1 (R-07)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:allocated_to:R-23:E2",
+      "edge_type": "r.allocated_to",
+      "from": "R-23",
+      "to": "E2",
+      "rationale": "The epic owns this requirement.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-23)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:allocated_to:R-24:E2",
+      "edge_type": "r.allocated_to",
+      "from": "R-24",
+      "to": "E2",
+      "rationale": "The epic owns this requirement.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-24)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:accepted_by:R-07:T-07",
+      "edge_type": "r.accepted_by",
+      "from": "R-07",
+      "to": "T-07",
+      "rationale": "The test is the requirement's falsifiable acceptance test in plan/requirements.md.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E1 (R-07)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:accepted_by:R-23:T-23",
+      "edge_type": "r.accepted_by",
+      "from": "R-23",
+      "to": "T-23",
+      "rationale": "The test is the requirement's falsifiable acceptance test in plan/requirements.md.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-23)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:accepted_by:R-24:T-24",
+      "edge_type": "r.accepted_by",
+      "from": "R-24",
+      "to": "T-24",
+      "rationale": "The test is the requirement's falsifiable acceptance test in plan/requirements.md.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-24)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_obligation:J-01:R-07",
+      "edge_type": "r.requires_obligation",
+      "from": "J-01",
+      "to": "R-07",
+      "rationale": "The skill job needs this section to describe escalation after a failure.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E1 (R-07)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_obligation:J-02:R-23",
+      "edge_type": "r.requires_obligation",
+      "from": "J-02",
+      "to": "R-23",
+      "rationale": "The engine job needs the pure adjacent enumeration.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-23)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_obligation:J-02:R-24",
+      "edge_type": "r.requires_obligation",
+      "from": "J-02",
+      "to": "R-24",
+      "rationale": "The engine job needs the registry to carry the lineage the moves compare.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-requirements",
+          "locator": "## Functional requirements — E2 (R-24)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:story_of:ST-10:E2",
+      "edge_type": "r.story_of",
+      "from": "ST-10",
+      "to": "E2",
+      "rationale": "The story is delivered inside this epic.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-08 Plan graph and compiled build — Steps 2 (one story per slice group)",
+          "role": "derives"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:story_of:ST-11:E3",
+      "edge_type": "r.story_of",
+      "from": "ST-11",
+      "to": "E3",
+      "rationale": "The story is delivered inside this epic.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-08 Plan graph and compiled build — Steps 2 (one story per slice group)",
+          "role": "derives"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:slice_of:S-10:ST-10",
+      "edge_type": "r.slice_of",
+      "from": "S-10",
+      "to": "ST-10",
+      "rationale": "The slice delivers part of this story.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:slice_of:V-10:ST-10",
+      "edge_type": "r.slice_of",
+      "from": "V-10",
+      "to": "ST-10",
+      "rationale": "The verifier closes the same story.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:slice_of:S-11:ST-11",
+      "edge_type": "r.slice_of",
+      "from": "S-11",
+      "to": "ST-11",
+      "rationale": "The slice delivers part of this story.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-11 Deploy the adjacent tool — kind: implement — epic E3",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:slice_of:V-11:ST-11",
+      "edge_type": "r.slice_of",
+      "from": "V-11",
+      "to": "ST-11",
+      "rationale": "The verifier closes the same story.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-11 Verify the adjacent deployment — kind: verify — verifies S-11",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-10:R-07",
+      "edge_type": "r.implements",
+      "from": "S-10",
+      "to": "R-07",
+      "rationale": "The slice writes the skill section.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-10:R-20",
+      "edge_type": "r.implements",
+      "from": "S-10",
+      "to": "R-20",
+      "rationale": "The slice adds the adjacent command to the CLI surface.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-10:R-21",
+      "edge_type": "r.implements",
+      "from": "S-10",
+      "to": "R-21",
+      "rationale": "The slice adds the adjacent_moves schema, making eleven.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-10:R-23",
+      "edge_type": "r.implements",
+      "from": "S-10",
+      "to": "R-23",
+      "rationale": "The slice writes the adjacent function.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-10:R-24",
+      "edge_type": "r.implements",
+      "from": "S-10",
+      "to": "R-24",
+      "rationale": "The slice adds the optional lineage field and its example values.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-10:R-32",
+      "edge_type": "r.implements",
+      "from": "S-10",
+      "to": "R-32",
+      "rationale": "The slice adds the adjacent tool, making thirteen.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — kind: implement — epics E1 E2 E3 (amendment 2026-10-31)",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-11:R-32",
+      "edge_type": "r.implements",
+      "from": "S-11",
+      "to": "R-32",
+      "rationale": "The slice deploys the thirteen-tool Worker.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-11 Deploy the adjacent tool — kind: implement — epic E3",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:implements:S-11:R-35",
+      "edge_type": "r.implements",
+      "from": "S-11",
+      "to": "R-35",
+      "rationale": "The slice deploys the Worker and records the live checks.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-11 Deploy the adjacent tool — kind: implement — epic E3",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-10:R-07",
+      "edge_type": "r.verifies",
+      "from": "V-10",
+      "to": "R-07",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-10:R-20",
+      "edge_type": "r.verifies",
+      "from": "V-10",
+      "to": "R-20",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-10:R-21",
+      "edge_type": "r.verifies",
+      "from": "V-10",
+      "to": "R-21",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-10:R-23",
+      "edge_type": "r.verifies",
+      "from": "V-10",
+      "to": "R-23",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-10:R-24",
+      "edge_type": "r.verifies",
+      "from": "V-10",
+      "to": "R-24",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-10:R-32",
+      "edge_type": "r.verifies",
+      "from": "V-10",
+      "to": "R-32",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-11:R-32",
+      "edge_type": "r.verifies",
+      "from": "V-11",
+      "to": "R-32",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-11 Verify the adjacent deployment — kind: verify — verifies S-11 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:verifies:V-11:R-35",
+      "edge_type": "r.verifies",
+      "from": "V-11",
+      "to": "R-35",
+      "rationale": "The verifier checks this requirement independently of the implementer.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-11 Verify the adjacent deployment — kind: verify — verifies S-11 — Requirements",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:closes:V-10:S-10",
+      "edge_type": "r.closes",
+      "from": "V-10",
+      "to": "S-10",
+      "rationale": "The verifier is the paired QA slice for this implementation slice.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:closes:V-11:S-11",
+      "edge_type": "r.closes",
+      "from": "V-11",
+      "to": "S-11",
+      "rationale": "The verifier is the paired QA slice for this implementation slice.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-11 Verify the adjacent deployment — kind: verify — verifies S-11",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-01",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-01",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-02",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-02",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-03",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-03",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-04",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-04",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-05",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-05",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-06",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-06",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-07",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-07",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-08",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-08",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-10:S-09",
+      "edge_type": "r.requires_completion",
+      "from": "S-10",
+      "to": "S-09",
+      "rationale": "The slice edits prefixes these earlier slices own, so it waits for them.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-10 Adjacent escalation moves — Depends on: S-01 to S-09 merged",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:V-10:S-10",
+      "edge_type": "r.requires_completion",
+      "from": "V-10",
+      "to": "S-10",
+      "rationale": "The verifier runs on the implementation's frozen tip.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-10 Verify adjacent escalation moves — kind: verify — verifies S-10",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:S-11:V-10",
+      "edge_type": "r.requires_completion",
+      "from": "S-11",
+      "to": "V-10",
+      "rationale": "The deploy waits for V-10 acceptance.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## S-11 Deploy the adjacent tool — Depends on: V-10 accepted",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
+      "qualifiers": {}
+    },
+    {
+      "id": "e:requires_completion:V-11:S-11",
+      "edge_type": "r.requires_completion",
+      "from": "V-11",
+      "to": "S-11",
+      "rationale": "The verifier runs on the deployment's frozen tip.",
+      "evidence": [
+        {
+          "source_id": "SRC-plan-contracts",
+          "locator": "## V-11 Verify the adjacent deployment — kind: verify — verifies S-11",
+          "role": "declares"
+        }
+      ],
+      "lifecycle": "active",
+      "epistemic": "declared",
+      "authority": "delegated",
       "qualifiers": {}
     }
   ]

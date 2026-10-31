@@ -409,7 +409,7 @@ mod tests {
         let b = call(json!({ "jsonrpc": "2.0", "id": 1, "method": "tools/list" })).json_body();
         assert_eq!(b["result"]["ttlMs"], 3_600_000);
         assert_eq!(b["result"]["cacheScope"], "public");
-        assert_eq!(b["result"]["tools"].as_array().unwrap().len(), 12);
+        assert_eq!(b["result"]["tools"].as_array().unwrap().len(), 13);
     }
 
     #[test]

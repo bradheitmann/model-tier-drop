@@ -68,7 +68,7 @@ Review is strict by default. Every assertion in an output is judged under the st
 10. **Decide.** Run `tier-drop decide --task task.json --registry registry.json --ledger DIR`. It appends and prints the `RoutingDecision`: the ladder, the status of each tier with references, the ranking and the winner. Use the winner's output as the task's result. When no tier qualified, `winner` is null; report that and give the `decision_id`. Running `decide` again without new attempts produces an identical record.
 11. **Append nothing by hand.** Every ledger line is written by `tier-drop`, which fills `record_sha256`. Run `tier-drop ledger verify --ledger DIR` before you report.
 
-When you use the hosted MCP tools instead of the command line tool, the computations are the same and nothing is stored on the server. The twelve MCP tools and the commands they match are:
+When you use the hosted MCP tools instead of the command line tool, the computations are the same and nothing is stored on the server. The thirteen MCP tools and the commands they match are:
 
 | Command | MCP tool |
 |---|---|
@@ -76,6 +76,7 @@ When you use the hosted MCP tools instead of the command line tool, the computat
 | `tier-drop registry validate` | `registry_validate` |
 | `tier-drop qos` | `qos_gate` |
 | `tier-drop plan` | `plan_next` |
+| `tier-drop adjacent` | `adjacent` (`{ from, task, registry, disqualifications?, policy? }`) |
 | `tier-drop attempt record` | `validate_attempt` (`{ task, attempt, registry }`), then `check_floors`, then `assess_disqualification` (`{ family, tier, task, registry, attempts, policy? }`) |
 | `tier-drop decide` | `decide` |
 | `tier-drop eval split` | `split_holdout` |
@@ -84,6 +85,33 @@ When you use the hosted MCP tools instead of the command line tool, the computat
 | (read this skill) | `skill_read` |
 
 With the MCP tools you pass the task, registry, attempts and disqualifications in each call. Ledger writes still go through `tier-drop`. If the command line tool is not available, keep every record the tools return verbatim in your task output and state that the ledger was not written.
+
+## After a failure: adjacent moves
+
+A recommended candidate can fail at a task without meaning its tier is finished. When that happens, the router that started from the recommendation asks `adjacent` for the lawful next candidates instead of walking the ladder from the bottom:
+
+```sh
+tier-drop adjacent --from from.json --task task.json --registry registry.json [--ledger DIR] [--policy p.json]
+```
+
+`from.json` is a `ModelRef`: `{ "model_id": "…", "reasoning_level": "…" }`. The answer is an `AdjacentMoves` value: the effective ladder it measured the moves against, and four kinds of move in this order.
+
+| Kind | What it offers |
+|---|---|
+| `more_reasoning` | the same model at the next reasoning level only |
+| `same_tier_other_lineage` | every fitting model in the same tier whose lineage differs from the starting model's (another maker or architecture) |
+| `one_tier_up` | every fitting model in the next tier up the effective ladder |
+| `one_tier_down_specialist` | every fitting model in the next tier down that is bound to the task's family, or is a `system_one` model |
+
+What the answer guarantees:
+
+- **Every target is a fitting model.** It serves the task's shape, its family is compatible, and it passes the QoS gate, so a remote target never appears when the task's rights set `send_remote: false` and an unmeasured or slow deployment never appears at all.
+- **Up and down are one tier of the effective ladder.** The effective ladder leaves out tiers with no fitting model for the task and tiers that carry an in-force disqualification for the family. The move lists each tier it passed over this way in `passed_over`, so a skipped tier is never silent, and no move spans two steps.
+- **The reasons are recorded.** `issues` is non-empty only when the question could not be answered (`unknown_model`, `unknown_reasoning_level`), and `moves` is then empty. `from_not_fitting` is a warning instead: the gate would exclude the starting model now, and the moves are still enumerated. An empty `moves` list is a valid answer and means nothing adjacent is lawful, so a human decides next.
+
+**tier-drop enumerates; the router chooses.** `adjacent` reads its arguments and returns the moves. It does not pick one, rank them by outcome, or run any model. Frontier models are used when available, with no opt-in: the registry, the ladder, the QoS gate and the task's rights decide what is available, and you or your router choose among what comes back.
+
+**Record the move you take as an ordinary attempt.** `AdjacentMoves` is not a ledger record. Run the chosen candidate through the normal procedure above, record its `Attempt`, then `plan` or `decide` as usual; the existing records then hold the escalation and the routing decision cites it. Escalating within a tier does not replace the ladder rule: `plan` still leaves a tier only after a recorded disqualification, so a failure that suggests a tier boundary in the registry is wrong is a registry change with evidence, not a local exception.
 
 ## Composition patterns
 

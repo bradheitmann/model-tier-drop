@@ -221,7 +221,7 @@ fn lowest(m: &Model) -> ModelRef {
 // 3; both preferences apply in every tier and rank above cost. Registry position breaks ties, so
 // the levels of one model stay together even when two models cost the same. Panel members,
 // the cascade's first model, the drafter and helpers stay cost-based.
-fn singles(models: &[&Model], registry: &Registry, policy: &Policy) -> Vec<Candidate> {
+pub(crate) fn singles(models: &[&Model], registry: &Registry, policy: &Policy) -> Vec<Candidate> {
     let closed = |m: &Model| policy.prefer_open_weight && !m.open_weight;
     let remote = |m: &Model| {
         policy.prefer_local

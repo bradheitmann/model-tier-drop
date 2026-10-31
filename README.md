@@ -122,11 +122,11 @@ What each step shows:
 
 Exit codes: 0 success; 1 validation or floor failure (the JSON on stdout still describes it); 2 usage error.
 
-The full command list is in [`plan/technology-decisions.md`](plan/technology-decisions.md) under "CLI surface": `registry validate|example`, `policy default`, `plan`, `qos`, `attempt record`, `decide`, `disqualify`, `ledger verify|show`, `eval split|summarise`, `dataset export`, `schemas`.
+The full command list is in [`plan/technology-decisions.md`](plan/technology-decisions.md) under "CLI surface": `registry validate|example`, `policy default`, `plan`, `adjacent`, `qos`, `attempt record`, `decide`, `disqualify`, `ledger verify|show`, `eval split|summarise`, `dataset export`, `schemas`.
 
 ## Hosted MCP
 
-`POST https://model-tier-drop-mcp.bradheitmann.ai/mcp` speaks MCP over Streamable HTTP with JSON responses (handshake versions 2025-03-26, 2025-06-18, 2025-11-25 and the stateless `_meta` form 2026-07-28). It stores nothing and needs no key. Twelve tools: `skill_read`, `registry_example`, `registry_validate`, `qos_gate`, `plan_next`, `check_floors`, `validate_attempt`, `assess_disqualification`, `decide`, `split_holdout`, `summarise_eval`, `schemas`. Ledger writes stay local, through `tier-drop` or the dsh adapter.
+`POST https://model-tier-drop-mcp.bradheitmann.ai/mcp` speaks MCP over Streamable HTTP with JSON responses (handshake versions 2025-03-26, 2025-06-18, 2025-11-25 and the stateless `_meta` form 2026-07-28). It stores nothing and needs no key. Thirteen tools: `skill_read`, `registry_example`, `registry_validate`, `qos_gate`, `plan_next`, `adjacent`, `check_floors`, `validate_attempt`, `assess_disqualification`, `decide`, `split_holdout`, `summarise_eval`, `schemas`. Ledger writes stay local, through `tier-drop` or the dsh adapter.
 
 ```sh
 curl -s -H 'Content-Type: application/json' -H 'Accept: application/json' \

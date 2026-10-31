@@ -1,4 +1,4 @@
-//! The twelve MCP tools: definitions for `tools/list` and dispatch for `tools/call`.
+//! The thirteen MCP tools: definitions for `tools/list` and dispatch for `tools/call`.
 //!
 //! Every tool is a pure function of its arguments over `tier_drop_core`. Arguments are parsed with
 //! serde into structs that deny unknown fields, matching `additionalProperties: false`.
@@ -9,7 +9,7 @@ use serde_json::{json, Map, Value};
 // The alias only keeps a local editor hook from misreading the name; it is the core function.
 use tier_drop_core::summarise_eval as summarise_run;
 use tier_drop_core::{
-    Attempt, Candidate, Disqualification, EvalItem, Floor, Policy, Registry, Task, Tier,
+    Attempt, Candidate, Disqualification, EvalItem, Floor, ModelRef, Policy, Registry, Task, Tier,
 };
 
 use crate::assets;
@@ -126,6 +126,29 @@ pub fn list() -> Value {
                     "policy": policy_prop(),
                 }),
                 &["task", "registry"],
+            ),
+        ),
+        tool(
+            "adjacent",
+            "Adjacent escalation moves",
+            "The lawful next candidates one step from a candidate that failed: the same model at its next reasoning level, another lineage in the same tier, one tier up, or one tier down to a bound specialist. Every target is a fitting model; a tier passed over is listed in the move's passed_over. The caller chooses among the moves.",
+            input_schema(
+                json!({
+                    "from": {
+                        "type": "object",
+                        "description": "The starting ModelRef: { model_id, reasoning_level }.",
+                        "properties": {
+                            "model_id": { "type": "string", "description": "Registry model id." },
+                            "reasoning_level": { "type": "string", "description": "One of the model's reasoning levels." },
+                        },
+                        "required": ["model_id", "reasoning_level"],
+                        "additionalProperties": false,
+                    },
+                    "task": task, "registry": registry,
+                    "disqualifications": records("disqualification", "In-force disqualifications"),
+                    "policy": policy_prop(),
+                }),
+                &["from", "task", "registry"],
             ),
         ),
         tool(
@@ -282,6 +305,17 @@ struct PlanArgs {
 
 #[derive(Deserialize)]
 #[serde(deny_unknown_fields)]
+struct AdjacentArgs {
+    from: ModelRef,
+    task: Task,
+    registry: Registry,
+    #[serde(default)]
+    disqualifications: Vec<Disqualification>,
+    policy: Option<Policy>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
 struct FloorsArgs {
     task: Task,
     attempt: Attempt,
@@ -391,6 +425,18 @@ pub fn call(name: &str, args: Value) -> Result<Value, ToolError> {
                 &a.registry,
                 &a.disqualifications,
                 &a.attempts,
+                &policy,
+            ))
+        }
+        "adjacent" => {
+            let a: AdjacentArgs = parse(args)?;
+            let policy = a.policy.unwrap_or_default();
+            checked(&a.task, &a.registry, &policy)?;
+            to_value(&tier_drop_core::adjacent(
+                &a.from,
+                &a.task,
+                &a.registry,
+                &a.disqualifications,
                 &policy,
             ))
         }
@@ -515,7 +561,7 @@ pub(crate) mod tests {
     }
 
     #[test]
-    fn twelve_tools_all_closed() {
+    fn thirteen_tools_all_closed() {
         let l = list();
         let tools = l.as_array().unwrap();
         let names: Vec<&str> = tools.iter().map(|t| t["name"].as_str().unwrap()).collect();
@@ -527,6 +573,7 @@ pub(crate) mod tests {
                 "registry_validate",
                 "qos_gate",
                 "plan_next",
+                "adjacent",
                 "check_floors",
                 "validate_attempt",
                 "assess_disqualification",
@@ -541,6 +588,48 @@ pub(crate) mod tests {
             assert_eq!(t["inputSchema"]["additionalProperties"], false);
             assert!(t["inputSchema"]["required"].is_array());
         }
+        assert_eq!(tools.len(), 13);
+    }
+
+    #[test]
+    fn adjacent_over_the_example_registry_lists_moves() {
+        let a = call(
+            "adjacent",
+            json!({
+                "from": { "model_id": "jev", "reasoning_level": "none" },
+                "task": classify_task(),
+                "registry": example(),
+            }),
+        )
+        .unwrap();
+        assert_eq!(a["schema_version"], "tier-drop.adjacent_moves/1");
+        assert_eq!(a["from"]["tier"], "system_one");
+        assert_eq!(a["issues"], json!([]));
+        let moves = a["moves"].as_array().unwrap();
+        assert_eq!(moves[0]["kind"], "same_tier_other_lineage");
+        assert_eq!(moves[0]["to"]["model_id"], "laya");
+        assert!(moves
+            .iter()
+            .any(|m| m["kind"] == "one_tier_up" && m["tier_to"] == "cheap_generalist"));
+        // an unknown starting model is an answer with issues, not a tool error
+        let unknown = call(
+            "adjacent",
+            json!({
+                "from": { "model_id": "nope", "reasoning_level": "none" },
+                "task": classify_task(),
+                "registry": example(),
+            }),
+        )
+        .unwrap();
+        assert_eq!(unknown["issues"][0]["code"], "unknown_model");
+        assert_eq!(unknown["moves"], json!([]));
+        // unknown arguments are refused
+        let e = call(
+            "adjacent",
+            json!({ "from": { "model_id": "jev", "reasoning_level": "none", "x": 1 }, "task": classify_task(), "registry": example() }),
+        )
+        .unwrap_err();
+        assert_eq!(e.code, "invalid_arguments");
     }
 
     #[test]
@@ -621,7 +710,7 @@ pub(crate) mod tests {
         let one = call("schemas", json!({ "name": "task" })).unwrap();
         assert_eq!(one["schemas"].as_object().unwrap().len(), 1);
         let all = call("schemas", json!({})).unwrap();
-        assert_eq!(all["schemas"].as_object().unwrap().len(), 10);
+        assert_eq!(all["schemas"].as_object().unwrap().len(), 11);
         assert_eq!(
             call("schemas", json!({ "name": "x" })).unwrap_err().code,
             "unknown_schema"

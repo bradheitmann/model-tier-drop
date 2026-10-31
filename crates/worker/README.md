@@ -15,15 +15,15 @@ no storage and no auth; every tool is a pure function of the records the caller 
 | `GET /skill/references/<name>.md` | `composition`, `dataset`, `eval-harness`, `registry`, `routing-record`, `tiers` |
 | `GET /registry/example.json` | `registry/registry.example.json` |
 | `GET /policy/default.json` | `registry/policy.default.json` |
-| `GET /schemas/<name>.json` | `attempt`, `disqualification`, `eval_item`, `eval_run`, `eval_split`, `plan`, `policy`, `registry`, `routing_decision`, `task` |
+| `GET /schemas/<name>.json` | `adjacent_moves`, `attempt`, `disqualification`, `eval_item`, `eval_run`, `eval_split`, `plan`, `policy`, `registry`, `routing_decision`, `task` |
 | `GET /robots.txt` | `Disallow: /` |
 
 Anything else is a JSON 404. The files are embedded at compile time with `include_str!`.
 
 Tools (`tools/list` returns `{ tools, ttlMs: 3600000, cacheScope: "public" }`; every
 `inputSchema` has `additionalProperties: false`): `skill_read`, `registry_example`,
-`registry_validate`, `qos_gate`, `plan_next`, `check_floors`, `validate_attempt`,
-`assess_disqualification`, `decide`, `split_holdout`, `summarise_eval`, `schemas`.
+`registry_validate`, `qos_gate`, `plan_next`, `adjacent`, `check_floors`, `validate_attempt`,
+`assess_disqualification`, `decide`, `split_holdout`, `summarise_eval`, `schemas` (thirteen).
 A tool result carries `content[0].text` (the JSON text) and `structuredContent`. Bad arguments
 (unknown fields, wrong types, an invalid task or registry for the routing tools) give a JSON-RPC
 200 with `isError: true` and `structuredContent: { ok: false, error: { code, message } }`.
@@ -75,10 +75,14 @@ curl -s -o /dev/null -w '%{http_code}\n' "${H[@]}" $U/mcp -d '{"jsonrpc":"2.0","
 
 curl -s "${H[@]}" $U/mcp -d '{"jsonrpc":"2.0","id":3,"method":"tools/list"}' \
   | jq -c '.result | {n:(.tools|length), ttlMs, cacheScope, closed:([.tools[].inputSchema.additionalProperties==false]|all)}'
-# {"n":12,"ttlMs":3600000,"cacheScope":"public","closed":true}
+# {"n":13,"ttlMs":3600000,"cacheScope":"public","closed":true}
 
 # plan_next with a classify task and the registry from registry_example:
 #   {"isError":false,"kind":"try","tier":"system_one","candidates":["jev@none","laya@none"]}
+# adjacent from jev@none over the same task (send_remote false):
+#   {"isError":false,"kinds":["same_tier_other_lineage","one_tier_up","one_tier_up"],
+#    "targets":["laya@none","qwen-3.8-27b@none","qwen-3.8-27b@thinking"],
+#    "ladder":["system_one","cheap_generalist"]}
 # validate_attempt with recorded_at before the task's created_at:
 #   {"isError":false,"valid":false,"codes":["recorded_before_task_created"]}
 # decide with garbage arguments: HTTP 200,
@@ -137,6 +141,8 @@ A token that lacks *Workers Scripts: Edit* fails with `No access to the specifie
 GET /                       200  {"name":"model-tier-drop","version":"0.1.0","mcp":".../mcp","skill":".../skill/SKILL.md"}
 initialize 2025-11-25       200  protocolVersion 2025-11-25, serverInfo.name model-tier-drop, capabilities.tools.listChanged false
 tools/list                  200  12 tools, ttlMs 3600000, cacheScope "public", every inputSchema.additionalProperties false
+# That run predates the `adjacent` tool: the source now serves thirteen tools (the local transcript
+# above), and S-11 deploys them and records the new transcript.
 tools/call registry_example 200  as_of 2026-10-19, 15 models
 tools/call plan_next        200  isError false, kind "try", tier "system_one", candidates [jev, laya], skipped [tailored:no_provisioned_candidates]
 GET /skill/SKILL.md         200  sha256 6627c366…54727c, equal to skill/SKILL.md in the repository

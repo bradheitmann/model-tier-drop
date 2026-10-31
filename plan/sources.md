@@ -10,11 +10,11 @@
 | `SRC-owner-req` | `owner:REQ-MODEL-TIER-DROP-2026-10-19.md` | user_instruction | `a326303ff98abd1bcab19ad88f3d968bae42cd8e408ea1714dd6e1ea1ab344f8` |
 | `SRC-owner-review-profile` | `owner:DECISION-D-REVIEW-PROFILE-2026-10-19.md` | user_instruction | `b6cafd734ffa5374423ba3c539a989955545eaa57d5f960175e9b983077102b1` |
 | `SRC-owner-python-adapter` | `owner:DECISION-D-PYTHON-ADAPTER-2026-10-19.md` | user_instruction | `60ce24f625895a50fe713337cf0f6bb348d73cd17601f1af277432b9ffcda03f` |
-| `SRC-plan-requirements` | `repo:plan/requirements.md` | generated | `e3cad5cbef9e88d0dfe6931a3081c53945bd6024b35d7525bd4ee19815345c08` |
-| `SRC-plan-contracts` | `repo:plan/contracts.md` | generated | `764d9f59705173e7742b0b6e3557cf47d9b741ce306d8e401647fdce2927a801` |
-| `SRC-plan-technology` | `repo:plan/technology-decisions.md` | generated | `1f460ad85b0b88b0d22b36f9dfb83fce2f3b6603810837297b2150a42c672a10` |
+| `SRC-plan-requirements` | `repo:plan/requirements.md` | generated | `367b6a020e40d3384308f92efd5bc34e557209df2dbb2de7afbca2b3d00f0200` |
+| `SRC-plan-contracts` | `repo:plan/contracts.md` | generated | `265fbe0ed6ff819d3badf3c80b65d62c761a9368aa4b3149fdc67b47a0c3cb70` |
+| `SRC-plan-technology` | `repo:plan/technology-decisions.md` | generated | `e46697197f255be61f16a84e6c9075435af85caab05fb9aea868a48efc0e29be` |
 | `SRC-plan-implementation` | `repo:plan/implementation-plan.md` | generated | `a25551e27186f99582e36bf6521b409e9770dc85595887598ff39ed4da6204e8` |
-| `SRC-plan-coverage` | `repo:plan/slice-coverage.md` | generated | `aaa14487ac5a0db6b603a8653aebaa778a0db6015249d37b7e52f2af264009a3` |
+| `SRC-plan-coverage` | `repo:plan/slice-coverage.md` | generated | `74120ba4f25ae7121a09c5c9b1b6b7faf22fa81e6ea10c5c1dc24a9aa5fb5945` |
 
 ### How to recompute
 
@@ -28,7 +28,7 @@ The plan documents are recorded as `generated` sources with delegated authority.
 - Compiler: the REVENG Rust core (`reveng-core` 1.0.1), copied to a scratch directory and built with `cargo +1.88.0 build --release`. The skill directory itself was not modified.
 - `reveng graph-check plan/graph.json` passes.
 - `reveng compile plan/graph.json plan/scope.json <dir>` was run twice into two new directories. `diff -r` showed no differences. `plan/build.json` and `plan/contracts/*.json` are byte copies of the first run's output.
-- Result: 18 slices (9 implement, 9 verify) and 35 selected requirements, with none deferred.
+- Result: 18 slices (9 implement, 9 verify) and 35 selected requirements, with none deferred. After the S-10 refresh below: 22 slices (11 implement, 11 verify) and 38 selected requirements, still none deferred.
 
 ## Decisions
 
@@ -55,6 +55,17 @@ The plan documents are recorded as `generated` sources with delegated authority.
     - `prerequisite` edges: they now cite `plan/contracts.md` "Depends on" and the dependency list in `plan/implementation-plan.md`.
 
 12. **Final refresh against plan `4b2161d`.** `main` (`4b2161d`) was merged into `s08`. Commit `97c1ada` changed only `plan/requirements.md` (T-22: metadata values are strings, and the `sampled_review_forbidden` and `floor_out_of_range` issues are named) and `plan/technology-decisions.md` (`registry_validate` output typed `[Issue]`). The graph changes are the T-22 statement and the two source hashes for those files. No slice, edge or decision changed.
+
+## S-10 refresh (adjacent escalation moves)
+
+S-10 adds the amendment of 2026-10-31 to the graph.
+
+- Sources: the five `repo:plan/*` hashes were recomputed after the plan documents were amended. `plan/contracts.md` adds S-10 and S-11, `plan/requirements.md` adds R-07, R-23, R-24 and their tests, `plan/technology-decisions.md` adds `Model.lineage` and `AdjacentMoves`, and `plan/slice-coverage.md` lists the new slices. `plan/commission.md` did not change, so the decision nodes did not change.
+- Requirements and tests: R-07, T-07, R-23, T-23, R-24 and T-24 are new. R-20, R-21, R-32, T-21 and T-32 were rewritten to the amended text (the `adjacent` command, eleven schemas, thirteen tools).
+- Slices and stories: S-10 and V-10 under the new story ST-10 (epic E2); S-11 and V-11 under the new story ST-11 (epic E3).
+- Dependencies: S-10 waits for S-01 to S-09, because it edits prefixes those slices own (`crates/core`, `crates/cli`, `crates/worker/src`, `crates/worker/README.md`, `skill/SKILL.md`, `README.md`, `plan/build.json`, `plan/contracts`, `plan/graph.json`, `Cargo.lock`). V-10 waits for S-10. S-11 waits for V-10, which also orders it after S-10 over `crates/worker/README.md`.
+- Revision stays 1. The amendment extends the same plan, the compiler does not read `revision`, and no parent root is recorded, so the graph keeps the identity S-08 gave it.
+- Result: 22 slices (11 implement, 11 verify) and 38 selected requirements, none deferred. Two compiles into new directories were byte-identical (`diff -r`), and `plan/build.json` and `plan/contracts/*.json` are byte copies of the first.
 
 ## Earlier conflicts, now resolved
 
