@@ -29,7 +29,7 @@ Denominator: 38 requirements in `plan/requirements.md` (R-01…R-07, R-10…R-24
 
 ## Counts
 
-Implementation slices: 9 (S-01 … S-09). Verification slices: 9 (V-01 … V-09). Total: 18. Requirements selected: 35. Deferred: 0 inside the horizon.
+Implementation slices: 11 (S-01 … S-11). Verification slices: 11 (V-01 … V-11). Total: 22. Requirements selected: 38 (35 before the 2026-10-31 amendment, which added S-10, V-10, S-11 and V-11). Deferred: 0 inside the horizon.
 
 ## Explicitly out of scope (recorded, not silently dropped)
 

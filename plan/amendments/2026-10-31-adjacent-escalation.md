@@ -1,6 +1,6 @@
 # Amendment 2026-10-31: adjacent escalation moves
 
-Status: proposed by PM-MODEL-TIER-DROP; seam agreed with PM-MISTER-CLEAN and A/EXEC-PM on 2026-10-31. Mister Clean's half: `project/planning/seams/ESCALATION-ADJACENCY-SEAM.md` in mister-clean (commit b2db21e, PR 14; harness echo in the Move left open, not needed now). Binds slice S-10 / V-10.
+Status: proposed by PM-MODEL-TIER-DROP; seam agreed with PM-MISTER-CLEAN and A/EXEC-PM on 2026-10-31. Mister Clean's half: `project/planning/seams/ESCALATION-ADJACENCY-SEAM.md` in mister-clean (merged to mister-clean main a900908 via PR 14; harness echo in the Move left open, not needed now). Binds slice S-10 / V-10.
 
 ## Source
 
