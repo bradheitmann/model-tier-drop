@@ -47,7 +47,7 @@ jobs:
     name: charter (non-required until the charter repo is public)
     runs-on: ubuntu-latest
     env:
-      CHARTER_REV: 8610d51bed10fc3645efcbc38d3f2465fe04174a
+      CHARTER_REV: c923a80cca2f74dba701ee073e631cc692b978e7
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
         with:
