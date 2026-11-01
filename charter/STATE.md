@@ -1,4 +1,4 @@
-# State — model-tier-drop — 2026-11-01T08:30Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
+# State — model-tier-drop — 2026-11-01T09:00Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
 Proven (with the proof names):
 - s12 ACCEPTED (S-12, registry facts from a pinned model-atlas export; the polyswarm MODEL-ATLAS customer test): code by MTD/DEV (deepseek-flash); V-12 by MTD/QA (mimo, third family) on frozen head 321388d, no defects; receipt charter/receipts/s12-v12.json; reopen attestation. Pin: model-atlas.export/1 2026.11.01-2, sha256 e1262847…, verified against model-atlas 8519e20 and 33477fc. `cargo test -p tier-drop-cli --test atlas_export` runs 6 tests (unpriced and stale on derived copies).
 - charter-ci-c ACCEPTED (MTD/QA mimo, no defects; receipt charter/receipts/charter-ci-c.json, reopen attestation): CI carries the fleet pattern-C charter job at CHARTER_REV 8610d51. While the charter repository is private it logs the typed line "charter not run: repo private (owner decision pending)" and passes (CI 41280424818); once the repository is reachable it enforces `check --strict` with no edit. It supersedes the held branch charter-ci (archive/charter-ci).
@@ -24,7 +24,7 @@ Exact last-red command(s) and why:
 Next three bounded items (in order):
 1. S-11: deploy the Worker from s10 with A/EXEC-PM's go-ahead, run the live checks, V-11, then merge s10 to main.
 2. A docs slice for D5 and D6.
-3. The CI pin moves to the fixed charter rev once the charter-public decision is made.
+3. The next CI change: pattern-C template v2 (removes the internal ruling name from the public ci.yml comment) together with O-STD-6 (Actions pinned by SHA) and O-STD-5 (a scheduled dependency audit), as one slice with QA.
 Open owner decisions:
 - Ratify INTENT.md.
 - Make the charter repository public (blocks charter-ci).
