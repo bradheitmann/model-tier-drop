@@ -1,0 +1,33 @@
+{
+  "done_sha256": "990922d4c1d1edef13a0e1cd726d7ebc52c72ef90af61cb3561398a270882a04",
+  "entries": [
+    {
+      "evidence_sha256": "bd919d6c92e3ab7945f16022f37ba3666ff8d00de3de809635b8495fdef4a8ab",
+      "proof": "1",
+      "recorded_utc": "2026-11-01T06:36:26Z",
+      "run_id": "mtdqa-mimo-cic"
+    },
+    {
+      "evidence_sha256": "bd919d6c92e3ab7945f16022f37ba3666ff8d00de3de809635b8495fdef4a8ab",
+      "proof": "2",
+      "recorded_utc": "2026-11-01T06:36:26Z",
+      "run_id": "mtdqa-mimo-cic"
+    },
+    {
+      "evidence_sha256": "bd919d6c92e3ab7945f16022f37ba3666ff8d00de3de809635b8495fdef4a8ab",
+      "proof": "3",
+      "recorded_utc": "2026-11-01T06:36:26Z",
+      "run_id": "mtdqa-mimo-cic"
+    },
+    {
+      "evidence_sha256": "bd919d6c92e3ab7945f16022f37ba3666ff8d00de3de809635b8495fdef4a8ab",
+      "proof": "4",
+      "recorded_utc": "2026-11-01T06:36:26Z",
+      "run_id": "mtdqa-mimo-cic"
+    }
+  ],
+  "head": "b6fac4b25318daa73bf182f9118f1fa9199f85e2",
+  "manifest_sha256": "cb7ad5732f7a597898cf323b29800da801e96e5279114a9eca714a01c19d8950",
+  "schema_version": "charter.reopen/1",
+  "slice": "charter-ci-c"
+}
