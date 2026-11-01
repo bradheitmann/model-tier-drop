@@ -32,4 +32,4 @@ Open owner decisions:
 Where everything is (branches, lanes, receipts):
 - charter/SPEC.md refreshed with `charter init --refresh-spec` (135eb9c8… to 387276a3…, then to 56f03db2… at pin c923a80; one line; PM-CHARTER confirmed the command only rewrites a known historical SPEC.md).
 - main; branch s10 (accepted, awaiting S-11; owner PM-MODEL-TIER-DROP; tag archive/s10); branch charter-ci (held for the charter-public decision; owner PM-MODEL-TIER-DROP; tag archive/charter-ci). plan-adjacent is merged. Worktree lifecycle records are in the reveng WAVES ledger.
-- Receipts: charter/receipts/. Charter binary: charter 0.1.0 built from charter commit 8610d51 (includes freeze-scope-2, reopen attestation, accepted_unix_s).
+- Receipts: charter/receipts/. Charter pin: c923a80cca2f74dba701ee073e631cc692b978e7 (fleet pin, 2026-11-01). The per-repo binary is installed under ~/.local/share/charter/bin/<sha>; the hooks were reinstalled with it (no foreign hook existed, so nothing was displaced); the CI pattern-C job has CHARTER_REV = this pin. The re-accept workaround for STATE is no longer needed (cadence-staged-1).
