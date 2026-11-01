@@ -146,3 +146,20 @@ ping with _meta 2026-07-28  200  {"result":{"resultType":"complete"}}
 ```
 
 Roll back with `wrangler rollback` from this directory using the same credentials.
+
+## Next deploy (S-11, the `adjacent` tool)
+
+Status: waiting on the owner's go-ahead and a working credential. S-10 (branch `s10`, tag `archive/s10`) is accepted but must be deployed before it merges: the live Worker rejects the new `lineage` registry field, so the live Slice Zero test fails between a merge and the deploy.
+
+Credential requirement: an account API token with *Workers Scripts: Edit* (and zone DNS edit for the custom domain), supplied through the environment. Check it read-only first: `wrangler deployments list` must list deployments. A token without that permission answers "No access to the specified resource"; an OAuth login with read scopes answers `Authentication error [code: 10000]`.
+
+Steps, from a detached checkout of `s10` in `crates/worker`:
+
+1. `wrangler deployments list`: record the current deployment id as the rollback target.
+2. `wrangler deploy`.
+3. Live checks against `https://model-tier-drop-mcp.bradheitmann.ai/mcp`:
+   - `tools/list` has 13 tools, including `adjacent`;
+   - `tools/call adjacent` for the README task returns `isError: false` with only the four move kinds;
+   - from the checkout root, `cargo test -p tier-drop-cli --test slice_zero -- --ignored` passes.
+4. On any failure: `wrangler rollback <recorded id>`, then confirm `tools/list` is back to 12 tools.
+5. Record the deployment here (ids redacted), have it verified independently (V-11), then merge `s10`.
