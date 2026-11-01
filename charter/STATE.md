@@ -1,4 +1,4 @@
-# State — model-tier-drop — 2026-11-01T06:45Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
+# State — model-tier-drop — 2026-11-01T07:00Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
 Proven (with the proof names):
 - charter-ci-c ACCEPTED (MTD/QA mimo, no defects; receipt charter/receipts/charter-ci-c.json, reopen attestation): CI carries the fleet pattern-C charter job at CHARTER_REV 8610d51. While the charter repository is private it logs the typed line "charter not run: repo private (owner decision pending)" and passes (CI 41280424818); once the repository is reachable it enforces `check --strict` with no edit. It supersedes the held branch charter-ci (archive/charter-ci).
 - s10 ACCEPTED (S-10 adjacent escalation moves): code by MTD/DEV (Pi, deepseek-flash); V-10 by MTD/QA (Pi, xiaomi/mimo-v2.6-flash, a third family) on frozen head bfae923 (manifest 93fbe7a2…), no defects. On branch s10 (tag archive/s10, 5840a73): receipt charter/receipts/s10-v10.json is dispatch-cited; `gate --accept --receipt` passed; reopen attestation charter/.freeze/reopen/s10.json covers proofs 1-7; `receipt --verify-tree` passes against the tip that carries the freeze record. s10 is NOT merged to main: S-11 (deploying the Worker that accepts `lineage`) must come first, and it needs A/EXEC-PM's go-ahead.
@@ -30,5 +30,6 @@ Open owner decisions:
 - Adjacent moves: does a passed-over tier (no fitting model, or disqualified) count as one step? (plan/amendments/2026-10-31-adjacent-escalation.md.)
 - Branch deletions (merged branches) and scratch deletions are listed with A/EXEC-PM.
 Where everything is (branches, lanes, receipts):
+- charter/SPEC.md refreshed with `charter init --refresh-spec` (pre-rename text 135eb9c8… to 387276a3…; one line; PM-CHARTER confirmed the command only rewrites a known historical SPEC.md).
 - main; branch s10 (accepted, awaiting S-11; owner PM-MODEL-TIER-DROP; tag archive/s10); branch charter-ci (held for the charter-public decision; owner PM-MODEL-TIER-DROP; tag archive/charter-ci). plan-adjacent is merged. Worktree lifecycle records are in the reveng WAVES ledger.
 - Receipts: charter/receipts/. Charter binary: charter 0.1.0 built from charter commit 8610d51 (includes freeze-scope-2, reopen attestation, accepted_unix_s).
