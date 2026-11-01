@@ -1,0 +1,317 @@
+{
+  "schema": "model-atlas.export/1",
+  "export_version": "2026.11.01-2",
+  "generated_at": "2026-11-01T00:00:00Z",
+  "as_of": "2026-11-01T00:00:00Z",
+  "records": [
+    {
+      "artifacts": [
+        {
+          "id": "qwen3.8-27b-oq4e-mtp",
+          "quantization": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.serving-roster",
+            "value": "oQ4e (4b gs64 affine + 166 per-layer overrides @5)"
+          },
+          "repo": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.serving-roster",
+            "value": "Jundot/Qwen3.8-27B-oQ4e-mtp"
+          },
+          "served_context_tokens": {
+            "kind": "measured",
+            "last_verified": "2026-10-31",
+            "source": "src.served-artifact-probe",
+            "unknown": "the served-artifact identity probe could not reach the serving host, so the served limits were not read"
+          },
+          "served_max_output_tokens": {
+            "kind": "measured",
+            "last_verified": "2026-10-31",
+            "source": "src.served-artifact-probe",
+            "unknown": "the served-artifact identity probe could not reach the serving host, so the served limits were not read"
+          }
+        }
+      ],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.serving-roster",
+        "value": "Qwen 3.8 27B"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.serving-roster",
+        "value": "Qwen 3.8"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "qwen3.8-27b",
+      "kind": "card",
+      "last_verified": "2026-10-31",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.serving-roster",
+        "unknown": "the served artifact repo declares no license (local serving-fleet review); the base model license was not read in this slice"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.serving-roster",
+          "unknown": "the publisher's context window was not read; the local serving configuration declares a 262144-token served window, which is not the publisher's stated limit"
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.serving-roster",
+          "unknown": "the publisher's output ceiling is not read; the served harness max_tokens (32768) is a harness limit, not the model's own ceiling"
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.serving-roster",
+          "unknown": "how reasoning tokens are counted (inside_output / separate / none) is not stated in the sources read"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.serving-roster",
+          "unknown": "the architecture lineage (dense vs MoE) is not stated in the sources read"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.owner-model-budget",
+          "unknown": "the model maker is not read in this slice"
+        }
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.serving-roster",
+        "value": [
+          "text",
+          "vision"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.serving-roster",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.owner-model-budget",
+        "unknown": "the publisher's release page was not read in this slice"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.owner-model-budget",
+        "unknown": "the publisher's reasoning levels are not read in this slice"
+      },
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.owner-model-budget",
+        "unknown": "the publisher's tokenizer is not read in this slice"
+      },
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.serving-roster",
+        "value": "3.8"
+      }
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.field-window-refresh-1",
+        "value": "NVIDIA"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the endpoint URL was not read in this slice"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the wire API was not read in this slice"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.field-window-refresh-1",
+          "unknown": "whether a free tier exists was not established in this slice"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.nvidia",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "rate_limit_headers": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-10-31",
+        "n": 1,
+        "source": "src.field-window-refresh-1",
+        "value": false
+      }
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.slice-scope",
+        "value": "OpenCode Zen"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.slice-scope",
+            "unknown": "the endpoint URL was not read in this slice; no field-window evidence covers OpenCode Zen"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.slice-scope",
+            "unknown": "the wire API was not read in this slice; no field-window evidence covers OpenCode Zen"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.slice-scope",
+          "unknown": "the free-tier offer was not read in this slice; no field-window evidence covers OpenCode Zen"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.opencode-zen",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "rate_limit_headers": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.slice-scope",
+        "unknown": "whether rate-limit headers are sent was not observed in this slice"
+      }
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.field-window-refresh-1",
+        "value": "OpenRouter"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the endpoint URL was not read in this slice"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the wire API was not read in this slice"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [
+          {
+            "confidence": "low",
+            "kind": "observed",
+            "last_verified": "2026-10-31",
+            "n": 173,
+            "source": "src.field-window-refresh-1",
+            "unknown": "per-hour allowance unknown (no ceiling reached in 31 min across about 9 free-route seats; a lower bound only)"
+          }
+        ],
+        "offer": {
+          "confidence": "low",
+          "kind": "observed",
+          "last_verified": "2026-10-31",
+          "n": 173,
+          "source": "src.field-window-refresh-1",
+          "value": "free routes exist (e.g. nemotron-3.5-super-vl:free)"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.openrouter",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "rate_limit_headers": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-10-31",
+        "n": 1,
+        "source": "src.field-window-refresh-1",
+        "value": false
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "src.field-window-refresh-1",
+      "kind": "evidence",
+      "read_at": "2026-10-31",
+      "sha256": "adec852b49641409f9b03af2bcbd068307049dca60f8211bf24d19c5f899ed13",
+      "visibility": "private"
+    },
+    {
+      "id": "src.serving-roster",
+      "kind": "repo",
+      "read_at": "2026-10-31",
+      "visibility": "private"
+    },
+    {
+      "id": "src.served-artifact-probe",
+      "kind": "evidence",
+      "read_at": "2026-10-31",
+      "sha256": "6e806c559cb2e5df99c6cf76509d818f55758ce1d7ca2cfe1b5fa5c6fee81411",
+      "visibility": "private"
+    },
+    {
+      "id": "src.owner-model-budget",
+      "kind": "owner-statement",
+      "read_at": "2026-10-31",
+      "visibility": "private"
+    },
+    {
+      "id": "src.slice-scope",
+      "kind": "owner-statement",
+      "read_at": "2026-10-31",
+      "visibility": "private"
+    }
+  ]
+}
