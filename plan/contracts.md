@@ -230,3 +230,26 @@ Rollback: `wrangler rollback` to the previous deployment (recorded in S-06). Evi
 ## V-11 Verify the adjacent deployment — kind: verify — verifies S-11
 
 QA reruns the three live checks from a fresh clone of the S-10 tip and confirms the deployment id in `crates/worker/README.md` matches `wrangler deployments list`.
+
+---
+
+## S-12 Registry facts from a pinned model-atlas export — kind: implement — epic E2 (amendment 2026-11-01)
+
+Requirements: R-25. Normative design: `plan/amendments/2026-11-01-atlas-export-customer.md`.
+Depends on: S-01 to S-09 merged; independent of S-10 and S-11. Write prefixes: `crates/cli/src/atlas.rs`, `crates/cli/src/lib.rs` or `crates/cli/src/main.rs` (module registration only), `crates/cli/tests/atlas_export.rs`, `crates/cli/tests/fixtures/`, `crates/cli/Cargo.toml`, `Cargo.lock`. Not `plan/graph.json`: s10 (unmerged, waiting on S-11) carries the 22-slice graph, so the graph is recompiled once, to 24 slices, after s10 and S-12 have both merged (STATE next item).
+
+Steps:
+1. Vendor the export file that PM-MODEL-ATLAS announced for the focus window as `crates/cli/tests/fixtures/model-atlas-export-<export_version>.json`, byte for byte. Record its export_version, sha256 and source commit in a comment at the top of the test.
+2. Tests first (`crates/cli/tests/atlas_export.rs`): the fixture's sha256 equals the pinned constant; every card resolves without `atlas_fact_missing`; an Unknown tariff stays Unknown, never 0.0; a stale record keeps its flag; every Known fact's source resolves.
+3. Implement `crates/cli/src/atlas.rs`: serde types for the parts of `model-atlas.export/1` used here, `resolve(card, route?) -> ResolvedFacts`, and the issues. The core crate is untouched.
+
+Checks: `cargo fmt --all --check` exit 0; `cargo clippy --workspace --all-targets -- -D warnings` exit 0; `cargo test --workspace` exit 0; `cargo test -p tier-drop-cli --test atlas_export` exit 0; `git diff main -- crates/core plan/graph.json plan/build.json` empty; `charter check --strict` exit 0; `gitleaks protect --staged --redact` exit 0; `grep -rn '/Users/' crates/cli/tests/fixtures` prints nothing.
+Rollback: revert the branch. Evidence: outputs, plus the pinned export_version and sha256.
+
+## V-12 Verify registry facts from a pinned model-atlas export — kind: verify — verifies S-12
+
+QA (a model family different from the author's) reruns every S-12 check on the frozen tip. It confirms the fixture bytes equal the export at the announced model-atlas commit (`git -C <model-atlas> show <commit>:<path> | shasum -a 256`). Mutants:
+- (a) edit one fact value in the fixture: the sha256 test fails;
+- (b) map an Unknown tariff to 0.0: the unpriced-route test fails;
+- (c) drop the stale flag: the stale test fails;
+- (d) skip the source lookup: the source test fails.
