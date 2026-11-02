@@ -1,0 +1,7 @@
+{
+  "base_commit": "04a8f9f7ad083e98b1c3722f85b9b4b5eeccf230",
+  "brief_sha256": "9894051ff453abd5e3d01c3b0491ce36b3cacbe8eb2f470fe5895758731a6c27",
+  "done_sha256": "b91e079dd03b1373575526de71352cf488c0dc5ae51ad2a0f831d681b5df0c59",
+  "schema_version": "charter.dispatch/1",
+  "slice": "seam-sync-1"
+}
