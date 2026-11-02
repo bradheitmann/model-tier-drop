@@ -253,3 +253,16 @@ QA (a model family different from the author's) reruns every S-12 check on the f
 - (b) map an Unknown tariff to 0.0: the unpriced-route test fails;
 - (c) drop the stale flag: the stale test fails;
 - (d) skip the source lookup: the source test fails.
+
+---
+
+## S-13 Re-pin the model-atlas export to 2026.11.01-4 — kind: implement — epic E2 (amendment 2026-11-01, addendum 2026-11-02)
+
+Requirements: R-25. Depends on: S-12 merged. Write prefixes: `crates/cli/src/atlas.rs`, `crates/cli/tests/atlas_export.rs`, `crates/cli/tests/fixtures/`.
+Steps: 1. Vendor exports/model-atlas.export-2026.11.01-4.json byte for byte as `crates/cli/tests/fixtures/model-atlas-export-2026.11.01-4.json`, replace the pinned sha256, and remove the -2 fixture in the same commit with `git rm` (not a filesystem delete). 2. Tests first: every one of the 4 cards resolves; route costs with cost_basis and is_free; the implied free route resolves to 0.15/0.5 with is_free true; an implied price of 0 on a derived copy raises `atlas_implied_price_zero`; lineage from maker_id (deepseek, qwen, xiaomi) with architecture Unknown; the existing unpriced and stale derived-copy tests are kept. 3. Implement the addendum rules in `atlas.rs`.
+Checks: `cargo fmt --all --check` exit 0; `cargo clippy --workspace --all-targets -- -D warnings` exit 0; `cargo test --workspace` exit 0; `cargo test -p tier-drop-cli --test atlas_export` exit 0; `git diff main -- crates/core` empty; `charter check --strict` exit 0; `gitleaks protect --staged --redact` exit 0.
+Rollback: revert the branch.
+
+## V-13 Verify the re-pin — kind: verify — verifies S-13
+
+QA (different family) reruns the S-13 checks on the frozen tip, confirms the fixture bytes equal model-atlas 7435bbd's file, and applies mutants: (a) map an implied price of 0 as a valid zero (the implied-zero test fails); (b) build lineage as maker/architecture with an unknown architecture (the lineage test fails); (c) edit one byte of the fixture (the sha test fails).

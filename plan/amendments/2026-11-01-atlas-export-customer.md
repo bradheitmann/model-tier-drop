@@ -25,3 +25,12 @@ model-atlas owns model facts; tier-drop owns tiers (seam agreed 2026-10-31 with 
 ## Pin refresh
 
 The pin is refreshed once per focus window from PM-MODEL-ATLAS's announced export (`export_version`, sha256, commit). A refresh replaces the fixture and the asserted sha256 in one commit.
+
+## Addendum 2026-11-02: pin refresh to export 2026.11.01-4 (binds S-13 / V-13)
+
+Export 2026.11.01-4 (sha256 227b03988104c7f386a810a9d40e1deb5e635226c1de2b5b5108765cd41e75df, producing commit 7435bbd) carries 4 cards, 4 providers and 5 routes with list tariffs, one free route with an implied price, and `lineage.maker_id` slugs. The refresh adds these rules:
+- **Routes:** a card's cost comes from its route(s) in the export (matched by `route.card`). When there are several routes, all are returned, each with its route id, `cost_basis` (`list` / `implied` / `actual`) and `is_free`. Routes with no card (`card` absent or `card_unknown`) are resolved by route id only.
+- **Implied price:** a route with `cost_basis = implied` resolves to `Known(implied price)` with `is_free = true` and `cost_basis = implied`. An implied price of 0 is the issue `atlas_implied_price_zero` (model-atlas D-A, fixed in -4). It must not be taken as a real zero.
+- **Lineage:** `lineage.maker_id` is the family. When `lineage.architecture` is unknown (every card in -4), lineage resolves to `Known(<maker_id>)` with `architecture: Unknown(<reason>)`. This replaces the `"<maker>/<architecture>"` format, which would have thrown away the known maker. When both are known: `"<maker_id>/<architecture>"`.
+- **Renamed route ids:** `route.deepseek.deepseek-v4-flash` is now `route.deepseek.deepseek-flash`. Atlas refs use the new id.
+- Unpriced-route and stale-record paths stay on derived copies, because -4 has neither (PM-MODEL-ATLAS: never invented).
