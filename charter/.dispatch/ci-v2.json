@@ -1,0 +1,7 @@
+{
+  "base_commit": "133b8055af943b7e352eae9be6db16567fd89993",
+  "brief_sha256": null,
+  "done_sha256": "1a0f86f47ca9c01ea4ffea973fea224370a0cac35f7c535ab3ba81970d908491",
+  "schema_version": "charter.dispatch/1",
+  "slice": "ci-v2"
+}
