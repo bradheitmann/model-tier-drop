@@ -1,0 +1,1598 @@
+{
+  "schema": "model-atlas.export/1",
+  "export_version": "2026.11.02-3",
+  "generated_at": "2026-11-02T00:00:00Z",
+  "as_of": "2026-11-02T00:00:00Z",
+  "records": [
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek V4 Flash"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "deepseek-flash"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "deepseek-v4-flash",
+      "kind": "card",
+      "last_verified": "2026-11-01",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot captured states a licence for these weights; the Hugging Face page was not part of this capture"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 1048576
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "note": "not confirmed by a live call",
+          "settled": false,
+          "source": "src.models-dev-api",
+          "value": 393216
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-reasoning",
+          "unknown": "no snapshot states whether the 384K output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage (dense vs MoE) for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": "DeepSeek"
+        },
+        "maker_id": "deepseek"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": [
+          "low",
+          "high",
+          "max"
+        ]
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot states a tokenizer or vocabulary size for this model"
+      },
+      "tokenizer_density": [
+        {
+          "build": "run36",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "note": "the source states one probe — \"1,150,108-byte prompt accepted as 276,033 prompt tokens\" — and the ratio \"measured 4.17 on DeepSeek (1,150,108 bytes = 276,033 prompt tokens, 2026-10-30)\" for that probe; with n=1 its min and max are that same literal",
+            "source": "src.deepseek-host-profile-a8a24175",
+            "value": 4.17
+          },
+          "counter": "vendor-reported prompt token count on a live call (not our tokenizer run)",
+          "max": 4.17,
+          "min": 4.17,
+          "role": "live-confirmation-probe",
+          "tokenizer_unknown": "vendor-reported prompt_tokens on a live call; the tokenizer was not run by us and its hash is not in the cited source"
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.round20-ds-window-body-b",
+            "value": 2075276
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "note": "round(2075276 / 738038, 3); the numerator is the character count recorded in body-B.json, the denominator the provider's usage.prompt_tokens in resp-B.json",
+            "source": "src.round20-ds-window-resp-b",
+            "value": 2.812
+          },
+          "counter": "vendor-reported usage.prompt_tokens on the control call (max_tokens 16, HTTP 200)",
+          "max": 2.812,
+          "min": 2.812,
+          "role": "claim-author-correction-transition-s1",
+          "tokenizer_unknown": "provider-reported usage.prompt_tokens on a live call; DeepSeek's tokenizer was not run by us",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.round20-ds-window-resp-b",
+            "value": 738038
+          }
+        }
+      ],
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek-V4.1-Flash-1017"
+      }
+    },
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek V4 Pro"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "deepseek-thinking"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "deepseek-v4-pro",
+      "kind": "card",
+      "last_verified": "2026-11-01",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot captured states a licence for these weights; the Hugging Face page was not part of this capture"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 1048576
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "note": "not confirmed by a live call",
+          "settled": false,
+          "source": "src.models-dev-api",
+          "value": 393216
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-reasoning",
+          "unknown": "no snapshot states whether the 384K output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage (dense vs MoE) for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": "DeepSeek"
+        },
+        "maker_id": "deepseek"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": [
+          "text"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": [
+          "low",
+          "high",
+          "max"
+        ]
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot states a tokenizer or vocabulary size for this model"
+      },
+      "tokenizer_density": [
+        {
+          "build": "run36",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.deepseek-host-profile-a8a24175",
+            "unknown": "the source states \"1,150,109-byte prompt accepted as 276,086 prompt tokens\" and gives no ratio for this probe; 4.17 in the same file is the flash probe's figure"
+          },
+          "counter": "vendor-reported prompt token count on a live call (not our tokenizer run)",
+          "role": "live-confirmation-probe",
+          "tokenizer_unknown": "vendor-reported prompt_tokens on a live call; the tokenizer was not run by us and its hash is not in the cited source"
+        }
+      ],
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek-V4-Pro-0813"
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "id": "qwen3.8-27b-oq4e-mtp",
+          "quantization": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.serving-roster",
+            "value": "oQ4e (4b gs64 affine + 166 per-layer overrides @5)"
+          },
+          "repo": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.serving-roster",
+            "value": "Jundot/Qwen3.8-27B-oQ4e-mtp"
+          },
+          "served_context_tokens": {
+            "kind": "measured",
+            "last_verified": "2026-10-31",
+            "source": "src.served-artifact-probe",
+            "unknown": "the served-artifact identity probe could not reach the serving host, so the served limits were not read"
+          },
+          "served_max_output_tokens": {
+            "kind": "measured",
+            "last_verified": "2026-10-31",
+            "source": "src.served-artifact-probe",
+            "unknown": "the served-artifact identity probe could not reach the serving host, so the served limits were not read"
+          }
+        }
+      ],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "Qwen 3.8 27B"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "Qwen3.8"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "qwen3.8-27b",
+      "kind": "card",
+      "last_verified": "2026-10-31",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "apache-2.0"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.hf-qwen3.8-27b-config",
+          "value": 262144
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the model's own output ceiling; the OpenRouter listing offers 235929 tokens on that route, which is a provider limit"
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.hf-qwen3.8-27b-readme",
+          "unknown": "no snapshot states whether the output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "note": "config.json model_type is qwen3_5_text",
+          "source": "src.hf-qwen3.8-27b-config",
+          "value": "Qwen3_5ForConditionalGeneration"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.hf-qwen3.8-27b",
+          "value": "Qwen"
+        },
+        "maker_id": "qwen"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.hf-qwen3.8-27b",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "Qwen"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": [
+          "none",
+          "low",
+          "medium",
+          "xhigh"
+        ]
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.hf-qwen3.8-27b-config",
+        "unknown": "config.json states vocab_size 248320 and model_type \"qwen3_5_text\"; it names no tokenizer class"
+      },
+      "tokenizer_density": [
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 10,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 2.795
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.268,
+          "min": 2.6,
+          "role": "claim-author-correction-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 14,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.666
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.068,
+          "min": 3.485,
+          "role": "claim-reviewer",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 13,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.669
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.065,
+          "min": 3.514,
+          "role": "claim-reviewer-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 13,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.741
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.164,
+          "min": 3.517,
+          "role": "claim-author-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.568
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.568,
+          "min": 3.568,
+          "role": "worker",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38g",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.675
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.675,
+          "min": 3.675,
+          "role": "worker",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38g",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.712
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.712,
+          "min": 3.712,
+          "role": "reconciler",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.907
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.907,
+          "min": 3.907,
+          "role": "graph-edit-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 17,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.933
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.941,
+          "min": 3.917,
+          "role": "researcher",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 5,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.069
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.162,
+          "min": 4.001,
+          "role": "claim-reviewer-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 8,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.044
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.046,
+          "min": 4.043,
+          "role": "custodian",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.078
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.078,
+          "min": 4.078,
+          "role": "claim-reviewer-transition-s2",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.342
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.342,
+          "min": 4.342,
+          "role": "researcher-transition-s2",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 84,
+            "note": "n is the snapshot's `files=84`, one assembled input per P05 call; the file says files, not prompts",
+            "source": "src.qwen-density-summary-2026-11-02",
+            "value": 3.337
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.342,
+          "min": 2.6,
+          "role": "all-p05",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38g",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 2,
+            "note": "n is the snapshot's `files=2`",
+            "source": "src.qwen-density-summary-2026-11-02",
+            "value": 3.695
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.712,
+          "min": 3.675,
+          "role": "all-p05",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        }
+      ],
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "3.8"
+      }
+    },
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "MiMo-V2.6-Flash"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "mimo"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "xiaomi-mimo-v2.6-flash",
+      "kind": "card",
+      "last_verified": "2026-11-01",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "the publisher's Hugging Face page returned HTTP 401 at capture time and no other snapshot states a licence"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 1048576
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.openrouter-models",
+          "value": 131072
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states whether the output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.openrouter-models",
+          "value": "Xiaomi"
+        },
+        "maker_id": "xiaomi"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": [
+          "text",
+          "image",
+          "audio",
+          "video"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": "Xiaomi"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "the provider listing exposes a reasoning toggle only; it states no named levels"
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "the publisher's page was unavailable (HTTP 401) and no snapshot states a tokenizer"
+      },
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "2.6"
+      }
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-11-01",
+            "source": "src.deepseek-pricing",
+            "value": "https://api.deepseek.com"
+          },
+          "wire_api": {
+            "kind": "assumed",
+            "last_verified": "2026-11-01",
+            "note": "the snapshot states \"BASE URL (OpenAI Format)\"; openai-chat is the model-atlas wire_api that maps to, not a string the page prints",
+            "source": "src.deepseek-pricing",
+            "value": "openai-chat"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "unknown": "no snapshot states a free tier for DeepSeek's own API"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.deepseek",
+      "kind": "provider",
+      "last_verified": "2026-11-01",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.otel-genai-registry",
+        "value": "deepseek"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": "api.deepseek.com"
+      },
+      "peak_windows": [
+        {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": "Peak hours are 01:00 - 04:00 and 06:00 - 10:00 UTC"
+        },
+        {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": "Off-peak rates are half of the peak rates"
+        },
+        {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": "All other hours are off-peak, including weekends and Chinese public holidays in full"
+        }
+      ],
+      "rate_limit_headers": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "unknown": "no snapshot states whether this provider sends rate-limit headers"
+      },
+      "stale": null
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.field-window-refresh-1",
+        "value": "NVIDIA"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the endpoint URL was not read in this slice"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the wire API was not read in this slice"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.field-window-refresh-1",
+          "unknown": "whether a free tier exists was not established in this slice"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.nvidia",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.otel-genai-registry",
+        "unknown": "the OTel GenAI registry snapshot does not list NVIDIA as a provider value"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "integrate.api.nvidia.com"
+      },
+      "peak_windows": [],
+      "rate_limit_headers": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-10-31",
+        "n": 1,
+        "source": "src.field-window-refresh-1",
+        "value": false
+      },
+      "stale": null
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.slice-scope",
+        "value": "OpenCode Zen"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.slice-scope",
+            "unknown": "the endpoint URL was not read in this slice; no field-window evidence covers OpenCode Zen"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.slice-scope",
+            "unknown": "the wire API was not read in this slice; no field-window evidence covers OpenCode Zen"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.slice-scope",
+          "unknown": "the free-tier offer was not read in this slice; no field-window evidence covers OpenCode Zen"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.opencode-zen",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.otel-genai-registry",
+        "unknown": "the OTel GenAI registry snapshot does not list OpenCode Zen as a provider value"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "opencode.ai"
+      },
+      "peak_windows": [],
+      "rate_limit_headers": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.slice-scope",
+        "unknown": "whether rate-limit headers are sent was not observed in this slice"
+      },
+      "stale": null
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.field-window-refresh-1",
+        "value": "OpenRouter"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the endpoint URL was not read in this slice"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the wire API was not read in this slice"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [
+          {
+            "confidence": "low",
+            "kind": "observed",
+            "last_verified": "2026-10-31",
+            "n": 173,
+            "source": "src.field-window-refresh-1",
+            "unknown": "per-hour allowance unknown (no ceiling reached in 31 min across about 9 free-route seats; a lower bound only)"
+          }
+        ],
+        "offer": {
+          "confidence": "low",
+          "kind": "observed",
+          "last_verified": "2026-10-31",
+          "n": 173,
+          "source": "src.field-window-refresh-1",
+          "value": "free routes exist (e.g. nemotron-3.5-super-vl:free)"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.openrouter",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.otel-genai-registry",
+        "unknown": "the OTel GenAI registry snapshot lists anthropic, aws.bedrock, azure.ai.inference, azure.ai.openai, cohere, deepseek, gcp.gemini, gcp.gen_ai, gcp.vertex_ai, groq, ibm.watsonx.ai, mistral_ai, openai, perplexity and x_ai; it does not name OpenRouter"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": "openrouter.ai"
+      },
+      "peak_windows": [],
+      "rate_limit_headers": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-10-31",
+        "n": 1,
+        "source": "src.field-window-refresh-1",
+        "value": false
+      },
+      "stale": null
+    },
+    {
+      "aliases": [
+        "route.deepseek.deepseek-v4-flash"
+      ],
+      "card": "deepseek-v4-flash",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": 1048576
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.deepseek.deepseek-flash",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-01",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": 393216
+      },
+      "observations": {
+        "limit_events": [
+          {
+            "at": "2026-11-02T18:57:00",
+            "headers_present": false,
+            "message": {
+              "kind": "observed",
+              "last_verified": "2026-11-02",
+              "n": 1,
+              "note": "quoted from the HTTP 400 body; the body ends with a request id and a 'Please reduce the length of the messages or completion.' sentence that are not part of the quoted figures",
+              "source": "src.round20-ds-window-resp-a",
+              "value": "This model's maximum context length is 1048576 tokens. However, you requested 1119742 tokens (738038 in the messages, 381704 in the completion)"
+            },
+            "n": 1,
+            "text_class": "context_length_exceeded"
+          }
+        ],
+        "throughput": []
+      },
+      "provider": "provider.deepseek",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": "deepseek-flash"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": 0.003
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": 0.6
+        },
+        "price_source": "src.deepseek-pricing"
+      }
+    },
+    {
+      "card": "deepseek-v4-pro",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": 1048576
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.deepseek.deepseek-v4-pro",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-01",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "value": 393216
+      },
+      "observations": {
+        "throughput": []
+      },
+      "provider": "provider.deepseek",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "value": "deepseek-v4-pro"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": 0.022
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": 0.66
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "value": 1.98
+        },
+        "price_source": "src.deepseek-pricing"
+      }
+    },
+    {
+      "card": "xiaomi-mimo-v2.6-flash",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": 1050000
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.xiaomi-mimo-v2-6-flash",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-01",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": 131072
+      },
+      "observations": {
+        "throughput": []
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": "xiaomi/mimo-v2.6-flash"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.0028
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.14
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.28
+        },
+        "price_source": "src.models-dev-api"
+      }
+    },
+    {
+      "card_unknown": "no nemotron-3.5-super-vl card exists in this repository yet; publisher facts were not captured, and a card is not invented",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": 1000000
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.nvidia-nemotron-3-5-super-vl-free",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": true
+      },
+      "kind": "route",
+      "last_verified": "2026-10-31",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": 131072
+      },
+      "observations": {
+        "throughput": [
+          {
+            "method": "probe",
+            "n": 1,
+            "tokens_per_second": {
+              "confidence": "low",
+              "kind": "observed",
+              "last_verified": "2026-10-31",
+              "n": 1,
+              "source": "src.field-window-refresh-1",
+              "unknown": "the 2026-10-31 field window recorded a 0.35 s first-probe latency on this free route, not a throughput measurement"
+            }
+          }
+        ]
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": "nvidia/nemotron-3.5-super-vl:free"
+      },
+      "stale": null,
+      "tariff": {
+        "cost_basis": "implied",
+        "implied_from": [
+          "route.openrouter.nvidia-nemotron-3-5-super-vl"
+        ],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.5
+        },
+        "price_source": "src.models-dev-api"
+      }
+    },
+    {
+      "card_unknown": "no nemotron-3.5-super-vl card exists in this repository yet; publisher facts were not captured, and a card is not invented",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": 1048576
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.nvidia-nemotron-3-5-super-vl",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-10-31",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": 235929
+      },
+      "observations": {
+        "throughput": [
+          {
+            "method": "probe",
+            "n": 1,
+            "tokens_per_second": {
+              "confidence": "low",
+              "kind": "observed",
+              "last_verified": "2026-10-31",
+              "n": 1,
+              "source": "src.field-window-refresh-1",
+              "unknown": "the 2026-10-31 field window recorded a 9.2 s first-probe latency on the NVIDIA-hosted route, not a throughput measurement"
+            }
+          }
+        ]
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.openrouter-models",
+        "value": "nvidia/nemotron-3.5-super-vl"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.02
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "value": 0.5
+        },
+        "price_source": "src.models-dev-api"
+      }
+    },
+    {
+      "card": "qwen3.8-27b",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": 262144
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.qwen-qwen3-8-27b",
+      "is_free": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot prices this upstream above zero (prompt \"0.00000015\"); false is the mapping of that, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-02",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": 235929
+      },
+      "observations": {
+        "throughput": []
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": "qwen/qwen3.8-27b"
+      },
+      "stale": null,
+      "supports_response_format": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot's supported_parameters lists \"response_format\"; true is the mapping, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": true
+      },
+      "supports_structured_outputs": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot's supported_parameters lists \"structured_outputs\"; true is the mapping, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": true
+      },
+      "supports_tools": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot's supported_parameters lists \"tools\"; true is the mapping, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": true
+      },
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "assumed",
+          "last_verified": "2026-11-02",
+          "note": "the snapshot prints \"0.0000000375\" per token for input_cache_read; x 1e6 gives this per-Mtok value",
+          "source": "src.openrouter-qwen-endpoints",
+          "value": 0.0375
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "assumed",
+          "last_verified": "2026-11-02",
+          "note": "the snapshot prints \"0.00000015\" per token; this field is USD per Mtok, so the value is that literal x 1e6",
+          "source": "src.openrouter-qwen-endpoints",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "assumed",
+          "last_verified": "2026-11-02",
+          "note": "the snapshot prints \"0.000001875\" per token; x 1e6 gives this per-Mtok value",
+          "source": "src.openrouter-qwen-endpoints",
+          "value": 1.875
+        },
+        "price_source": "src.openrouter-qwen-endpoints"
+      },
+      "upstream": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": "deepinfra/bf16"
+      },
+      "uptime_last_1d": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-11-02",
+        "n": 1,
+        "note": "window: the capture instant 2026-11-01T23:22:58Z, read from the capture dir's CAPTURED_AT file; one sample of the upstream's reported 1-day uptime",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": 99.375
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "src.deepseek-host-profile-a8a24175",
+      "kind": "repo",
+      "read_at": "2026-11-02",
+      "sha256": "1c7ba7af6973e5d4de5cd8eceb306ef4da280ddd9aa70a3de84aadb005425260",
+      "visibility": "private"
+    },
+    {
+      "id": "src.deepseek-pricing",
+      "kind": "url",
+      "locator": "https://api-docs.deepseek.com/quick_start/pricing",
+      "read_at": "2026-11-01",
+      "sha256": "579412351262de19f1b067420542d042dc9433f389be6d252d0f4c41b82f515b",
+      "visibility": "public"
+    },
+    {
+      "id": "src.deepseek-reasoning",
+      "kind": "url",
+      "locator": "https://api-docs.deepseek.com/guides/reasoning_model",
+      "read_at": "2026-11-01",
+      "sha256": "723bbdcf0b8fd45ae629b0c9fa3939bbfa2af368c69c2ce37ff532049ddde9e3",
+      "visibility": "public"
+    },
+    {
+      "id": "src.field-window-refresh-1",
+      "kind": "evidence",
+      "read_at": "2026-10-31",
+      "sha256": "adec852b49641409f9b03af2bcbd068307049dca60f8211bf24d19c5f899ed13",
+      "visibility": "private"
+    },
+    {
+      "id": "src.hf-qwen3.8-27b-config",
+      "kind": "url",
+      "locator": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/config.json",
+      "read_at": "2026-11-01",
+      "sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "visibility": "public"
+    },
+    {
+      "id": "src.hf-qwen3.8-27b-readme",
+      "kind": "url",
+      "locator": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/README.md",
+      "read_at": "2026-11-01",
+      "sha256": "57e4bdb258ee1a7d2635c5174ebd4e56abe392505cdb5f8bbb356b0dc4293641",
+      "visibility": "public"
+    },
+    {
+      "id": "src.hf-qwen3.8-27b",
+      "kind": "url",
+      "locator": "https://huggingface.co/api/models/Qwen/Qwen3.8-27B",
+      "read_at": "2026-11-01",
+      "sha256": "6f461ec3e2872418cc86e54a9623f7e16ab804c53ad82aa47f9e7aab0c36585d",
+      "visibility": "public"
+    },
+    {
+      "id": "src.serving-roster",
+      "kind": "repo",
+      "read_at": "2026-10-31",
+      "visibility": "private"
+    },
+    {
+      "id": "src.models-dev-api",
+      "kind": "url",
+      "locator": "https://models.dev/api.json",
+      "read_at": "2026-11-01",
+      "sha256": "ddccec540cf96edda9b80fd364e3ac288ae890a87558a3daa9f345921a585065",
+      "visibility": "public"
+    },
+    {
+      "id": "src.served-artifact-probe",
+      "kind": "evidence",
+      "read_at": "2026-10-31",
+      "sha256": "6e806c559cb2e5df99c6cf76509d818f55758ce1d7ca2cfe1b5fa5c6fee81411",
+      "visibility": "private"
+    },
+    {
+      "id": "src.openrouter-models",
+      "kind": "url",
+      "locator": "https://openrouter.ai/api/v1/models",
+      "read_at": "2026-11-01",
+      "sha256": "fcf18dd919466567e4777974e932d656459772e4917cfe5fef51e057d06d927b",
+      "visibility": "public"
+    },
+    {
+      "id": "src.openrouter-qwen-endpoints",
+      "kind": "url",
+      "locator": "https://openrouter.ai/api/v1/models/qwen/qwen3.8-27b/endpoints",
+      "read_at": "2026-11-02",
+      "sha256": "36ff1e790ddd77b4604788c5368b6fb2b7bc930eaf9940055a7044e309bdb334",
+      "visibility": "public"
+    },
+    {
+      "id": "src.otel-genai-registry",
+      "kind": "url",
+      "locator": "https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/",
+      "read_at": "2026-11-01",
+      "sha256": "b2ee56386826adbfef947160676d4a71c9a1529ed5f5d906b644cb535ed2c693",
+      "visibility": "public"
+    },
+    {
+      "id": "src.qwen-density-by-role-2026-11-02",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "453e8b19462bcf532a09d76ae64b80fc3f04a1614412a21536c86f853ae7e3fc",
+      "visibility": "private"
+    },
+    {
+      "id": "src.qwen-density-summary-2026-11-02",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "06afe08306dc10bee31208f0e0ce1d487880f3d6b51feb0c6525f6285946b9d2",
+      "visibility": "private"
+    },
+    {
+      "id": "src.round20-ds-window-resp-a",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "0292d7a5161da5449df711a1ec5cfbf991621cf1b3d6664ba5652e5acd5a0663",
+      "visibility": "private"
+    },
+    {
+      "id": "src.round20-ds-window-resp-b",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "d762c17552c194f3335ab9b619be2722daa2b6a8949839456b5b8e8dce7c9439",
+      "visibility": "private"
+    },
+    {
+      "id": "src.slice-scope",
+      "kind": "owner-statement",
+      "read_at": "2026-10-31",
+      "visibility": "private"
+    }
+  ]
+}
