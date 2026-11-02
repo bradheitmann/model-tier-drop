@@ -1,4 +1,4 @@
-# State — model-tier-drop — 2026-11-02T17:00Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
+# State — model-tier-drop — 2026-11-02T23:55Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5) at the owner wind-down closeout
 Proven (with the proof names):
 - s13 ACCEPTED (S-13: re-pin to model-atlas.export/1 2026.11.01-4, sha256 227b0398…, verified against model-atlas 7435bbd): code by MTD/DEV, V-13 by MTD/QA (mimo), no defects. Route costs carry cost_basis and is_free, an implied price of 0 is the atlas_implied_price_zero issue, and lineage comes from maker_id (architecture Unknown kept separate). 9 atlas_export tests.
 - ci-v2 ACCEPTED (MTD/QA mimo): CI carries the charter pattern-C template v2 at CHARTER_REV 7b12eea (generic comment, typed not-run line), every Action is pinned by commit SHA (O-STD-6 paid), and a weekly audit.yml runs cargo audit (root and worker) and pnpm audit (O-STD-5 paid).
@@ -25,9 +25,9 @@ Exact last-green command(s):
 Exact last-red command(s) and why:
 - `cargo test -p tier-drop-cli --test slice_zero -- --ignored` on s10: expected until S-11 deploys the Worker that accepts `lineage`.
 Next three bounded items (in order):
-1. S-11: deploy the Worker from s10 with A/EXEC-PM's go-ahead, run the live checks, V-11, then merge s10 to main.
-2. A docs slice for D5 and D6.
-3. The next CI change: pattern-C template v2 (removes the internal ruling name from the public ci.yml comment) together with O-STD-6 (Actions pinned by SHA) and O-STD-5 (a scheduled dependency audit), as one slice with QA.
+1. S-11 (owner GO and a Cloudflare token with Workers Scripts: Edit): deploy the Worker from branch s10 (runbook in crates/worker/README.md "Next deploy"), V-11, then merge s10 (accepted; tag archive/s10).
+2. At the next CI change: CHARTER_REV 7b12eea → b9323cd (fleet pin).
+3. Optional, requested by PM-MISTER-CLEAN for RC-002: one more v4-pro falsifier run per arm (k=3) for ROUND14; not started at the wind-down.
 Open owner decisions:
 - Ratify INTENT.md.
 - Make the charter repository public (blocks charter-ci).
