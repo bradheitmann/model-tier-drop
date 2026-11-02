@@ -1,4 +1,4 @@
-# State — model-tier-drop — 2026-11-02T16:40Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
+# State — model-tier-drop — 2026-11-02T17:00Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
 Proven (with the proof names):
 - s13 ACCEPTED (S-13: re-pin to model-atlas.export/1 2026.11.01-4, sha256 227b0398…, verified against model-atlas 7435bbd): code by MTD/DEV, V-13 by MTD/QA (mimo), no defects. Route costs carry cost_basis and is_free, an implied price of 0 is the atlas_implied_price_zero issue, and lineage comes from maker_id (architecture Unknown kept separate). 9 atlas_export tests.
 - ci-v2 ACCEPTED (MTD/QA mimo): CI carries the charter pattern-C template v2 at CHARTER_REV 7b12eea (generic comment, typed not-run line), every Action is pinned by commit SHA (O-STD-6 paid), and a weekly audit.yml runs cargo audit (root and worker) and pnpm audit (O-STD-5 paid).
@@ -36,4 +36,4 @@ Open owner decisions:
 Where everything is (branches, lanes, receipts):
 - charter/SPEC.md refreshed with `charter init --refresh-spec` (135eb9c8… to 387276a3…, then to 56f03db2… at pin c923a80; one line; PM-CHARTER confirmed the command only rewrites a known historical SPEC.md).
 - main; branch s10 (accepted, awaiting S-11; owner PM-MODEL-TIER-DROP; tag archive/s10); branch charter-ci (held for the charter-public decision; owner PM-MODEL-TIER-DROP; tag archive/charter-ci). plan-adjacent is merged. Worktree lifecycle records are in the reveng WAVES ledger.
-- Receipts: charter/receipts/. Charter pin: c923a80cca2f74dba701ee073e631cc692b978e7 (fleet pin, 2026-11-01). The per-repo binary is installed under ~/.local/share/charter/bin/<sha>; the hooks were reinstalled with it (no foreign hook existed, so nothing was displaced); the CI pattern-C job has CHARTER_REV = this pin. The re-accept workaround for STATE is no longer needed (cadence-staged-1).
+- Receipts: charter/receipts/. Charter pin: b9323cd119f2ef2fe83db21b8ed8f844215e8852 (fleet pin, 2026-11-02; per-repo binary under ~/.local/share/charter/bin/<sha>, hooks reinstalled, config-defined lang-guard also runs on pre-commit). CI CHARTER_REV is still 7b12eea and moves to b9323cd at the next CI change (no standalone push, per PM-CHARTER).
