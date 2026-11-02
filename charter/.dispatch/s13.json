@@ -1,7 +1,7 @@
 {
-  "base_commit": "2d2d53e648880fe8c7543cca74c7a2c0efc199e3",
-  "brief_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-  "done_sha256": "476e8a32dae6ab8f46625bfb70c4895a2b547feda44063ca241cd82160dc8edb",
+  "base_commit": "93269799592c30bd9632991f199416f37db5caa6",
+  "brief_sha256": "5bbc9805f243fbfbd62eac9ced7cda942f8d1d555ca5e222c4ff0e37097c2a6b",
+  "done_sha256": "0862b29bdb05196bfddaca823c02076d388b6316e30560bd1c1f2e61be0191c6",
   "schema_version": "charter.dispatch/1",
   "slice": "s13"
 }
