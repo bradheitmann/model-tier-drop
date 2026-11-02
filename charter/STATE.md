@@ -1,5 +1,6 @@
-# State — model-tier-drop — 2026-11-02T23:55Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5) at the owner wind-down closeout
+# State — model-tier-drop — 2026-11-03T00:00Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5) at the owner wind-down closeout
 Proven (with the proof names):
+- seam-sync-1 ACCEPTED (MTD/QA mimo, no defects): the atlas customer test is pinned to model-atlas 2026.11.02-3 (PINS.tsv current, sha 77879250…), with a new route test for qwen3.8-27b; CI CHARTER_REV = b9323cd (fleet pin). SEAM-SYNC pairs: 7/7 peer rows signed (reports/STATE-OF-PROJECT/PAIRS.md).
 - s13 ACCEPTED (S-13: re-pin to model-atlas.export/1 2026.11.01-4, sha256 227b0398…, verified against model-atlas 7435bbd): code by MTD/DEV, V-13 by MTD/QA (mimo), no defects. Route costs carry cost_basis and is_free, an implied price of 0 is the atlas_implied_price_zero issue, and lineage comes from maker_id (architecture Unknown kept separate). 9 atlas_export tests.
 - ci-v2 ACCEPTED (MTD/QA mimo): CI carries the charter pattern-C template v2 at CHARTER_REV 7b12eea (generic comment, typed not-run line), every Action is pinned by commit SHA (O-STD-6 paid), and a weekly audit.yml runs cargo audit (root and worker) and pnpm audit (O-STD-5 paid).
 - worker-tokio ACCEPTED (MTD/QA mimo, no defects): crates/worker/Cargo.lock moves tokio 1.54.0 → 1.54.1 (RUSTSEC-2026-0384, yanked). The advisory is not reachable, because tokio has no features in the wasm Worker; the bump ships with the next deploy (S-11).
@@ -26,7 +27,7 @@ Exact last-red command(s) and why:
 - `cargo test -p tier-drop-cli --test slice_zero -- --ignored` on s10: expected until S-11 deploys the Worker that accepts `lineage`.
 Next three bounded items (in order):
 1. S-11 (owner GO and a Cloudflare token with Workers Scripts: Edit): deploy the Worker from branch s10 (runbook in crates/worker/README.md "Next deploy"), V-11, then merge s10 (accepted; tag archive/s10).
-2. At the next CI change: CHARTER_REV 7b12eea → b9323cd (fleet pin).
+2. atlas_ref in registry models (deferred: needs a Model field that the engine and the deployed Worker reject until S-11). Bind card qwen3.8-27b ↔ registry qwen-3.8-27b and card deepseek-v4.1-flash ↔ registry deepseek-4.1-flash (model-atlas flash-identity-1), using the first pin after 2026.11.02-4.
 3. Optional, requested by PM-MISTER-CLEAN for RC-002: one more v4-pro falsifier run per arm (k=3) for ROUND14; not started at the wind-down.
 Open owner decisions:
 - Ratify INTENT.md.

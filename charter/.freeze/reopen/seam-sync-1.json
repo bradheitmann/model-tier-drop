@@ -1,0 +1,27 @@
+{
+  "done_sha256": "b91e079dd03b1373575526de71352cf488c0dc5ae51ad2a0f831d681b5df0c59",
+  "entries": [
+    {
+      "evidence_sha256": "047f3d2d05291248c18d75ae7962030cfee9a292c752586abea17347ea3b87f8",
+      "proof": "1",
+      "recorded_utc": "2026-11-02T23:53:54Z",
+      "run_id": "mtdqa-mimo-ss1"
+    },
+    {
+      "evidence_sha256": "047f3d2d05291248c18d75ae7962030cfee9a292c752586abea17347ea3b87f8",
+      "proof": "2",
+      "recorded_utc": "2026-11-02T23:53:54Z",
+      "run_id": "mtdqa-mimo-ss1"
+    },
+    {
+      "evidence_sha256": "047f3d2d05291248c18d75ae7962030cfee9a292c752586abea17347ea3b87f8",
+      "proof": "3",
+      "recorded_utc": "2026-11-02T23:53:54Z",
+      "run_id": "mtdqa-mimo-ss1"
+    }
+  ],
+  "head": "298c45d83d21ebefc36d9b172247f6162847e1e9",
+  "manifest_sha256": "89045367cc0f577b6a3f3c1e39ecee7d4806be2c246736321b8d4ac3e62adc9f",
+  "schema_version": "charter.reopen/1",
+  "slice": "seam-sync-1"
+}
