@@ -1,26 +1,30 @@
-//! S-12/T-25 and S-13: the pinned model-atlas export mapped to tier-drop registry facts.
+//! S-12/T-25, S-13 and seam-sync-1: the pinned model-atlas export mapped to tier-drop registry
+//! facts.
 //!
-//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.01-4.json`, vendored byte for
-//! byte: `model-atlas.export/1`, export_version `2026.11.01-4`, sha256
-//! `227b03988104c7f386a810a9d40e1deb5e635226c1de2b5b5108765cd41e75df`, produced by model-atlas
-//! commit `7435bbd` at `exports/model-atlas.export-2026.11.01-4.json`. The `2026.11.01-2` fixture
-//! is gone: S-13 replaced it in one commit.
+//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.02-3.json`, vendored byte for
+//! byte: `model-atlas.export/1`, export_version `2026.11.02-3`, sha256
+//! `77879250ea316ba3f203bb3c3b3899eb3eef0b42a5304449f6d8616f6447b7e7`, produced by model-atlas
+//! commit `dfc979e73884d76e12bc175e2fbc695d42346666` at
+//! `exports/model-atlas.export-2026.11.02-3.json`, and marked `current` in model-atlas
+//! `exports/PINS.tsv`. The earlier fixtures are gone: S-13 replaced `2026.11.01-2` and
+//! seam-sync-1 replaced `2026.11.01-4`, each in one commit with `git rm`.
 //!
-//! Export -4 carries 4 cards, 4 providers and 5 routes (one of them a free route with an implied
-//! price), so the route, cost-basis and maker-id paths run on the pinned file. Export -4 has no
-//! unpriced route and nothing stale, so those paths run on DERIVED copies: the pinned bytes are
-//! parsed, one value is changed, and the copy is re-serialized in memory. No file is written and the
-//! pinned fixture, with its sha256, is never touched.
+//! Export -3 carries 4 cards, 4 providers and 6 routes (one of them a free route with an implied
+//! price, and one the OpenRouter route for `qwen3.8-27b`), so the route, cost-basis and maker-id
+//! paths run on the pinned file. Export -3 has no unpriced route and nothing stale, so those paths
+//! run on DERIVED copies: the pinned bytes are parsed, one value is changed, and the copy is
+//! re-serialized in memory. No file is written and the pinned fixture, with its sha256, is never
+//! touched.
 
 use std::path::Path;
 
 use serde_json::{json, Value};
 use tier_drop_cli::atlas::{resolve, Cost, CostBasis, Export};
 
-const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.01-4.json");
-const PINNED_SHA256: &str = "227b03988104c7f386a810a9d40e1deb5e635226c1de2b5b5108765cd41e75df";
-const PINNED_VERSION: &str = "2026.11.01-4";
-const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.01-2.json";
+const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.02-3.json");
+const PINNED_SHA256: &str = "77879250ea316ba3f203bb3c3b3899eb3eef0b42a5304449f6d8616f6447b7e7";
+const PINNED_VERSION: &str = "2026.11.02-3";
+const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.01-4.json";
 const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
 
 const CARD_IDS: [&str; 4] = [
@@ -74,8 +78,8 @@ fn atlas_fixture_matches_pinned_sha256() {
     let export = pinned();
     assert_eq!(export.schema, "model-atlas.export/1");
     assert_eq!(export.export_version, PINNED_VERSION);
-    assert_eq!(export.cards().len(), 4, "export -4 holds four cards");
-    assert_eq!(export.routes().len(), 5, "export -4 carries five routes");
+    assert_eq!(export.cards().len(), 4, "export -3 holds four cards");
+    assert_eq!(export.routes().len(), 6, "export -3 carries six routes");
 
     // The re-pin replaced the previous fixture in one commit; the old bytes are not in the tree.
     let old = Path::new(MANIFEST_DIR)
@@ -107,7 +111,7 @@ fn atlas_every_card_resolves() {
             facts.issues
         );
         assert_eq!(facts.card_id, id);
-        assert!(!facts.stale, "{id} is not stale in export -4");
+        assert!(!facts.stale, "{id} is not stale in export -3");
         // Every card states whether its weights are open, and a value always carries provenance.
         assert!(
             facts.open_weight.is_known(),
@@ -189,6 +193,45 @@ fn atlas_route_costs_carry_basis() {
     assert_eq!(facts.routes[0].cost_basis, CostBasis::List);
     assert_eq!(facts.cost.value(), facts.routes[0].cost.value());
     assert_eq!(facts.context_window.value(), Some(&1_048_576));
+    assert!(facts.issues.is_empty(), "{:?}", facts.issues);
+}
+
+/// seam-sync-1: the OpenRouter route for `qwen3.8-27b`, new in export 2026.11.02-3, resolves for
+/// its card through the card's own route list, with the basis and free flag the export states.
+#[test]
+fn atlas_qwen_route_cost_resolves() {
+    const QWEN_ROUTE: &str = "route.openrouter.qwen-qwen3-8-27b";
+    const QWEN_CARD: &str = "qwen3.8-27b";
+    let export = pinned();
+
+    // Read by route id: a list price of 0.15 in and 1.875 out, not free.
+    let (cost, issues) = export
+        .route_cost(QWEN_ROUTE)
+        .unwrap_or_else(|| panic!("no route `{QWEN_ROUTE}`"));
+    assert!(issues.is_empty(), "{issues:?}");
+    assert_eq!(cost.card_id.as_deref(), Some(QWEN_CARD));
+    assert_eq!(cost.cost_basis, CostBasis::List);
+    assert_eq!(cost.is_free.value(), Some(&false));
+    assert_eq!(
+        cost.cost.value(),
+        Some(&Cost {
+            input_usd_per_mtok: 0.15,
+            output_usd_per_mtok: 1.875,
+        })
+    );
+    assert_eq!(cost.cost.source(), Some("src.openrouter-qwen-endpoints"));
+
+    // Read through the card: the route is matched by `route.card`, so it appears in the card's own
+    // route list and prices the card's single-route cost.
+    let card = export
+        .card(QWEN_CARD)
+        .expect("the pinned export holds the card");
+    let facts = resolve(&card, None);
+    assert_eq!(facts.routes.len(), 1, "{:?}", facts.routes);
+    assert_eq!(facts.routes[0].route_id, QWEN_ROUTE);
+    assert_eq!(facts.routes[0].cost_basis, CostBasis::List);
+    assert_eq!(facts.routes[0].is_free.value(), Some(&false));
+    assert_eq!(facts.cost.value(), cost.cost.value());
     assert!(facts.issues.is_empty(), "{:?}", facts.issues);
 }
 
@@ -301,7 +344,7 @@ fn atlas_unpriced_route_cost_stays_unknown() {
         "an unpriced route is never zero: {text}"
     );
 
-    // An unpriced price member (the -4 shape) is the same rule.
+    // An unpriced price member (the table shape of the 2026.11 exports) is the same rule.
     let export = derived(|v| {
         let i = record_index(v, LIST_ROUTE);
         v["records"][i]["tariff"]["output_usd_per_mtok"] = json!({
