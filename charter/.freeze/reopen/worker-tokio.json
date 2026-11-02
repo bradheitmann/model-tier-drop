@@ -1,0 +1,21 @@
+{
+  "done_sha256": "dd0b29c48567862be0e63c7e630e2dc86e2b4f2ce56d9fdeabb5e0006a45f2ee",
+  "entries": [
+    {
+      "evidence_sha256": "89a8bf5b1f3205c143afcfc4bf3d86700a2456243cbf0370440691bc8090631f",
+      "proof": "1",
+      "recorded_utc": "2026-11-02T08:51:29Z",
+      "run_id": "mtdqa-mimo-wt"
+    },
+    {
+      "evidence_sha256": "89a8bf5b1f3205c143afcfc4bf3d86700a2456243cbf0370440691bc8090631f",
+      "proof": "2",
+      "recorded_utc": "2026-11-02T08:51:29Z",
+      "run_id": "mtdqa-mimo-wt"
+    }
+  ],
+  "head": "659643f9dc40f5ce7f79c2c0ac5ab04359164640",
+  "manifest_sha256": "3dc658b8824bba80e2abd8f10750dddbef68a015460f3051e222fad64a36e724",
+  "schema_version": "charter.reopen/1",
+  "slice": "worker-tokio"
+}
