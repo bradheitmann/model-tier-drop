@@ -1,0 +1,7 @@
+{
+  "base_commit": "62755d3ee50b44bd78a3f71ac833c62d547bd051",
+  "brief_sha256": null,
+  "done_sha256": "dd0b29c48567862be0e63c7e630e2dc86e2b4f2ce56d9fdeabb5e0006a45f2ee",
+  "schema_version": "charter.dispatch/1",
+  "slice": "worker-tokio"
+}
