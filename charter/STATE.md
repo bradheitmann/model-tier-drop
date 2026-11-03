@@ -1,4 +1,4 @@
-# State — model-tier-drop — 2026-11-03T00:20Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
+# State — model-tier-drop — 2026-11-03T00:45Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
 Proven (with the proof names):
 - slice-zero receipt RE-ISSUED and valid: MTD/QA (mimo) re-verified proofs 1-3 with mutants against the charter.freeze/2 record (6ee4810, 99 entries, manifest 8ec3369d…); `charter receipt` valid; `gate --accept --receipt` passed; reopen attestation in charter/.freeze/reopen/slice-zero.json (evidence sha256 082bb3ae…). The DONE list is restored to its dispatched bytes (the hand-added reopened markers are replaced by the attestation). The receipt is kept in the private evidence root, because its free-text details name local paths; the committed attestation binds it by hash.
 - seam-sync-1 ACCEPTED (MTD/QA mimo, no defects): the atlas customer test is pinned to model-atlas 2026.11.02-3 (PINS.tsv current, sha 77879250…), with a new route test for qwen3.8-27b; CI CHARTER_REV = b9323cd (fleet pin). SEAM-SYNC pairs: 7/7 peer rows signed (reports/STATE-OF-PROJECT/PAIRS.md).
@@ -28,7 +28,7 @@ Exact last-red command(s) and why:
 Next three bounded items (in order):
 1. S-11 (owner GO and a Cloudflare token with Workers Scripts: Edit): deploy the Worker from branch s10 (runbook in crates/worker/README.md "Next deploy"), V-11, then merge s10 (accepted; tag archive/s10).
 2. atlas_ref in registry models (deferred: needs a Model field that the engine and the deployed Worker reject until S-11). Bind card qwen3.8-27b ↔ registry qwen-3.8-27b and card deepseek-v4.1-flash ↔ registry deepseek-4.1-flash (model-atlas flash-identity-1), using model-atlas pin 2026.11.03-1 (current; sha256 ebafb2eb…, commit 9d10a4b; card deepseek-v4.1-flash serves route.deepseek.deepseek-flash). The atlas customer test re-pins to that same export.
-3. Optional, requested by PM-MISTER-CLEAN for RC-002: one more v4-pro falsifier run per arm (k=3) for ROUND14; not started at the wind-down.
+3. O-STD-8 (unblocked): adopt the PlanGraph v5 work-contract shape for plan/, validated with the pinned planctl release planctl-v5.0.0-dev.0-36d26a9 (plangraph 36d26a9; docs/OPERATING.md "Pinned planctl release").
 Open owner decisions:
 - Ratify INTENT.md.
 - Make the charter repository public (blocks charter-ci).
