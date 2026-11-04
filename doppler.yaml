@@ -1,0 +1,3 @@
+setup:
+  project: model-tier-drop
+  config: dev
