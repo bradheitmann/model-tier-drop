@@ -1,7 +1,7 @@
 # Owner decision 2026-11-04: per-repository Doppler project and semantic attestation key
 
 ## Decision
-The owner directed, on 2026-11-04, that each workspace repository has its own Doppler project and its own signing key for Mister Clean semantic attestation, with Doppler as the canonical home. Owner's words: "I want to make sure that each repo here in this workspace has its own separate Doppler project. … make sure they have their own separate key and attestation stored in Doppler". The convention and its reasons are recorded in the mister-clean repository, `charter/owner-decisions/2026-11-04-semantic-attestation-trust.md` (commit 68fa0c3, mister-clean PR #71; open, not yet on main when this record was written).
+The owner directed, on 2026-11-04, that each workspace repository has its own Doppler project and its own signing key for Mister Clean semantic attestation, with Doppler as the canonical home. Owner's words: "I want to make sure that each repo here in this workspace has its own separate Doppler project. … make sure they have their own separate key and attestation stored in Doppler". The convention and its reasons are recorded in the mister-clean repository, `charter/owner-decisions/2026-11-04-semantic-attestation-trust.md` (mister-clean PR #71, merged; main a0ed0f58888a3d8ae15af4abd8a6364f4316ab3e, record text identical to 24a202c).
 
 ## What exists for this repository
 - Doppler project `model-tier-drop`; `doppler.yaml` at the root links it with default config `dev` for ordinary secrets.
