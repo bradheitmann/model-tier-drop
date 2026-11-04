@@ -118,10 +118,15 @@ release of 2026-10-19 hit exactly that (an OAuth login for another account answe
 environment and never written to disk or this repository:
 
 ```sh
-# CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID come from a secret manager (for example
-# `doppler run --project <project> --config <config> -- wrangler deploy`).
-wrangler deploy
+# CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID come from a secret manager. In this
+# repository they live in Doppler project `model-tier-drop`, config `dev` (linked by the
+# root doppler.yaml); check both exist by name and length only, then deploy:
+doppler run --project model-tier-drop --config dev -- bash -c \
+  'echo "token len ${#CLOUDFLARE_API_TOKEN}, account len ${#CLOUDFLARE_ACCOUNT_ID}"'
+doppler run --project model-tier-drop --config dev -- wrangler deploy
 ```
+
+Never use the `attest` config for deploys: it holds only the attestation key and policy.
 
 A token that lacks *Workers Scripts: Edit* fails with `No access to the specified resource` on
 `/workers/scripts/<name>/deployments`; that is a permission problem, not a build problem.
