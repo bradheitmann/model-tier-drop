@@ -1,4 +1,4 @@
-# State — model-tier-drop — 2026-11-04T00:10Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
+# State — model-tier-drop — 2026-11-04T00:40Z, written by PM-MODEL-TIER-DROP (Claude Opus 5.5)
 Proven (with the proof names):
 - slice-zero receipt RE-ISSUED and valid: MTD/QA (mimo) re-verified proofs 1-3 with mutants against the charter.freeze/2 record (6ee4810, 99 entries, manifest 8ec3369d…); `charter receipt` valid; `gate --accept --receipt` passed; reopen attestation in charter/.freeze/reopen/slice-zero.json (evidence sha256 082bb3ae…). The DONE list is restored to its dispatched bytes (the hand-added reopened markers are replaced by the attestation). The receipt is kept in the private evidence root, because its free-text details name local paths; the committed attestation binds it by hash.
 - seam-sync-1 ACCEPTED (MTD/QA mimo, no defects): the atlas customer test is pinned to model-atlas 2026.11.02-3 (PINS.tsv current, sha 77879250…), with a new route test for qwen3.8-27b; CI CHARTER_REV = b9323cd (fleet pin). SEAM-SYNC pairs: 7/7 peer rows signed (reports/STATE-OF-PROJECT/PAIRS.md).
@@ -35,6 +35,7 @@ Open owner decisions:
 - Adjacent moves: does a passed-over tier (no fitting model, or disqualified) count as one step? (plan/amendments/2026-10-31-adjacent-escalation.md.)
 - Branch deletions (merged branches) and scratch deletions are listed with A/EXEC-PM.
 Where everything is (branches, lanes, receipts):
+- QA receipt identity (R12, charter TODO 94): models.verifier is self-declared in receipts today. Charter family-closed-1 refuses unknown families. Next: the PM records the verifier model at dispatch (step 1), and receipts cite the verifier session log (step 2). On one OS user this raises the cost of forging but cannot prevent it; per-seat OS users or keys are an owner decision.
 - At the next CI change, adopt charter pattern-C template v3 (charter slice ci-honest-1): the job then fails as "NOT CHECKED" when the charter source is unreachable, instead of showing a green tick that checked nothing (CI run 41715979704; polyswarm R11). Real enforcement until then is the local hooks at b9323cd.
 - charter/DONE-TEMPLATE.md removed 2026-11-03 (an adoption workaround with no remaining need: the strict check now skips the init template; every DONE list here is hand-written; historical freeze manifests still list it at their own commits).
 - charter/SPEC.md refreshed with `charter init --refresh-spec` (135eb9c8… to 387276a3…, then to 56f03db2… at pin c923a80; one line; PM-CHARTER confirmed the command only rewrites a known historical SPEC.md).
