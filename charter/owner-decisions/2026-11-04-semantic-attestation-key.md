@@ -8,7 +8,7 @@ The owner directed, on 2026-11-04, that each workspace repository has its own Do
 - Config `attest`, in its own Doppler environment, so it inherits nothing from `dev`. It holds only `MISTER_CLEAN_ATTESTATION_PRIVATE_KEY_PEM` (masked), `MISTER_CLEAN_ATTESTATION_PUBLIC_KEY_PEM` and `MISTER_CLEAN_ATTESTATION_KEY_ID`.
 - Key id `model-tier-drop-attest-ed25519-20261104`, Ed25519; SPKI DER sha256 begins `a5f9117d890e4847` (checked by PM-MODEL-TIER-DROP from the stored public key on 2026-11-04).
 - Role `independent_qa` only, for the reviewer seat `MTD/QA:pi:xiaomi/mimo-v2.6-flash:openrouter` (a different family from the authors, Claude Opus 5.5 and deepseek-flash). Validity to 2027-02-02.
-- Trust policy sha256: pending (PM-MISTER-CLEAN drafts it; it is added here when stored in `attest`).
+- Trust policy `model-tier-drop-semantic-trust-2026-11-04` (`mister-clean.semantic-trust-policy` schema 1.0), DRAFT: stored in `attest` as `MISTER_CLEAN_TRUST_POLICY_DRAFT_JSON`; sha256 `7fb3ddfbd88c3bc95e5ea1ed315cab76cc4e81361267a11100b851f42944c101` over the exact stored bytes (no trailing newline; materialize with `printf "%s"` inside `doppler run`). Checked by PM-MODEL-TIER-DROP on 2026-11-04: the hash matches, the policy names only the actor, key, role and validity above, and its public key fingerprint is `a5f9117d890e4847`. Active only after the owner approves it; promotion keeps the sha. Rule: mister-clean PR #71 at 241ee35.
 
 ## Rules
 - The key reaches a signer only through `doppler run --project model-tier-drop --config attest -- <command>`. It is never written to a file, committed, quoted or sent.
