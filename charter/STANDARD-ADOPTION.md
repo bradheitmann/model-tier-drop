@@ -1,6 +1,6 @@
 # Adoption of the common engineering standard
 
-Standard: COMMON-STANDARD.md v0.2-reviewed (mister-clean main 5d99196; ratification pending-owner). Reviewed against model-tier-drop main on 2026-10-31 by PM-MODEL-TIER-DROP. Where the standard and this repository's charter disagree, the charter governs until the owner decides.
+Standard: COMMON-STANDARD.md v0.2, owner-ratified 2026-11-04 (mister-clean main b87c397d5e178d7f6850908f1b01d27f347a2223, file sha256 03a2cc2c7490c6b8e135cc404b6f3a147f70ab08dee1ed1582e600ddb5f41cce; https://github.com/bradheitmann/mister-clean/blob/b87c397d5e178d7f6850908f1b01d27f347a2223/COMMON-STANDARD.md). Re-pinned from draft 5d99196 on 2026-11-04; only the version and ratification lines changed, no rule text. Originally reviewed against model-tier-drop main on 2026-10-31 by PM-MODEL-TIER-DROP. Where the standard and this repository's charter disagree, the charter governs until the owner decides.
 
 ## Section map
 

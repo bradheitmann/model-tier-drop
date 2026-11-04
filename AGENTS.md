@@ -18,7 +18,7 @@
 - `main` receives only slices accepted by a separate QA context against `plan/contracts.md`.
 - Plain, specific prose. Never write the forbidden phrase (grep pattern `needs[ ]you`) or the owner's forbidden organisation name (grep pattern `O[K]OA`).
 - The plan lives in `plan/`; change the contracts there before changing the code they bind.
-- The common engineering standard (COMMON-STANDARD.md v0.2 in the public mister-clean repository, github.com/bradheitmann/mister-clean) applies; this repository's adoption, gaps and exceptions are in `charter/STANDARD-ADOPTION.md`.
+- The common engineering standard (COMMON-STANDARD.md v0.2, owner-ratified, pinned at mister-clean commit b87c397d5e17 in the public repository github.com/bradheitmann/mister-clean) applies; this repository's adoption, gaps and exceptions are in `charter/STANDARD-ADOPTION.md`.
 
 ## Landing a slice here
 
