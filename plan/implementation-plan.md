@@ -10,7 +10,7 @@ S-01 scaffold+plan ──┬──▶ S-02 core ──┬──▶ S-03 CLI ─�
                      └──▶ S-08 plan graph ────────────────────────────────────────┴───┘
 ```
 
-Dependencies (also the `prerequisite` edges in `plan/graph.json`): S-02, S-04, S-08 depend on S-01; S-03 on S-02; S-05 on S-02 and S-04; S-06 on S-03 and S-05 (both write `README.md`); S-07 on S-03, S-04 and S-06; S-09 on S-03, S-06, S-07 and S-08. Each `S-nn` is followed by its `V-nn` before merge. Order of merges to `main`: S-01, then any of S-02 / S-04 / S-08 as they pass, then S-03 and S-05, then S-06, then S-07, then S-09.
+Dependencies for S-01…S-09 (also the `prerequisite` edges in the frozen 2026-10-19 `plan/graph.json`; S-10 onward are in `plan/contracts.md` only): S-02, S-04, S-08 depend on S-01; S-03 on S-02; S-05 on S-02 and S-04; S-06 on S-03 and S-05 (both write `README.md`); S-07 on S-03, S-04 and S-06; S-09 on S-03, S-06, S-07 and S-08. Each `S-nn` is followed by its `V-nn` before merge. Order of merges to `main`: S-01, then any of S-02 / S-04 / S-08 as they pass, then S-03 and S-05, then S-06, then S-07, then S-09.
 
 ## Waves
 

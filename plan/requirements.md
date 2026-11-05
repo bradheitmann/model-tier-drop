@@ -1,6 +1,6 @@
 # Product requirements (REVENG P08)
 
-Every requirement has a stable ID, an owning epic, a kind, a criticality flag and at least one falsifiable acceptance test. The same IDs appear in `plan/graph.json`; this file is the readable projection.
+Every requirement has a stable ID, an owning epic, a kind, a criticality flag and at least one falsifiable acceptance test. This file is authoritative. `plan/graph.json` and `plan/build.json` are the frozen record of the 2026-10-19 REVENG compile (R-54): they hold the 35 requirements and slices S-01…S-09 / V-01…V-09 of that compile and are not authoritative for R-07, R-23…R-26 or S-10 onward (reveng disposition KEEP-FROZEN, 2026-11-05). They are superseded when O-STD-8 moves `plan/` to PlanGraph v5.
 
 ## Epics
 
@@ -104,7 +104,7 @@ Every requirement has a stable ID, an owning epic, a kind, a criticality flag an
   - T-52 Action: a QA agent with no prior context follows the README from a fresh clone in a temporary directory. Observation: every command succeeds as written.
 - **R-53** (critical, delivery) The repository is public at `github.com/bradheitmann/model-tier-drop` with `LICENSE` (Apache-2.0), and `main` contains only QA-accepted merges.
   - T-53 Action: `gh repo view bradheitmann/model-tier-drop --json visibility,licenseInfo`. Observation: `PUBLIC`, `Apache License 2.0`.
-- **R-54** (delivery) `plan/graph.json` is a `reveng.graph/1` graph containing every requirement and test above, the slices of `plan/contracts.md` as typed `Slice` payloads with paired verification, and it compiles with the REVENG core (`reveng compile`) to `plan/build.json` deterministically.
+- **R-54** (delivery) `plan/graph.json` is a `reveng.graph/1` graph containing every requirement and test above, the slices of `plan/contracts.md` as typed `Slice` payloads with paired verification, and it compiles with the REVENG core (`reveng compile`) to `plan/build.json` deterministically. Scope (amended 2026-11-05): "every requirement and slice" means those of the 2026-10-19 compile (35 requirements, S-01…S-09 / V-01…V-09); later amendments are recorded in this file and `plan/contracts.md` only, and the graph is kept frozen as provenance, not updated (reveng disposition KEEP-FROZEN; a fresh compile would be a new REVENG run, not an edit). O-STD-8 replaces it.
   - T-54 Action: compile twice into two directories and compare bytes. Observation: identical; `build.json` lists every implementation slice and its verifier; selected requirements equal the R-ids in this file.
 - **R-55** (compliance) No file contains the owner's forbidden organisation name (grep pattern `O[K]OA`) or the forbidden phrase (grep pattern `needs[ ]you`); no file introduces Python or plain JavaScript (generated `build/` and `dist/` excepted).
   - T-55 Action: `grep -rnE "O[K]OA" .`, `grep -rnE "needs[ ]you" .`, `lang-guard scan .` (excluding `target`, `node_modules`, `build`, `dist`). Observation: no matches.
