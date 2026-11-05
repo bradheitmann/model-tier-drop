@@ -1,6 +1,6 @@
 # Slice coverage (full horizon)
 
-Denominator: 39 requirements in `plan/requirements.md` (R-01…R-07, R-10…R-25, R-30…R-35, R-40…R-43, R-50…R-55). Every one has an implementation slice and a paired verifier. Nothing is deferred inside the horizon; the explicitly deferred items are listed at the end.
+Denominator: 40 requirements in `plan/requirements.md` (R-01…R-07, R-10…R-26, R-30…R-35, R-40…R-43, R-50…R-55). Every one has an implementation slice and a paired verifier. Nothing is deferred inside the horizon; the explicitly deferred items are listed at the end.
 
 | Requirement | Implemented by | Verified by | Tests |
 |---|---|---|---|
@@ -12,6 +12,7 @@ Denominator: 39 requirements in `plan/requirements.md` (R-01…R-07, R-10…R-25
 | R-40 … R-43 | S-07 | V-07 | T-40 … T-43 |
 | R-07, R-23, R-24 (amendment 2026-10-31); R-20, R-21, R-32 amended | S-10 (deploy: S-11) | V-10, V-11 | T-07, T-20, T-21, T-23, T-24, T-32 |
 | R-25 (amendment 2026-11-01; pin refresh 2026-11-02) | S-12, S-13 | V-12, V-13 | T-25 |
+| R-26 (amendment 2026-11-05) | S-14 (deploy: S-11) | V-14 | T-26 |
 | R-50, R-51, R-53 (licence), R-55 | S-01 and S-09 | V-01 and V-09 | T-50, T-51, T-53, T-55 |
 | R-52, R-53 (publication) | S-09 | V-09 | T-52, T-53 |
 | R-54 | S-01 (prose) and S-08 (graph, compiled build) | V-01 and V-08 | T-54 |
@@ -30,7 +31,7 @@ Denominator: 39 requirements in `plan/requirements.md` (R-01…R-07, R-10…R-25
 
 ## Counts
 
-Implementation slices: 13 (S-01 … S-13). Verification slices: 13 (V-01 … V-13). Total: 26. Requirements selected: 39 (35 before the 2026-10-31 amendment, which added S-10, V-10, S-11 and V-11; 38 before the 2026-11-01 amendment, which added S-12 and V-12). Deferred: 0 inside the horizon.
+Implementation slices: 14 (S-01 … S-14). Verification slices: 14 (V-01 … V-14). Total: 28. Requirements selected: 40 (39 before the 2026-11-05 amendment, which added S-14 and V-14; 35 before the 2026-10-31 amendment, which added S-10, V-10, S-11 and V-11; 38 before the 2026-11-01 amendment, which added S-12 and V-12). Deferred: 0 inside the horizon.
 
 ## Explicitly out of scope (recorded, not silently dropped)
 
