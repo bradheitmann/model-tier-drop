@@ -269,7 +269,7 @@ QA (different family) reruns the S-13 checks on the frozen tip, confirms the fix
 
 ## S-14 Registry version 2 for lineage-bearing registries — kind: implement — epic E2 (amendment 2026-11-05)
 
-Requirements: R-26. Depends on: V-10 accepted; built on the S-10 tip, before S-11. Write prefixes: `crates/core/src/registry.rs`, `crates/core/tests/`, `registry/registry.example.json`, `crates/cli/tests/`.
+Requirements: R-26. Depends on: V-10 accepted; built on the S-10 tip, before S-11. Write prefixes: `crates/core/src/registry.rs`, `crates/core/tests/`, `registry/registry.example.json`, `crates/cli/tests/`, `skill/references/registry.md` (it documents the version and the Worker serves it).
 Steps: 1. Tests first, as in T-26. 2. Accept `tier-drop.registry/1` and `/2` in the engine's validator; refuse `/1` with lineage naming `/2`; list accepted versions in every version refusal. 3. Set the example registry to `/2`.
 Checks: `cargo fmt --all --check` exit 0; `cargo clippy --workspace --all-targets -- -D warnings` exit 0; `cargo test --workspace` exit 0; the core stays pure (no new I/O, clock or network); `charter check --strict` exit 0; `gitleaks protect --staged --redact` exit 0.
 Rollback: revert the branch.
