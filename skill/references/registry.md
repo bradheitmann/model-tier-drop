@@ -13,13 +13,15 @@ The example lives at `registry/registry.example.json` in the repository. Its mod
 ## Top level
 
 ```
-{ "schema_version": "tier-drop.registry/1",
+{ "schema_version": "tier-drop.registry/2",
   "as_of": "YYYY-MM-DD",
   "deployments": [ Deployment ],
   "models": [ Model ],
   "embeddings": [ EmbeddingModel ],
   "notes": "..." }
 ```
+
+`schema_version` is `tier-drop.registry/2` when any model carries `lineage`; a registry without lineage may say `tier-drop.registry/1` or `/2`. A `/1` registry that carries `lineage` is refused with `lineage_requires_registry_v2`, and an unknown version is refused with a message listing the accepted versions.
 
 `notes` is optional free text about the registry as a whole, for example where its QoS values were measured.
 

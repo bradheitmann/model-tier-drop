@@ -167,11 +167,11 @@ pub struct EmbeddingModel {
     pub notes: String,
 }
 
-/// The registry (`tier-drop.registry/1`).
+/// The registry (`tier-drop.registry/1` or `tier-drop.registry/2`; `/2` when any model carries `lineage`).
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, JsonSchema)]
 #[serde(deny_unknown_fields)]
 pub struct Registry {
-    /// Always `tier-drop.registry/1`.
+    /// `tier-drop.registry/2` when any model carries `lineage`, else `tier-drop.registry/1` or `/2`.
     pub schema_version: String,
     /// YYYY-MM-DD date the model names and values were current; binds disqualifications.
     pub as_of: String,
@@ -208,6 +208,11 @@ impl Registry {
     }
 }
 
+const REGISTRY_V1: &str = "tier-drop.registry/1";
+const REGISTRY_V2: &str = "tier-drop.registry/2";
+/// Registry versions this build accepts, oldest first.
+const ACCEPTED_REGISTRY_VERSIONS: [&str; 2] = [REGISTRY_V1, REGISTRY_V2];
+
 fn issue(code: &str, message: String) -> Issue {
     Issue {
         code: code.to_string(),
@@ -228,13 +233,23 @@ fn is_date(s: &str) -> bool {
 /// Structural checks on a registry; an empty list means valid.
 pub fn validate_registry(registry: &Registry) -> Vec<Issue> {
     let mut issues = Vec::new();
-    if registry.schema_version != "tier-drop.registry/1" {
+    if !ACCEPTED_REGISTRY_VERSIONS.contains(&registry.schema_version.as_str()) {
         issues.push(issue(
             "unsupported_schema_version",
             format!(
-                "schema_version `{}` is not tier-drop.registry/1",
-                registry.schema_version
+                "schema_version `{}` is not accepted; this build accepts {}",
+                registry.schema_version,
+                ACCEPTED_REGISTRY_VERSIONS.join(", ")
             ),
+        ));
+    } else if registry.schema_version == REGISTRY_V1
+        && registry.models.iter().any(|m| m.lineage.is_some())
+    {
+        // decision: lineage arrived after /1 was published, so a /1 label cannot promise it
+        // (amendment 2026-11-05); the sender relabels the registry rather than losing the move.
+        issues.push(issue(
+            "lineage_requires_registry_v2",
+            format!("a {REGISTRY_V1} registry cannot carry `lineage`; label it {REGISTRY_V2}"),
         ));
     }
     if !is_date(&registry.as_of) {
@@ -345,6 +360,61 @@ mod tests {
 
     fn codes(r: &Registry) -> Vec<String> {
         validate_registry(r).into_iter().map(|i| i.code).collect()
+    }
+
+    // the example with every lineage removed, at the given schema_version
+    fn without_lineage(version: &str) -> Registry {
+        let mut r = Registry::example();
+        r.schema_version = version.to_string();
+        for m in &mut r.models {
+            m.lineage = None;
+        }
+        r
+    }
+
+    #[test]
+    fn registry_v2_with_lineage_is_valid() {
+        let mut r = Registry::example();
+        r.schema_version = "tier-drop.registry/2".to_string();
+        assert!(r.models.iter().any(|m| m.lineage.is_some()));
+        assert_eq!(validate_registry(&r), vec![]);
+    }
+
+    #[test]
+    fn registry_v1_without_lineage_is_valid() {
+        assert_eq!(
+            validate_registry(&without_lineage("tier-drop.registry/1")),
+            vec![]
+        );
+        // a /2 registry may also omit lineage
+        assert_eq!(
+            validate_registry(&without_lineage("tier-drop.registry/2")),
+            vec![]
+        );
+    }
+
+    #[test]
+    fn registry_v1_with_lineage_names_v2() {
+        let mut r = without_lineage("tier-drop.registry/1");
+        r.models[0].lineage = Some("qwen".to_string());
+        let issues = validate_registry(&r);
+        assert_eq!(issues.len(), 1, "{issues:?}");
+        assert_eq!(issues[0].code, "lineage_requires_registry_v2");
+        assert!(
+            issues[0].message.contains("tier-drop.registry/2"),
+            "{}",
+            issues[0].message
+        );
+    }
+
+    #[test]
+    fn registry_unknown_version_lists_accepted() {
+        let r = without_lineage("tier-drop.registry/3");
+        let issues = validate_registry(&r);
+        assert_eq!(codes(&r), vec!["unsupported_schema_version".to_string()]);
+        let message = &issues[0].message;
+        assert!(message.contains("tier-drop.registry/1"), "{message}");
+        assert!(message.contains("tier-drop.registry/2"), "{message}");
     }
 
     #[test]
