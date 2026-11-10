@@ -1,35 +1,40 @@
-//! S-12/T-25, S-13, seam-sync-1 and S-16: the pinned model-atlas export mapped to tier-drop
-//! registry facts.
+//! S-12/T-25, S-13, seam-sync-1, S-16 and S-17: the pinned model-atlas export mapped to
+//! tier-drop registry facts.
 //!
-//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.05-2.json`, vendored byte for
-//! byte: `model-atlas.export/1`, export_version `2026.11.05-2`, sha256
-//! `7c75a2cf476d370808505bb8ffb3af12170d9721498fc26015246dde507ef93b`, produced by model-atlas
-//! at `exports/model-atlas.export-2026.11.05-2.json`, and marked `current` in model-atlas
+//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.10-1.json`, vendored byte for
+//! byte: `model-atlas.export/1`, export_version `2026.11.10-1`, sha256
+//! `ee364d3869efbd040bdb7f45bce176d08308152162033411d9f8966e36f06a81`, produced by model-atlas
+//! at `exports/model-atlas.export-2026.11.10-1.json`, and marked `current` in model-atlas
 //! `exports/PINS.tsv`. The earlier fixtures are gone: S-13 replaced `2026.11.01-2`,
-//! seam-sync-1 replaced `2026.11.01-4` and S-16 replaced `2026.11.02-3`, each in one commit with
-//! `git rm`.
+//! seam-sync-1 replaced `2026.11.01-4`, S-16 replaced `2026.11.02-3` and S-17 replaced
+//! `2026.11.05-2`, each in one commit with `git rm`.
 //!
-//! Export -2 (2026.11.05-2) carries 6 cards, 5 providers and 7 routes (one of them a free route
-//! with an implied price, and one the OpenRouter route for `qwen3.8-27b`), so the route,
-//! cost-basis and maker-id paths run on the pinned file. It has no unpriced route and nothing
-//! stale, so those paths run on DERIVED copies: the pinned bytes are parsed, one value is changed,
-//! and the copy is re-serialized in memory. No file is written and the pinned fixture, with its
-//! sha256, is never touched.
+//! Export 2026.11.10-1 carries 6 cards, 5 providers and 7 routes (one of them a free route with an
+//! implied price, and one the OpenRouter route for `qwen3.8-27b`), so the route, cost-basis and
+//! maker-id paths run on the pinned file. It has no unpriced route, so the unpriced path runs on a
+//! DERIVED copy: the pinned bytes are parsed, one value is changed, and the copy is re-serialized in
+//! memory. No file is written and the pinned fixture, with its sha256, is never touched.
 //!
-//! Two facts moved with the pin. `route.deepseek.deepseek-flash` now belongs to the new card
-//! `deepseek-v4.1-flash`, so the card `deepseek-v4-flash` has no route at all. And the glm-5.3-flash
-//! route states the same Coding Plan `unknown` on all three price members, so a plain join repeats
-//! the clause; the reason states each distinct reason once.
+//! It is the first pinned export whose producer marks records stale itself: all 5 providers and 6
+//! of the 7 routes are stale, and no card record is. Staleness therefore runs on the pinned bytes
+//! rather than on a derived copy, and each card's expected staleness is read from the fixture (its
+//! own record's flag, or the flag on any route that serves it) instead of being asserted false.
+//!
+//! Facts that moved with earlier pins are kept: `route.deepseek.deepseek-flash` belongs to the card
+//! `deepseek-v4.1-flash`, so the card `deepseek-v4-flash` has no route at all; and the glm-5.3-flash
+//! route states the same Coding Plan `unknown` on all three price members, so its reason states each
+//! distinct reason once. The new `observations.role_outcomes` tables are ignored by the reader:
+//! reading them into resolved facts is out of scope for this slice.
 
 use std::path::Path;
 
 use serde_json::{json, Value};
 use tier_drop_cli::atlas::{resolve, Cost, CostBasis, Export};
 
-const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.05-2.json");
-const PINNED_SHA256: &str = "7c75a2cf476d370808505bb8ffb3af12170d9721498fc26015246dde507ef93b";
-const PINNED_VERSION: &str = "2026.11.05-2";
-const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.02-3.json";
+const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.10-1.json");
+const PINNED_SHA256: &str = "ee364d3869efbd040bdb7f45bce176d08308152162033411d9f8966e36f06a81";
+const PINNED_VERSION: &str = "2026.11.10-1";
+const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.05-2.json";
 const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
 
 const CARD_IDS: [&str; 6] = [
@@ -78,6 +83,32 @@ fn record_index(value: &Value, id: &str) -> usize {
         .unwrap_or_else(|| panic!("no record `{id}`"))
 }
 
+/// The `stale` flag the export writes on the record with this id, read from the fixture.
+fn record_stale(value: &Value, id: &str) -> bool {
+    value["records"][record_index(value, id)]["stale"] == json!(true)
+}
+
+/// The route ids the export says serve this card.
+fn route_ids_for_card(value: &Value, card_id: &str) -> Vec<String> {
+    value["records"]
+        .as_array()
+        .expect("records is a list")
+        .iter()
+        .filter(|r| r["kind"] == json!("route") && r["card"] == json!(card_id))
+        .filter_map(|r| r["id"].as_str().map(str::to_owned))
+        .collect()
+}
+
+/// How many records of this kind the export marks stale.
+fn stale_records_of_kind(value: &Value, kind: &str) -> usize {
+    value["records"]
+        .as_array()
+        .expect("records is a list")
+        .iter()
+        .filter(|r| r["kind"] == json!(kind) && r["stale"] == json!(true))
+        .count()
+}
+
 #[test]
 fn atlas_fixture_matches_pinned_sha256() {
     assert_eq!(
@@ -91,12 +122,32 @@ fn atlas_fixture_matches_pinned_sha256() {
     assert_eq!(
         export.cards().len(),
         6,
-        "export 2026.11.05-2 holds six cards"
+        "export 2026.11.10-1 holds six cards"
     );
     assert_eq!(
         export.routes().len(),
         7,
-        "export 2026.11.05-2 carries seven routes"
+        "export 2026.11.10-1 carries seven routes"
+    );
+
+    // This is the first pinned export whose producer marks records stale itself. The inventory is
+    // checked here so the staleness tests below cannot pass vacuously on an export that has no
+    // stale record; the resolved expectation itself is derived in `atlas_every_card_resolves`.
+    let value = pinned_value();
+    assert_eq!(
+        stale_records_of_kind(&value, "provider"),
+        5,
+        "all five providers are stale"
+    );
+    assert_eq!(
+        stale_records_of_kind(&value, "route"),
+        6,
+        "six of the seven routes are stale"
+    );
+    assert_eq!(
+        stale_records_of_kind(&value, "card"),
+        0,
+        "no card record is stale"
     );
 
     // The re-pin replaced the previous fixture in one commit; the old bytes are not in the tree.
@@ -106,7 +157,7 @@ fn atlas_fixture_matches_pinned_sha256() {
         .join(REPLACED_FIXTURE);
     assert!(
         !old.exists(),
-        "the 2026.11.02-3 fixture must be removed with git rm, not kept beside the pin"
+        "the 2026.11.05-2 fixture must be removed with git rm, not kept beside the pin"
     );
 
     // One changed character of a fact value changes the digest, so the pin catches a hand edit.
@@ -120,6 +171,7 @@ fn atlas_fixture_matches_pinned_sha256() {
 #[test]
 fn atlas_every_card_resolves() {
     let export = pinned();
+    let value = pinned_value();
     // The list is the export's own card list: a card added to or dropped from either one is a
     // fact the pin has to answer for.
     assert_eq!(
@@ -136,7 +188,22 @@ fn atlas_every_card_resolves() {
             facts.issues
         );
         assert_eq!(facts.card_id, id);
-        assert!(!facts.stale, "{id} is not stale in export -3");
+        // Staleness is the export's own: the card's record flag, or the flag on any route that
+        // serves it. Read from the fixture, never asserted false.
+        let own = record_stale(&value, id);
+        let routes = route_ids_for_card(&value, id);
+        let any_route_stale = routes.iter().any(|route| record_stale(&value, route));
+        assert_eq!(
+            facts.stale,
+            own || any_route_stale,
+            "{id}: resolved staleness must follow the export's own flags"
+        );
+        if routes.is_empty() {
+            assert_eq!(
+                facts.stale, own,
+                "{id}: a card read with no route keeps its own record's flag"
+            );
+        }
         // Every card states whether its weights are open, and a value always carries provenance.
         assert!(
             facts.open_weight.is_known(),
@@ -383,6 +450,107 @@ fn atlas_unknown_cost_reason_has_no_repeated_clause() {
         .reason()
         .expect("the card's cost states a reason");
     assert_eq!(card_reason.matches(CLAUSE).count(), 1, "{card_reason}");
+}
+
+/// S-17: this is the first pinned export whose producer marks records stale itself. A read
+/// through a stale route carries the flag on the result and on the facts the route supplies, and
+/// a stale fact is neither dropped nor turned Unknown because it is stale.
+#[test]
+fn atlas_stale_route_carries_flag() {
+    let export = pinned();
+    let value = pinned_value();
+
+    // The flag is the export's own, read from the fixture before anything is resolved.
+    assert!(
+        record_stale(&value, LIST_ROUTE),
+        "the pin marks {LIST_ROUTE} stale"
+    );
+    let route = export
+        .route(LIST_ROUTE)
+        .unwrap_or_else(|| panic!("no route `{LIST_ROUTE}`"));
+    assert!(route.is_stale(), "the parsed route is stale");
+
+    // Read through the stale route: the result is stale, and so are the facts the route supplies.
+    let card = export.card(LIST_ROUTE_CARD).unwrap();
+    let facts = resolve(&card, Some(&route));
+    assert!(facts.stale, "a read through a stale route is stale");
+    assert_eq!(facts.route_id.as_deref(), Some(LIST_ROUTE));
+    assert_eq!(facts.routes.len(), 1, "{:?}", facts.routes);
+    assert!(facts.routes[0].stale, "the route cost is stale");
+
+    // The route-derived context window keeps its value and its provenance, marked stale.
+    assert!(facts.context_window.stale());
+    assert_eq!(facts.context_window.value(), Some(&1_048_576));
+    assert_eq!(facts.context_window.source(), Some("src.models-dev-api"));
+
+    // The cost stays Known with its value and source, marked stale -- not dropped, not Unknown.
+    assert!(facts.cost.stale());
+    assert_eq!(
+        facts.cost.value(),
+        Some(&Cost {
+            input_usd_per_mtok: 0.15,
+            output_usd_per_mtok: 0.6,
+        })
+    );
+    assert_eq!(facts.cost.source(), Some("src.deepseek-pricing"));
+    assert!(facts.issues.is_empty(), "{:?}", facts.issues);
+
+    // The same read by route id, without a card, carries the flag on the cost fact too.
+    let (cost, issues) = export.route_cost(LIST_ROUTE).unwrap();
+    assert!(issues.is_empty(), "{issues:?}");
+    assert!(cost.stale, "the route cost is stale");
+    assert!(cost.cost.stale());
+    assert!(cost.cost.is_known());
+    assert_eq!(cost.cost_basis, CostBasis::List);
+}
+
+/// S-17: the export carries `observations.role_outcomes`, and the reader ignores them without
+/// error. Reading them into resolved facts is out of scope for this slice.
+#[test]
+fn atlas_export_with_role_outcomes_parses() {
+    let value = pinned_value();
+
+    // The raw JSON carries at least one role-outcomes entry, so this test is not vacuous.
+    let records = value["records"].as_array().expect("records is a list");
+    let with_role_outcomes = records
+        .iter()
+        .filter(|r| {
+            r["observations"]["role_outcomes"]
+                .as_array()
+                .is_some_and(|entries| !entries.is_empty())
+        })
+        .count();
+    assert!(
+        with_role_outcomes >= 1,
+        "the pin carries at least one observations.role_outcomes entry"
+    );
+
+    // The reader parses the export, and sees the same cards and routes the raw JSON states.
+    let export = Export::parse(FIXTURE).expect("the export with role outcomes parses");
+    let cards = records
+        .iter()
+        .filter(|r| r["kind"] == json!("card"))
+        .count();
+    let routes = records
+        .iter()
+        .filter(|r| r["kind"] == json!("route"))
+        .count();
+    assert_eq!(export.cards().len(), cards);
+    assert_eq!(export.routes().len(), routes);
+
+    // A route that carries role outcomes still resolves its facts as the export states them.
+    let route = export
+        .route(LIST_ROUTE)
+        .expect("the route with outcomes parses");
+    let (cost, issues) = export.route_cost(&route.id).unwrap();
+    assert!(issues.is_empty(), "{issues:?}");
+    assert_eq!(
+        cost.cost.value(),
+        Some(&Cost {
+            input_usd_per_mtok: 0.15,
+            output_usd_per_mtok: 0.6,
+        })
+    );
 }
 
 #[test]

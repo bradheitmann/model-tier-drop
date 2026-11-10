@@ -1,8 +1,8 @@
 {
   "schema": "model-atlas.export/1",
-  "export_version": "2026.11.05-2",
-  "generated_at": "2026-11-05T00:00:00Z",
-  "as_of": "2026-11-05T00:00:00Z",
+  "export_version": "2026.11.10-1",
+  "generated_at": "2026-11-10T00:00:00Z",
+  "as_of": "2026-11-10T00:00:00Z",
   "records": [
     {
       "artifacts": [],
@@ -1704,7 +1704,7 @@
           "unknown": "no snapshot states a free tier for DeepSeek's own API"
         }
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "provider.deepseek",
       "kind": "provider",
@@ -1747,7 +1747,7 @@
         "source": "src.deepseek-pricing",
         "unknown": "no snapshot states whether this provider sends rate-limit headers"
       },
-      "stale": null
+      "stale": true
     },
     {
       "display_name": {
@@ -1782,7 +1782,7 @@
           "unknown": "whether a free tier exists was not established in this slice"
         }
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "provider.nvidia",
       "kind": "provider",
@@ -1808,7 +1808,7 @@
         "source": "src.field-window-refresh-1",
         "value": false
       },
-      "stale": null
+      "stale": true
     },
     {
       "display_name": {
@@ -1843,7 +1843,7 @@
           "unknown": "the free-tier offer was not read in this slice; no field-window evidence covers OpenCode Zen"
         }
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "provider.opencode-zen",
       "kind": "provider",
@@ -1867,7 +1867,7 @@
         "source": "src.slice-scope",
         "unknown": "whether rate-limit headers are sent was not observed in this slice"
       },
-      "stale": null
+      "stale": true
     },
     {
       "display_name": {
@@ -1912,7 +1912,7 @@
           "value": "free routes exist (e.g. nemotron-3.5-super-vl:free)"
         }
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "provider.openrouter",
       "kind": "provider",
@@ -1938,7 +1938,7 @@
         "source": "src.field-window-refresh-1",
         "value": false
       },
-      "stale": null
+      "stale": true
     },
     {
       "display_name": {
@@ -1975,7 +1975,7 @@
           "value": "the Coding Plan subscription is priced by the plan, not per call"
         }
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "provider.zai-coding-plan",
       "kind": "provider",
@@ -1999,7 +1999,7 @@
         "source": "src.zai-glm-5-3-flash-probe",
         "unknown": "no probe captured response headers, so nothing is known about rate-limit headers"
       },
-      "stale": null
+      "stale": true
     },
     {
       "aliases": [
@@ -2012,7 +2012,7 @@
         "source": "src.models-dev-api",
         "value": 1048576
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "route.deepseek.deepseek-flash",
       "is_free": {
@@ -2046,6 +2046,417 @@
             "text_class": "context_length_exceeded"
           }
         ],
+        "role_outcomes": [
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "custodian",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:51:29Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:24:56Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 5,
+              "source": "src.consumer-1-run53-events",
+              "value": 5
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 5,
+              "source": "src.consumer-1-run53-events",
+              "value": 2
+            },
+            "failures": [
+              {
+                "at": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "note": "the UTC instant of this row's literal timestamp_unix_ms 1794300523658 in events.jsonl; the failure's own http-failure file records the outcome, not the time",
+                  "source": "src.consumer-1-run53-events",
+                  "value": "2026-11-10T08:48:43Z"
+                },
+                "completion_tokens": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-003",
+                  "value": 0
+                },
+                "finish_reason": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-003",
+                  "value": "missing"
+                },
+                "http_status": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-003",
+                  "value": 200
+                },
+                "literal": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-events",
+                  "value": "provider finish: reason=missing native=unknown evidence=9cabb5c229cc53066088a92e765d3e782a57fe31444d4963bff402621ff7095f"
+                },
+                "max_tokens_sent": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-003",
+                  "value": 384000
+                },
+                "reasoning_tokens": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-003",
+                  "value": 0
+                },
+                "stage": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-events",
+                  "value": "FORGE"
+                }
+              },
+              {
+                "at": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "note": "the UTC instant of this row's literal timestamp_unix_ms 1794302845792 in events.jsonl; the failure's own http-failure file records the outcome, not the time",
+                  "source": "src.consumer-1-run53-events",
+                  "value": "2026-11-10T09:27:25Z"
+                },
+                "completion_tokens": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-007",
+                  "value": 0
+                },
+                "finish_reason": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-007",
+                  "value": "missing"
+                },
+                "http_status": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-007",
+                  "value": 200
+                },
+                "literal": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-events",
+                  "value": "provider finish: reason=missing native=unknown evidence=a0a34da0d1630ff2b9a40b845e83c3f5219ccfb993afa54ef93b32a11a04b916"
+                },
+                "max_tokens_sent": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-007",
+                  "value": 384000
+                },
+                "reasoning_tokens": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-forge-007",
+                  "value": 0
+                },
+                "stage": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-events",
+                  "value": "FORGE"
+                }
+              }
+            ],
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 5,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "forger",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 5,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T08:40:22Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 5,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:27:25Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "graph-connectivity-repair",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:31:11Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:31:11Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "reconciler",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:57:01Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:33:44Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "failures": [
+              {
+                "at": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "note": "the UTC instant of this row's literal timestamp_unix_ms 1794304863332 in events.jsonl; the failure's own http-failure file records the outcome, not the time",
+                  "source": "src.consumer-1-run53-events",
+                  "value": "2026-11-10T10:01:03Z"
+                },
+                "completion_tokens": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-p00-reviewer",
+                  "value": 42511
+                },
+                "finish_reason": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-p00-reviewer",
+                  "value": "stop"
+                },
+                "http_status": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-p00-reviewer",
+                  "value": 200
+                },
+                "literal": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-p00-reviewer",
+                  "value": "not valid canonical JSON: EOF while parsing an object at line 1 column 16801"
+                },
+                "max_tokens_sent": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-p00-reviewer",
+                  "value": 384000
+                },
+                "reasoning_tokens": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-p00-reviewer",
+                  "value": 18302
+                },
+                "stage": {
+                  "kind": "observed",
+                  "last_verified": "2026-11-10",
+                  "n": 1,
+                  "source": "src.consumer-1-run53-events",
+                  "value": "P00"
+                }
+              }
+            ],
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "role": "reviewer",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T10:01:03Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:36:34Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "role": "worker",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:53:07Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:31:01Z"
+            }
+          }
+        ],
         "throughput": []
       },
       "provider": "provider.deepseek",
@@ -2055,7 +2466,7 @@
         "source": "src.deepseek-pricing",
         "value": "deepseek-flash"
       },
-      "stale": null,
+      "stale": true,
       "tariff": {
         "cached_input_usd_per_mtok": {
           "kind": "documented",
@@ -2088,7 +2499,7 @@
         "source": "src.models-dev-api",
         "value": 1048576
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "route.deepseek.deepseek-v4-pro",
       "is_free": {
@@ -2115,7 +2526,7 @@
         "source": "src.deepseek-pricing",
         "value": "deepseek-v4-pro"
       },
-      "stale": null,
+      "stale": true,
       "tariff": {
         "cached_input_usd_per_mtok": {
           "kind": "documented",
@@ -2240,6 +2651,236 @@
               "source": "src.zai-glm-5-3-flash-probe-max131072",
               "value": 1035
             }
+          },
+          {
+            "at": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T13:26:52Z"
+            },
+            "completion_tokens": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-p02-reconciler",
+              "value": 131072
+            },
+            "finish_reason": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-p02-reconciler",
+              "value": "length"
+            },
+            "max_tokens_sent": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-p02-reconciler",
+              "value": 131072
+            },
+            "n": 1,
+            "reasoning_tokens": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-p02-reconciler",
+              "value": 67171
+            }
+          }
+        ],
+        "role_outcomes": [
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "custodian",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T10:07:10Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:40:10Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "forger",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:09:11Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:44:40Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "role": "reconciler",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T10:26:08Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T13:26:52Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 2,
+              "source": "src.consumer-1-run53-events",
+              "value": 2
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 2,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 2,
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "role": "reviewer",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 2,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T10:39:00Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 2,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T11:36:44Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 3
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "worker",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T10:17:26Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 3,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:54:14Z"
+            }
           }
         ],
         "throughput": []
@@ -2284,7 +2925,7 @@
         "source": "src.openrouter-models",
         "value": 1050000
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "route.openrouter.xiaomi-mimo-v2-6-flash",
       "is_free": {
@@ -2311,7 +2952,7 @@
         "source": "src.openrouter-models",
         "value": "xiaomi/mimo-v2.6-flash"
       },
-      "stale": null,
+      "stale": true,
       "tariff": {
         "cached_input_usd_per_mtok": {
           "kind": "documented",
@@ -2344,7 +2985,7 @@
         "source": "src.openrouter-models",
         "value": 1000000
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "route.openrouter.nvidia-nemotron-3-5-super-vl-free",
       "is_free": {
@@ -2384,7 +3025,7 @@
         "source": "src.openrouter-models",
         "value": "nvidia/nemotron-3.5-super-vl:free"
       },
-      "stale": null,
+      "stale": true,
       "tariff": {
         "cost_basis": "implied",
         "implied_from": [
@@ -2413,7 +3054,7 @@
         "source": "src.openrouter-models",
         "value": 1048576
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "route.openrouter.nvidia-nemotron-3-5-super-vl",
       "is_free": {
@@ -2453,7 +3094,7 @@
         "source": "src.openrouter-models",
         "value": "nvidia/nemotron-3.5-super-vl"
       },
-      "stale": null,
+      "stale": true,
       "tariff": {
         "cached_input_usd_per_mtok": {
           "kind": "documented",
@@ -2486,7 +3127,7 @@
         "source": "src.openrouter-qwen-endpoints",
         "value": 262144
       },
-      "freshness": "current",
+      "freshness": "stale",
       "freshness_days": 7,
       "id": "route.openrouter.qwen-qwen3-8-27b",
       "is_free": {
@@ -2514,7 +3155,7 @@
         "source": "src.openrouter-qwen-endpoints",
         "value": "qwen/qwen3.8-27b"
       },
-      "stale": null,
+      "stale": true,
       "supports_response_format": {
         "kind": "assumed",
         "last_verified": "2026-11-02",
@@ -2585,6 +3226,41 @@
       "kind": "evidence",
       "read_at": "2026-11-05",
       "sha256": "306948925e5f579f4014481d62db6eaf6c2fa3d073b32d1a8c3169949e55a3c4",
+      "visibility": "private"
+    },
+    {
+      "id": "src.consumer-1-run53-events",
+      "kind": "evidence",
+      "read_at": "2026-11-10",
+      "sha256": "a523c9cd7e75fe5e9b66005715d7e8a56b208504d7e09c5c5e8d1417623b4dc2",
+      "visibility": "private"
+    },
+    {
+      "id": "src.consumer-1-run53-forge-003",
+      "kind": "evidence",
+      "read_at": "2026-11-10",
+      "sha256": "782bcad490e9fcfdd350ba8db9a07159c2ea133f0ff7bac9a1a8a71761b1460f",
+      "visibility": "private"
+    },
+    {
+      "id": "src.consumer-1-run53-forge-007",
+      "kind": "evidence",
+      "read_at": "2026-11-10",
+      "sha256": "dc31e60d6a71eac2ed0cb78f2515f99fb35461c12f14939cc75a5af9b4454d32",
+      "visibility": "private"
+    },
+    {
+      "id": "src.consumer-1-run53-p00-reviewer",
+      "kind": "evidence",
+      "read_at": "2026-11-10",
+      "sha256": "6f229719091d02e9c876fb2c1955d2ef0a6171bb5bd1f0683d5716eb186a063f",
+      "visibility": "private"
+    },
+    {
+      "id": "src.consumer-1-run53-p02-reconciler",
+      "kind": "evidence",
+      "read_at": "2026-11-10",
+      "sha256": "cc076d63fce4c08e6618eb53b0e0d412225cf6a8ff1302c7a338c272c4ca41d8",
       "visibility": "private"
     },
     {
