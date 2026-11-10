@@ -1,41 +1,51 @@
-//! S-12/T-25, S-13 and seam-sync-1: the pinned model-atlas export mapped to tier-drop registry
-//! facts.
+//! S-12/T-25, S-13, seam-sync-1 and S-16: the pinned model-atlas export mapped to tier-drop
+//! registry facts.
 //!
-//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.02-3.json`, vendored byte for
-//! byte: `model-atlas.export/1`, export_version `2026.11.02-3`, sha256
-//! `77879250ea316ba3f203bb3c3b3899eb3eef0b42a5304449f6d8616f6447b7e7`, produced by model-atlas
-//! commit `dfc979e73884d76e12bc175e2fbc695d42346666` at
-//! `exports/model-atlas.export-2026.11.02-3.json`, and marked `current` in model-atlas
-//! `exports/PINS.tsv`. The earlier fixtures are gone: S-13 replaced `2026.11.01-2` and
-//! seam-sync-1 replaced `2026.11.01-4`, each in one commit with `git rm`.
+//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.05-2.json`, vendored byte for
+//! byte: `model-atlas.export/1`, export_version `2026.11.05-2`, sha256
+//! `7c75a2cf476d370808505bb8ffb3af12170d9721498fc26015246dde507ef93b`, produced by model-atlas
+//! at `exports/model-atlas.export-2026.11.05-2.json`, and marked `current` in model-atlas
+//! `exports/PINS.tsv`. The earlier fixtures are gone: S-13 replaced `2026.11.01-2`,
+//! seam-sync-1 replaced `2026.11.01-4` and S-16 replaced `2026.11.02-3`, each in one commit with
+//! `git rm`.
 //!
-//! Export -3 carries 4 cards, 4 providers and 6 routes (one of them a free route with an implied
-//! price, and one the OpenRouter route for `qwen3.8-27b`), so the route, cost-basis and maker-id
-//! paths run on the pinned file. Export -3 has no unpriced route and nothing stale, so those paths
-//! run on DERIVED copies: the pinned bytes are parsed, one value is changed, and the copy is
-//! re-serialized in memory. No file is written and the pinned fixture, with its sha256, is never
-//! touched.
+//! Export -2 (2026.11.05-2) carries 6 cards, 5 providers and 7 routes (one of them a free route
+//! with an implied price, and one the OpenRouter route for `qwen3.8-27b`), so the route,
+//! cost-basis and maker-id paths run on the pinned file. It has no unpriced route and nothing
+//! stale, so those paths run on DERIVED copies: the pinned bytes are parsed, one value is changed,
+//! and the copy is re-serialized in memory. No file is written and the pinned fixture, with its
+//! sha256, is never touched.
+//!
+//! Two facts moved with the pin. `route.deepseek.deepseek-flash` now belongs to the new card
+//! `deepseek-v4.1-flash`, so the card `deepseek-v4-flash` has no route at all. And the glm-5.3-flash
+//! route states the same Coding Plan `unknown` on all three price members, so a plain join repeats
+//! the clause; the reason states each distinct reason once.
 
 use std::path::Path;
 
 use serde_json::{json, Value};
 use tier_drop_cli::atlas::{resolve, Cost, CostBasis, Export};
 
-const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.02-3.json");
-const PINNED_SHA256: &str = "77879250ea316ba3f203bb3c3b3899eb3eef0b42a5304449f6d8616f6447b7e7";
-const PINNED_VERSION: &str = "2026.11.02-3";
-const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.01-4.json";
+const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.05-2.json");
+const PINNED_SHA256: &str = "7c75a2cf476d370808505bb8ffb3af12170d9721498fc26015246dde507ef93b";
+const PINNED_VERSION: &str = "2026.11.05-2";
+const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.02-3.json";
 const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
 
-const CARD_IDS: [&str; 4] = [
+const CARD_IDS: [&str; 6] = [
     "deepseek-v4-flash",
     "deepseek-v4-pro",
+    "deepseek-v4.1-flash",
+    "glm-5.3-flash",
     "qwen3.8-27b",
     "xiaomi-mimo-v2.6-flash",
 ];
 const FREE_ROUTE: &str = "route.openrouter.nvidia-nemotron-3-5-super-vl-free";
 const FREE_ROUTE_WITH_CARD: &str = "route.openrouter.nvidia-nemotron-3-5-super-vl";
 const LIST_ROUTE: &str = "route.deepseek.deepseek-flash";
+const LIST_ROUTE_CARD: &str = "deepseek-v4.1-flash";
+const NO_ROUTE_CARD: &str = "deepseek-v4-flash";
+const GLM_ROUTE: &str = "route.zai-coding-plan.glm-5-3-flash";
 
 fn sha256(bytes: &[u8]) -> String {
     tier_drop_core::sha256_hex(bytes)
@@ -78,8 +88,16 @@ fn atlas_fixture_matches_pinned_sha256() {
     let export = pinned();
     assert_eq!(export.schema, "model-atlas.export/1");
     assert_eq!(export.export_version, PINNED_VERSION);
-    assert_eq!(export.cards().len(), 4, "export -3 holds four cards");
-    assert_eq!(export.routes().len(), 6, "export -3 carries six routes");
+    assert_eq!(
+        export.cards().len(),
+        6,
+        "export 2026.11.05-2 holds six cards"
+    );
+    assert_eq!(
+        export.routes().len(),
+        7,
+        "export 2026.11.05-2 carries seven routes"
+    );
 
     // The re-pin replaced the previous fixture in one commit; the old bytes are not in the tree.
     let old = Path::new(MANIFEST_DIR)
@@ -88,7 +106,7 @@ fn atlas_fixture_matches_pinned_sha256() {
         .join(REPLACED_FIXTURE);
     assert!(
         !old.exists(),
-        "the 2026.11.01-2 fixture must be removed with git rm, not kept beside the pin"
+        "the 2026.11.02-3 fixture must be removed with git rm, not kept beside the pin"
     );
 
     // One changed character of a fact value changes the digest, so the pin catches a hand edit.
@@ -102,6 +120,13 @@ fn atlas_fixture_matches_pinned_sha256() {
 #[test]
 fn atlas_every_card_resolves() {
     let export = pinned();
+    // The list is the export's own card list: a card added to or dropped from either one is a
+    // fact the pin has to answer for.
+    assert_eq!(
+        CARD_IDS.len(),
+        export.cards().len(),
+        "the card list and the pinned export disagree"
+    );
     for id in CARD_IDS {
         let card = export.card(id).unwrap_or_else(|| panic!("no card `{id}`"));
         let facts = resolve(&card, None);
@@ -186,7 +211,7 @@ fn atlas_route_costs_carry_basis() {
     assert!(paid.cost.is_known());
 
     // A card resolved through its route carries that route's cost and the route's context.
-    let card = export.card("deepseek-v4-flash").unwrap();
+    let card = export.card(LIST_ROUTE_CARD).unwrap();
     let route = export.route(LIST_ROUTE).unwrap();
     let facts = resolve(&card, Some(&route));
     assert_eq!(facts.routes.len(), 1);
@@ -265,12 +290,109 @@ fn atlas_implied_price_zero_is_an_issue() {
     );
 }
 
+/// S-16: the pin moved `route.deepseek.deepseek-flash` from `deepseek-v4-flash` to the new card
+/// `deepseek-v4.1-flash`, and the old card is left with no route at all.
+#[test]
+fn atlas_flash_route_belongs_to_v41() {
+    let export = pinned();
+
+    let route = export
+        .route(LIST_ROUTE)
+        .unwrap_or_else(|| panic!("no route `{LIST_ROUTE}`"));
+    assert_eq!(route.card.as_deref(), Some(LIST_ROUTE_CARD));
+    assert_eq!(route.card_unknown, None);
+
+    // Resolved by route id, the route names its card and carries a listed price.
+    let (cost, issues) = export.route_cost(LIST_ROUTE).unwrap();
+    assert!(issues.is_empty(), "{issues:?}");
+    assert_eq!(cost.card_id.as_deref(), Some(LIST_ROUTE_CARD));
+    assert_eq!(cost.cost_basis, CostBasis::List);
+    assert!(cost.cost.is_known());
+
+    // The card it belongs to resolves the same single route, so its cost is that route's price.
+    let v41 = resolve(&export.card(LIST_ROUTE_CARD).unwrap(), None);
+    assert_eq!(v41.routes.len(), 1, "{:?}", v41.routes);
+    assert_eq!(v41.routes[0].route_id, LIST_ROUTE);
+    assert_eq!(v41.cost.value(), cost.cost.value());
+
+    // The old card has no route, so its cost is Unknown with "no route in export" -- never 0.
+    let old = export
+        .card(NO_ROUTE_CARD)
+        .unwrap_or_else(|| panic!("no card `{NO_ROUTE_CARD}`"));
+    let facts = resolve(&old, None);
+    assert!(facts.routes.is_empty(), "{:?}", facts.routes);
+    assert_eq!(facts.cost.value(), None);
+    assert_eq!(facts.cost.reason(), Some("no route in export"));
+    let text = serde_json::to_string(&facts.cost).unwrap();
+    assert!(
+        !text.contains("0.0"),
+        "a card with no route is never zero: {text}"
+    );
+}
+
+/// S-16: the glm-5.3-flash route states the same Coding Plan `unknown` on all three price members.
+/// Joined plainly, the reason repeats the clause; it states each distinct reason once and the
+/// cost stays Unknown (a subscription's zero marginal price is not a measured bill).
+#[test]
+fn atlas_unknown_cost_reason_has_no_repeated_clause() {
+    const CLAUSE: &str = "Coding Plan subscription";
+    let export = pinned();
+
+    let (cost, issues) = export
+        .route_cost(GLM_ROUTE)
+        .unwrap_or_else(|| panic!("no route `{GLM_ROUTE}`"));
+    assert!(issues.is_empty(), "{issues:?}");
+    assert_eq!(cost.cost_basis, CostBasis::Actual);
+
+    // Unknown, and never Known(0): the reason is the fact, not an invented zero.
+    assert_eq!(cost.cost.value(), None, "the plan's tariff is Unknown");
+    assert_ne!(
+        cost.cost.value(),
+        Some(&Cost {
+            input_usd_per_mtok: 0.0,
+            output_usd_per_mtok: 0.0,
+        }),
+        "an unknown tariff is never taken as a real zero"
+    );
+    let reason = cost
+        .cost
+        .reason()
+        .expect("the cost is Unknown with a reason");
+    assert!(!reason.is_empty());
+
+    // Each distinct reason appears once. A plain join of the input and output reasons repeats it.
+    assert_eq!(
+        reason.matches(CLAUSE).count(),
+        1,
+        "the reason repeats the clause: {reason}"
+    );
+    // The fuller of the two reasons survives: the output reason is contained in it, so dropping the
+    // contained copy loses nothing.
+    assert!(
+        reason.contains("not a measured bill"),
+        "the fuller reason was dropped: {reason}"
+    );
+
+    // The card resolves the same single route, so its cost is the same Unknown with one clause.
+    let card = export.card("glm-5.3-flash").unwrap();
+    let facts = resolve(&card, None);
+    assert_eq!(facts.routes.len(), 1, "{:?}", facts.routes);
+    assert_eq!(facts.cost.value(), None);
+    let card_reason = facts
+        .cost
+        .reason()
+        .expect("the card's cost states a reason");
+    assert_eq!(card_reason.matches(CLAUSE).count(), 1, "{card_reason}");
+}
+
 #[test]
 fn atlas_lineage_from_maker_id() {
     let export = pinned();
     let expected = [
         ("deepseek-v4-flash", "deepseek"),
         ("deepseek-v4-pro", "deepseek"),
+        ("deepseek-v4.1-flash", "deepseek"),
+        ("glm-5.3-flash", "zhipuai"),
         ("qwen3.8-27b", "qwen"),
         ("xiaomi-mimo-v2.6-flash", "xiaomi"),
     ];
@@ -296,6 +418,8 @@ fn atlas_lineage_from_maker_id() {
     for card_id in [
         "deepseek-v4-flash",
         "deepseek-v4-pro",
+        "deepseek-v4.1-flash",
+        "glm-5.3-flash",
         "xiaomi-mimo-v2.6-flash",
     ] {
         let facts = resolve(&export.card(card_id).unwrap(), None);
@@ -364,13 +488,15 @@ fn atlas_unpriced_route_cost_stays_unknown() {
 
 #[test]
 fn atlas_card_without_route_cost_is_unknown() {
-    // The pinned cards all have a route; a copy with the card's route removed states no price.
+    // The pinned cards all have a route except `deepseek-v4-flash`; a copy with a route removed
+    // states no price. `deepseek-v4.1-flash` is the card that carries `LIST_ROUTE` in the pin, so
+    // removing it here exercises the derived path rather than a fact the pin already holds.
     let export = derived(|v| {
         let i = record_index(v, LIST_ROUTE);
         v["records"][i]["card"] = Value::Null;
         v["records"][i]["card_unknown"] = json!("no card for this route in the derived copy");
     });
-    let facts = resolve(&export.card("deepseek-v4-flash").unwrap(), None);
+    let facts = resolve(&export.card(LIST_ROUTE_CARD).unwrap(), None);
     assert!(facts.routes.is_empty(), "{:?}", facts.routes);
     assert_eq!(facts.cost.value(), None);
     assert_eq!(facts.cost.reason(), Some("no route in export"));
@@ -421,7 +547,7 @@ fn atlas_every_fact_source_resolves() {
             facts.issues
         );
     }
-    for id in [LIST_ROUTE, FREE_ROUTE, FREE_ROUTE_WITH_CARD] {
+    for id in [LIST_ROUTE, FREE_ROUTE, FREE_ROUTE_WITH_CARD, GLM_ROUTE] {
         let (_, issues) = export.route_cost(id).unwrap();
         assert!(
             issues.iter().all(|i| i.code != "atlas_source_unresolved"),

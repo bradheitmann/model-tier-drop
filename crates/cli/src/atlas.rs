@@ -696,11 +696,7 @@ fn route_cost(route: &Route, stale: bool, issues: &mut Vec<Issue>) -> RouteCost 
                     stale,
                 },
                 (input, output) => {
-                    let reason = [input.reason(), output.reason()]
-                        .into_iter()
-                        .flatten()
-                        .collect::<Vec<_>>()
-                        .join("; ");
+                    let reason = join_distinct_reasons([input.reason(), output.reason()]);
                     Resolved::Unknown {
                         reason: if reason.is_empty() {
                             "the route states no price".to_string()
@@ -744,6 +740,27 @@ fn route_cost(route: &Route, stale: bool, issues: &mut Vec<Issue>) -> RouteCost 
         is_free,
         stale,
     }
+}
+
+/// Join the reasons of the two price members, keeping each distinct reason once.
+///
+/// decision: a reason that is identical to, or contained in, a reason already kept is dropped.
+/// The glm-5.3-flash route states the same Coding Plan `unknown` on its input, output and
+/// cached-input members, so a plain join states the Coding Plan clause twice and reads as two
+/// findings where the export has one. On that route the input reason is the fuller of the two, so
+/// the kept reason loses nothing; the order is the export's own input-then-output order.
+fn join_distinct_reasons<'a>(reasons: impl IntoIterator<Item = Option<&'a str>>) -> String {
+    let mut kept: Vec<&str> = Vec::new();
+    for reason in reasons.into_iter().flatten() {
+        if kept
+            .iter()
+            .any(|already| *already == reason || already.contains(reason))
+        {
+            continue;
+        }
+        kept.push(reason);
+    }
+    kept.join("; ")
 }
 
 /// The card's lineage: `maker_id` is the family, and the architecture is its own fact.
