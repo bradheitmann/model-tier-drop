@@ -1,0 +1,2766 @@
+{
+  "schema": "model-atlas.export/1",
+  "export_version": "2026.11.05-2",
+  "generated_at": "2026-11-05T00:00:00Z",
+  "as_of": "2026-11-05T00:00:00Z",
+  "records": [
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek V4 Flash"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "deepseek-flash"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "deepseek-v4-flash",
+      "kind": "card",
+      "last_verified": "2026-11-01",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot captured states a licence for these weights; the Hugging Face page was not part of this capture"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 1048576
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "not confirmed by a live call",
+          "settled": false,
+          "source": "src.models-dev-api",
+          "value": 393216
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-reasoning",
+          "unknown": "no snapshot states whether the 384K output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage (dense vs MoE) for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": "DeepSeek"
+        },
+        "maker_id": "deepseek"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": [
+          "low",
+          "high",
+          "max"
+        ]
+      },
+      "stale": null,
+      "status": "superseded",
+      "superseded_by": "deepseek-v4.1-flash",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot states a tokenizer or vocabulary size for this model"
+      },
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "retired: the pricing page states \"The legacy names deepseek-v4-flash and deepseek-v4-flash-vision-exp are still accepted, but the corresponding models have been retired, their requests are served by the DeepSeek-V4.1-Flash-1017 model and billed at the Flash price.\"",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek-V4.1-Flash-1017"
+      }
+    },
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek V4 Pro"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "deepseek-thinking"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "deepseek-v4-pro",
+      "kind": "card",
+      "last_verified": "2026-11-01",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot captured states a licence for these weights; the Hugging Face page was not part of this capture"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 1048576
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "not confirmed by a live call",
+          "settled": false,
+          "source": "src.models-dev-api",
+          "value": 393216
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-reasoning",
+          "unknown": "no snapshot states whether the 384K output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage (dense vs MoE) for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": "DeepSeek"
+        },
+        "maker_id": "deepseek"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": [
+          "text"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": [
+          "low",
+          "high",
+          "max"
+        ]
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot states a tokenizer or vocabulary size for this model"
+      },
+      "tokenizer_density": [
+        {
+          "build": "run36",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.deepseek-host-profile-a8a24175",
+            "unknown": "the source states \"1,150,109-byte prompt accepted as 276,086 prompt tokens\" and gives no ratio for this probe; 4.17 in the same file is the flash probe's figure"
+          },
+          "counter": "vendor-reported prompt token count on a live call (not our tokenizer run)",
+          "role": "live-confirmation-probe",
+          "tokenizer_unknown": "vendor-reported prompt_tokens on a live call; the tokenizer was not run by us and its hash is not in the cited source"
+        }
+      ],
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek-V4-Pro-0813"
+      }
+    },
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek V4.1 Flash 1017"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "deepseek-flash"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "deepseek-v4.1-flash",
+      "kind": "card",
+      "last_verified": "2026-11-01",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot captured states a licence for these weights"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "models.dev states limit.context 1048576 for provider deepseek, model deepseek-flash; the pricing page states the same window as CONTEXT LENGTH 1M in its own literal form",
+          "source": "src.models-dev-api",
+          "value": 1048576
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "models.dev states limit.output 393216; the pricing page states MAX OUTPUT 'MAXIMUM: 384K'. Neither is a live confirmation of the cap",
+          "settled": false,
+          "source": "src.models-dev-api",
+          "value": 393216
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-reasoning",
+          "unknown": "no snapshot states whether the output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage (dense vs MoE) for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": "DeepSeek"
+        },
+        "maker_id": "deepseek"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "models.dev lists the model's input modalities as text and image; its output modality is text",
+        "source": "src.models-dev-api",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "models.dev lists the reasoning effort options as low, high and max for this entry",
+        "source": "src.models-dev-api",
+        "value": [
+          "low",
+          "high",
+          "max"
+        ]
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot states a tokenizer or vocabulary size for this model"
+      },
+      "tokenizer_density": [
+        {
+          "build": "run36",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "note": "measured through the deepseek-flash alias after DeepSeek-V4.1-Flash-1017 took effect; the source states one probe — \"1,150,108-byte prompt accepted as 276,033 prompt tokens\" — and the ratio \"measured 4.17 on DeepSeek (1,150,108 bytes = 276,033 prompt tokens, 2026-10-30)\" for that probe; with n=1 its min and max are that same literal",
+            "source": "src.deepseek-host-profile-a8a24175",
+            "value": 4.17
+          },
+          "counter": "vendor-reported prompt token count on a live call (not our tokenizer run)",
+          "max": 4.17,
+          "min": 4.17,
+          "role": "live-confirmation-probe",
+          "tokenizer_unknown": "vendor-reported prompt_tokens on a live call; the tokenizer was not run by us and its hash is not in the cited source"
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.round20-ds-window-body-b",
+            "value": 2075276
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "note": "measured through the deepseek-flash alias after DeepSeek-V4.1-Flash-1017 took effect, which is why the row lives on this card; round(2075276 / 738038, 3); the numerator is the character count recorded in body-B.json, the denominator the provider's usage.prompt_tokens in resp-B.json",
+            "source": "src.round20-ds-window-resp-b",
+            "value": 2.812
+          },
+          "counter": "vendor-reported usage.prompt_tokens on the control call (max_tokens 16, HTTP 200)",
+          "max": 2.812,
+          "min": 2.812,
+          "role": "claim-author-correction-transition-s1",
+          "tokenizer_unknown": "provider-reported usage.prompt_tokens on a live call; DeepSeek's tokenizer was not run by us",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.round20-ds-window-resp-b",
+            "value": 738038
+          }
+        }
+      ],
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "the pricing page prints this in the MODEL VERSION row of the deepseek-flash column; models.dev spells the same build with spaces, 'DeepSeek V4.1 Flash 1017', which is this card's display_name",
+        "source": "src.deepseek-pricing",
+        "value": "DeepSeek-V4.1-Flash-1017"
+      }
+    },
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.models-dev-api",
+        "value": "GLM-5.3-Flash"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.models-dev-api",
+        "value": "glm-flash"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "glm-5.3-flash",
+      "kind": "card",
+      "last_verified": "2026-11-05",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot captured states a licence for these weights"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-05",
+          "note": "secondary: models.dev (an aggregator) states limit.context 1000000, not the provider's own page; no Z.ai docs capture exists yet",
+          "source": "src.models-dev-api",
+          "value": 1000000
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-05",
+          "note": "secondary: models.dev states limit.output 131072. The 2026-11-05 probe shows the server DEFAULT allowed 105,314 completion tokens with no max_tokens sent, which is a lower bound on this figure, not evidence of the cap",
+          "source": "src.models-dev-api",
+          "value": 131072
+        },
+        "reasoning_accounting": {
+          "kind": "observed",
+          "last_verified": "2026-11-05",
+          "n": 1,
+          "note": "the probe's usage lists completion_tokens_details.reasoning_tokens 1504 inside completion_tokens 105314, and 34 prompt + 105314 completion = 105348 total, so reasoning is counted inside the output allowance",
+          "source": "src.zai-glm-5-3-flash-probe",
+          "value": "inside_output"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-05",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage (dense vs MoE) for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-05",
+          "source": "src.models-dev-api",
+          "value": "Zhipu AI"
+        },
+        "maker_id": "zhipuai"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "note": "models.dev lists the input modalities as text, image, video and pdf; the output modality is text",
+        "source": "src.models-dev-api",
+        "value": [
+          "text",
+          "image",
+          "video",
+          "pdf"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "note": "models.dev's provider entry for this model's vendor is 'Zhipu AI' (id zhipuai), and its canonical_model_id is 'zhipuai/glm-5.3-flash'. The same publisher's international brand is the literal 'Z.AI' (provider id zai)",
+        "source": "src.models-dev-api",
+        "value": "Zhipu AI"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "note": "models.dev lists the reasoning effort options as low, high and max",
+        "source": "src.models-dev-api",
+        "value": [
+          "low",
+          "high",
+          "max"
+        ]
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot states a tokenizer or vocabulary size for this model"
+      },
+      "version": {
+        "kind": "assumed",
+        "last_verified": "2026-11-05",
+        "note": "extracted, not stated: models.dev's model name literal is '\"GLM-5.3-Flash\"' and it carries no separate version field, so '5.3' is that name segment lifted into the version slot. The literal is quoted here so a reader can check the extraction",
+        "source": "src.models-dev-api",
+        "value": "5.3"
+      }
+    },
+    {
+      "artifacts": [
+        {
+          "id": "qwen3.8-27b-oq4e-mtp",
+          "quantization": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.serving-roster",
+            "value": "oQ4e (4b gs64 affine + 166 per-layer overrides @5)"
+          },
+          "repo": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.serving-roster",
+            "value": "Jundot/Qwen3.8-27B-oQ4e-mtp"
+          },
+          "served_context_tokens": {
+            "kind": "measured",
+            "last_verified": "2026-10-31",
+            "source": "src.served-artifact-probe",
+            "unknown": "the served-artifact identity probe could not reach the serving host, so the served limits were not read"
+          },
+          "served_max_output_tokens": {
+            "kind": "measured",
+            "last_verified": "2026-10-31",
+            "source": "src.served-artifact-probe",
+            "unknown": "the served-artifact identity probe could not reach the serving host, so the served limits were not read"
+          }
+        }
+      ],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "Qwen 3.8 27B"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "Qwen3.8"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "qwen3.8-27b",
+      "kind": "card",
+      "last_verified": "2026-10-31",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "apache-2.0"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.hf-qwen3.8-27b-config",
+          "value": 262144
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the model's own output ceiling; the OpenRouter listing offers 235929 tokens on that route, which is a provider limit"
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.hf-qwen3.8-27b-readme",
+          "unknown": "no snapshot states whether the output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "config.json model_type is qwen3_5_text",
+          "source": "src.hf-qwen3.8-27b-config",
+          "value": "Qwen3_5ForConditionalGeneration"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.hf-qwen3.8-27b",
+          "value": "Qwen"
+        },
+        "maker_id": "qwen"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.hf-qwen3.8-27b",
+        "value": [
+          "text",
+          "image"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "Qwen"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": [
+          "none",
+          "low",
+          "medium",
+          "xhigh"
+        ]
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.hf-qwen3.8-27b-config",
+        "unknown": "config.json states vocab_size 248320 and model_type \"qwen3_5_text\"; it names no tokenizer class"
+      },
+      "tokenizer_density": [
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 10,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 2.795
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.268,
+          "min": 2.6,
+          "role": "claim-author-correction-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 14,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.666
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.068,
+          "min": 3.485,
+          "role": "claim-reviewer",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 13,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.669
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.065,
+          "min": 3.514,
+          "role": "claim-reviewer-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 13,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.741
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.164,
+          "min": 3.517,
+          "role": "claim-author-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.568
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.568,
+          "min": 3.568,
+          "role": "worker",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38g",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.675
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.675,
+          "min": 3.675,
+          "role": "worker",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38g",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.712
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.712,
+          "min": 3.712,
+          "role": "reconciler",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.907
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.907,
+          "min": 3.907,
+          "role": "graph-edit-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 17,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 3.933
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.941,
+          "min": 3.917,
+          "role": "researcher",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 5,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.069
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.162,
+          "min": 4.001,
+          "role": "claim-reviewer-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 8,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.044
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.046,
+          "min": 4.043,
+          "role": "custodian",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.078
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.078,
+          "min": 4.078,
+          "role": "claim-reviewer-transition-s2",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 1,
+            "source": "src.qwen-density-by-role-2026-11-02",
+            "value": 4.342
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.342,
+          "min": 4.342,
+          "role": "researcher-transition-s2",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38d",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 84,
+            "note": "n is the snapshot's `files=84`, one assembled input per P05 call; the file says files, not prompts",
+            "source": "src.qwen-density-summary-2026-11-02",
+            "value": 3.337
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 4.342,
+          "min": 2.6,
+          "role": "all-p05",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run38g",
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-02",
+            "n": 2,
+            "note": "n is the snapshot's `files=2`",
+            "source": "src.qwen-density-summary-2026-11-02",
+            "value": 3.695
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.712,
+          "min": 3.675,
+          "role": "all-p05",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3"
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 2767007
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-5-worker: 2767007 characters and 789105 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3.507
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.507,
+          "min": 3.507,
+          "role": "worker",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 789105
+          }
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 2418679
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-1-worker: 2418679 characters and 697078 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3.47
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.47,
+          "min": 3.47,
+          "role": "worker",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 697078
+          }
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3008888
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-5-reconciler: 3008888 characters and 871723 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3.452
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.452,
+          "min": 3.452,
+          "role": "reconciler",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 871723
+          }
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 2245489
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-1-claim-author-correction-P04-RA-02-transition-s1: 2245489 characters and 836234 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 2.685
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 2.685,
+          "min": 2.685,
+          "role": "claim-author-correction-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 836234
+          }
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 335970
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-1-claim-author-correction-P04-RA-08-transition-s1: 335970 characters and 95520 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3.517
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.517,
+          "min": 3.517,
+          "role": "claim-author-correction-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 95520
+          }
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 578321
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-4-claim-reviewer-P04-RA-02: 578321 characters and 174530 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3.314
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.314,
+          "min": 3.314,
+          "role": "claim-reviewer",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 174530
+          }
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 582836
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-6-researcher-P04-RA-03: 582836 characters and 158037 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3.688
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.688,
+          "min": 3.688,
+          "role": "researcher",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 158037
+          }
+        },
+        {
+          "build": "run39a",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 167947
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "note": "task P05-1-claim-reviewer-P04-RA-04-transition-s1: 167947 characters and 43303 Qwen tokens from per-prompt.tsv; measured through the deepseek-flash worker that ran run39a, not by us, so the counter is the plangraph one",
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 3.878
+          },
+          "counter": "Rust, tokenizers 0.21.4 (fancy-regex), encode(text, add_special_tokens=false)",
+          "max": 3.878,
+          "min": 3.878,
+          "role": "claim-reviewer-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-03",
+            "n": 1,
+            "source": "src.plangraph-run39a-per-prompt",
+            "value": 43303
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 83,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 21975937
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 83,
+            "note": "overall ratio over 83 rows; admission must use min 3.261, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3.755
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 5.121,
+          "min": 3.261,
+          "role": "claim-author-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 83,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 5852862
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 73,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 114020073
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 73,
+            "note": "overall ratio over 73 rows; admission must use min 1.640, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 2.744
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.958,
+          "min": 1.64,
+          "role": "claim-author-correction-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 73,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 41547631
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 114,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 25224098
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 114,
+            "note": "overall ratio over 114 rows; admission must use min 3.191, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3.705
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 5.209,
+          "min": 3.191,
+          "role": "claim-reviewer",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 114,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 6807634
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 77,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 20220833
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 77,
+            "note": "overall ratio over 77 rows; admission must use min 3.216, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3.652
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 5.208,
+          "min": 3.216,
+          "role": "claim-reviewer-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 77,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 5536424
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 27,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3313462
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 27,
+            "note": "overall ratio over 27 rows; admission must use min 3.672, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4.13
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.841,
+          "min": 3.672,
+          "role": "claim-reviewer-transition-s1",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 27,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 802325
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 18,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 2248705
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 18,
+            "note": "overall ratio over 18 rows; admission must use min 3.676, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4.047
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.922,
+          "min": 3.676,
+          "role": "claim-reviewer-transition-s2",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 18,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 555587
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 271,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 67211123
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 271,
+            "note": "overall ratio over 271 rows; admission must use min 3.731, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4.248
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 5.039,
+          "min": 3.731,
+          "role": "custodian",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 271,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 15822692
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 7,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 5003639
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 7,
+            "note": "overall ratio over 7 rows; admission must use min 3.674, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3.924
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.113,
+          "min": 3.674,
+          "role": "graph-connectivity-repair",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 7,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 1275089
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 66,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 17487814
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 66,
+            "note": "overall ratio over 66 rows; admission must use min 3.777, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4.041
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.23,
+          "min": 3.777,
+          "role": "graph-edit-correction",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 66,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4328069
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 70,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 21850393
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 70,
+            "note": "overall ratio over 70 rows; admission must use min 3.810, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4.07
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.316,
+          "min": 3.81,
+          "role": "graph-mechanical-precheck",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 70,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 5368486
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 185,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 74064178
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 185,
+            "note": "overall ratio over 185 rows; admission must use min 3.445, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3.926
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.273,
+          "min": 3.445,
+          "role": "reconciler",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 185,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 18863254
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 124,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 60216750
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 124,
+            "note": "overall ratio over 124 rows; admission must use min 3.687, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3.931
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.279,
+          "min": 3.687,
+          "role": "researcher",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 124,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 15318285
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 30,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4533670
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 30,
+            "note": "overall ratio over 30 rows; admission must use min 4.089, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4.331
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 5.285,
+          "min": 4.089,
+          "role": "researcher-transition-s2",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 30,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 1046851
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 3223,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 765328422
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 3223,
+            "note": "overall ratio over 3223 rows; admission must use min 3.432, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 4.062
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.198,
+          "min": 3.432,
+          "role": "reviewer",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 3223,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 188395134
+          }
+        },
+        {
+          "build": "consumer-1 corpus 2026-11-03",
+          "chars": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 233,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 91801084
+          },
+          "chars_per_token": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 233,
+            "note": "overall ratio over 233 rows; admission must use min 3.432, not this (SCHEMAS v1.8 §2b)",
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 3.951
+          },
+          "counter": "consumer-1 corpus: HF Qwen/Qwen3.8-27B tokenizer.json, encode(text, add_special_tokens=false)",
+          "max": 4.375,
+          "min": 3.432,
+          "role": "worker",
+          "tokenizer_sha256": "sha256:0997f410c57a1f4e53b09e4be8f4a172d90edd9564368fb0847030937229b9f3",
+          "tokens": {
+            "kind": "measured",
+            "last_verified": "2026-11-05",
+            "n": 233,
+            "source": "src.consumer-1-qwen-corpus",
+            "value": 23234425
+          }
+        }
+      ],
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.hf-qwen3.8-27b",
+        "value": "3.8"
+      }
+    },
+    {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "MiMo-V2.6-Flash"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "mimo"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "xiaomi-mimo-v2.6-flash",
+      "kind": "card",
+      "last_verified": "2026-11-01",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "the publisher's Hugging Face page returned HTTP 401 at capture time and no other snapshot states a licence"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 1048576
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.openrouter-models",
+          "value": 131072
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states whether the output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.openrouter-models",
+          "value": "Xiaomi"
+        },
+        "maker_id": "xiaomi"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": [
+          "text",
+          "image",
+          "audio",
+          "video"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": "Xiaomi"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "the provider listing exposes a reasoning toggle only; it states no named levels"
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.models-dev-api",
+        "unknown": "the publisher's page was unavailable (HTTP 401) and no snapshot states a tokenizer"
+      },
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "2.6"
+      }
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "DeepSeek"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-11-02",
+            "source": "src.deepseek-pricing",
+            "value": "https://api.deepseek.com"
+          },
+          "wire_api": {
+            "kind": "assumed",
+            "last_verified": "2026-11-01",
+            "note": "the snapshot states \"BASE URL (OpenAI Format)\"; openai-chat is the model-atlas wire_api that maps to, not a string the page prints",
+            "source": "src.deepseek-pricing",
+            "value": "openai-chat"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-11-01",
+          "source": "src.deepseek-pricing",
+          "unknown": "no snapshot states a free tier for DeepSeek's own API"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.deepseek",
+      "kind": "provider",
+      "last_verified": "2026-11-01",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.otel-genai-registry",
+        "value": "deepseek"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": "api.deepseek.com"
+      },
+      "peak_windows": [
+        {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": "Peak hours are 01:00 - 04:00 and 06:00 - 10:00 UTC"
+        },
+        {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": "Off-peak rates are half of the peak rates"
+        },
+        {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": "All other hours are off-peak, including weekends and Chinese public holidays in full"
+        }
+      ],
+      "rate_limit_headers": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.deepseek-pricing",
+        "unknown": "no snapshot states whether this provider sends rate-limit headers"
+      },
+      "stale": null
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "models.dev spells the provider name 'Nvidia', which is the literal this fact now carries; the earlier capture recorded the publisher's own capitalised form, 'NVIDIA', which no captured snapshot states as the provider name",
+        "source": "src.models-dev-api",
+        "value": "Nvidia"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-11-03",
+            "source": "src.models-dev-api",
+            "value": "https://integrate.api.nvidia.com/v1"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the wire API was not read in this slice"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.field-window-refresh-1",
+          "unknown": "whether a free tier exists was not established in this slice"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.nvidia",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.otel-genai-registry",
+        "unknown": "the OTel GenAI registry snapshot does not list NVIDIA as a provider value"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "integrate.api.nvidia.com"
+      },
+      "peak_windows": [],
+      "rate_limit_headers": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-10-31",
+        "n": 1,
+        "source": "src.field-window-refresh-1",
+        "value": false
+      },
+      "stale": null
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "note": "re-checked 2026-11-03: the public docs page answered 200 but redirects to a Models page titled 'Models | OpenCode', and the site's /zen path lands on the console's models page; neither capture contains 'OpenCode Zen' verbatim. Both captures are hashed and manifest-listed under src.opencode-zen-docs, so this absence is verifiable rather than asserted. The value still rests on the original capture, so the record expires on 2026-11-07",
+        "source": "src.slice-scope",
+        "value": "OpenCode Zen"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.slice-scope",
+            "unknown": "the endpoint URL was not read in this slice; no field-window evidence covers OpenCode Zen"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.slice-scope",
+            "unknown": "the wire API was not read in this slice; no field-window evidence covers OpenCode Zen"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "documented",
+          "last_verified": "2026-10-31",
+          "source": "src.slice-scope",
+          "unknown": "the free-tier offer was not read in this slice; no field-window evidence covers OpenCode Zen"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.opencode-zen",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.otel-genai-registry",
+        "unknown": "the OTel GenAI registry snapshot does not list OpenCode Zen as a provider value"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "opencode.ai"
+      },
+      "peak_windows": [],
+      "rate_limit_headers": {
+        "kind": "documented",
+        "last_verified": "2026-10-31",
+        "source": "src.slice-scope",
+        "unknown": "whether rate-limit headers are sent was not observed in this slice"
+      },
+      "stale": null
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "OpenRouter"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-11-03",
+            "source": "src.models-dev-api",
+            "value": "https://openrouter.ai/api/v1"
+          },
+          "wire_api": {
+            "kind": "documented",
+            "last_verified": "2026-10-31",
+            "source": "src.field-window-refresh-1",
+            "unknown": "the wire API was not read in this slice"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [
+          {
+            "confidence": "low",
+            "kind": "observed",
+            "last_verified": "2026-10-31",
+            "n": 173,
+            "source": "src.field-window-refresh-1",
+            "unknown": "per-hour allowance unknown (no ceiling reached in 31 min across about 9 free-route seats; a lower bound only)"
+          }
+        ],
+        "offer": {
+          "confidence": "low",
+          "kind": "observed",
+          "last_verified": "2026-10-31",
+          "n": 173,
+          "source": "src.field-window-refresh-1",
+          "value": "free routes exist (e.g. nemotron-3.5-super-vl:free)"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.openrouter",
+      "kind": "provider",
+      "last_verified": "2026-10-31",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-01",
+        "source": "src.otel-genai-registry",
+        "unknown": "the OTel GenAI registry snapshot lists anthropic, aws.bedrock, azure.ai.inference, azure.ai.openai, cohere, deepseek, gcp.gemini, gcp.gen_ai, gcp.vertex_ai, groq, ibm.watsonx.ai, mistral_ai, openai, perplexity and x_ai; it does not name OpenRouter"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "openrouter.ai"
+      },
+      "peak_windows": [],
+      "rate_limit_headers": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-10-31",
+        "n": 1,
+        "source": "src.field-window-refresh-1",
+        "value": false
+      },
+      "stale": null
+    },
+    {
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.models-dev-api",
+        "value": "Z.AI Coding Plan"
+      },
+      "endpoints": [
+        {
+          "base_url": {
+            "kind": "documented",
+            "last_verified": "2026-11-05",
+            "note": "the endpoint consumer-1's probes used; models.dev states the same api string",
+            "source": "src.models-dev-api",
+            "value": "https://api.z.ai/api/coding/paas/v4"
+          },
+          "wire_api": {
+            "kind": "assumed",
+            "last_verified": "2026-11-05",
+            "note": "'chat' is not a string models.dev prints for this provider: the entry carries no wire or api-type field at all. The premise is two literals — the SDK package name '@ai-sdk/openai-compatible' in that entry, and consumer-1's probe, whose request body posts to a chat/completions path and whose response is a chat.completion — so this is an assumption from those premises, not a documented value",
+            "source": "src.models-dev-api",
+            "value": "chat"
+          }
+        }
+      ],
+      "free_tier": {
+        "limits": [],
+        "offer": {
+          "kind": "assumed",
+          "last_verified": "2026-11-05",
+          "note": "an assumption from two literals: models.dev lists every per-token cost for this plan's glm-5.3-flash entry as 0 (cost {input 0, output 0, cache_read 0, cache_write 0}), and the provider is named 'Z.AI Coding Plan'. No captured page states the plan's billing model; a Z.ai billing or pricing page is the capture that would make this documented",
+          "source": "src.models-dev-api",
+          "value": "the Coding Plan subscription is priced by the plan, not per call"
+        }
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "provider.zai-coding-plan",
+      "kind": "provider",
+      "last_verified": "2026-11-02",
+      "otel_provider_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.otel-genai-registry",
+        "unknown": "the OpenTelemetry semantic-convention registry does not name this provider, so a well-known value would be a guess"
+      },
+      "otel_server_address": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.otel-genai-registry",
+        "unknown": "no snapshot states an OTel server address for this route"
+      },
+      "peak_windows": [],
+      "rate_limit_headers": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.zai-glm-5-3-flash-probe",
+        "unknown": "no probe captured response headers, so nothing is known about rate-limit headers"
+      },
+      "stale": null
+    },
+    {
+      "aliases": [
+        "route.deepseek.deepseek-v4-flash"
+      ],
+      "card": "deepseek-v4.1-flash",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": 1048576
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.deepseek.deepseek-flash",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-02",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": 393216
+      },
+      "observations": {
+        "limit_events": [
+          {
+            "at": "2026-11-02T18:57:00",
+            "headers_present": false,
+            "message": {
+              "kind": "observed",
+              "last_verified": "2026-11-02",
+              "n": 1,
+              "note": "quoted from the HTTP 400 body; the body ends with a request id and a 'Please reduce the length of the messages or completion.' sentence that are not part of the quoted figures",
+              "source": "src.round20-ds-window-resp-a",
+              "value": "This model's maximum context length is 1048576 tokens. However, you requested 1119742 tokens (738038 in the messages, 381704 in the completion)"
+            },
+            "n": 1,
+            "text_class": "context_length_exceeded"
+          }
+        ],
+        "throughput": []
+      },
+      "provider": "provider.deepseek",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": "deepseek-flash"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": 0.003
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": 0.6
+        },
+        "price_source": "src.deepseek-pricing"
+      }
+    },
+    {
+      "card": "deepseek-v4-pro",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": 1048576
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.deepseek.deepseek-v4-pro",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-02",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": 393216
+      },
+      "observations": {
+        "throughput": []
+      },
+      "provider": "provider.deepseek",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.deepseek-pricing",
+        "value": "deepseek-v4-pro"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": 0.022
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": 0.66
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.deepseek-pricing",
+          "value": 1.98
+        },
+        "price_source": "src.deepseek-pricing"
+      }
+    },
+    {
+      "card": "glm-5.3-flash",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "note": "secondary: models.dev, an aggregator, not the provider's own page",
+        "source": "src.models-dev-api",
+        "value": 1000000
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.zai-coding-plan.glm-5-3-flash",
+      "is_free": {
+        "kind": "assumed",
+        "last_verified": "2026-11-05",
+        "note": "an assumption, not a stated field: models.dev lists every per-token cost as 0 on the Coding Plan and names no free or subscription flag. The premise is that a plan whose marginal price is 0 still costs the caller the plan fee, so `is_free = false` describes the plan, not the call. A Z.ai billing page would settle it",
+        "source": "src.models-dev-api",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-05",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "note": "secondary: models.dev states limit.output 131072. Neither probe measured this cap — see the output probes",
+        "source": "src.models-dev-api",
+        "value": 131072
+      },
+      "observations": {
+        "output_probes": [
+          {
+            "at": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "note": "the instant OBSERVATIONS.md states for this probe, and the UTC instant of the response's own created 1793857017",
+              "source": "src.zai-glm-5-3-flash-probe",
+              "value": "2026-11-05T05:36:57Z"
+            },
+            "completion_tokens": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "source": "src.zai-glm-5-3-flash-probe",
+              "value": 105314
+            },
+            "finish_reason": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "source": "src.zai-glm-5-3-flash-probe",
+              "value": "stop"
+            },
+            "n": 1,
+            "reasoning_tokens": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "source": "src.zai-glm-5-3-flash-probe",
+              "value": 1504
+            }
+          },
+          {
+            "at": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "note": "the UTC instant of the response's own literal created 1793855675; the snapshot states the epoch second, not an ISO stamp, so this ISO form is that literal converted",
+              "source": "src.zai-glm-5-3-flash-probe-max131072",
+              "value": "2026-11-05T05:14:35Z"
+            },
+            "completion_tokens": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "source": "src.zai-glm-5-3-flash-probe-max131072",
+              "value": 1218
+            },
+            "finish_reason": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "source": "src.zai-glm-5-3-flash-probe-max131072",
+              "value": "stop"
+            },
+            "max_tokens_sent": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "source": "src.zai-glm-5-3-flash-probe-max131072",
+              "value": 131072
+            },
+            "n": 1,
+            "reasoning_tokens": {
+              "kind": "observed",
+              "last_verified": "2026-11-05",
+              "n": 1,
+              "source": "src.zai-glm-5-3-flash-probe-max131072",
+              "value": 1035
+            }
+          }
+        ],
+        "throughput": []
+      },
+      "provider": "provider.zai-coding-plan",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-05",
+        "source": "src.models-dev-api",
+        "value": "glm-5.3-flash"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-05",
+          "source": "src.models-dev-api",
+          "unknown": "Coding Plan subscription; models.dev lists 0"
+        },
+        "cost_basis": "actual",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-05",
+          "source": "src.models-dev-api",
+          "unknown": "Coding Plan subscription; models.dev lists 0 for every per-token cost on this plan, which is a zero marginal price inside the plan, not a measured bill"
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-05",
+          "source": "src.models-dev-api",
+          "unknown": "Coding Plan subscription; models.dev lists 0"
+        },
+        "price_source": null
+      }
+    },
+    {
+      "card": "xiaomi-mimo-v2.6-flash",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": 1050000
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.xiaomi-mimo-v2-6-flash",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-02",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": 131072
+      },
+      "observations": {
+        "throughput": []
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": "xiaomi/mimo-v2.6-flash"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.0028
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.14
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.28
+        },
+        "price_source": "src.models-dev-api"
+      }
+    },
+    {
+      "card_unknown": "no nemotron-3.5-super-vl card exists in this repository yet; publisher facts were not captured, and a card is not invented",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": 1000000
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.nvidia-nemotron-3-5-super-vl-free",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": true
+      },
+      "kind": "route",
+      "last_verified": "2026-10-31",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": 131072
+      },
+      "observations": {
+        "throughput": [
+          {
+            "method": "probe",
+            "n": 1,
+            "tokens_per_second": {
+              "confidence": "low",
+              "kind": "observed",
+              "last_verified": "2026-10-31",
+              "n": 1,
+              "source": "src.field-window-refresh-1",
+              "unknown": "the 2026-10-31 field window recorded a 0.35 s first-probe latency on this free route, not a throughput measurement"
+            }
+          }
+        ]
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": "nvidia/nemotron-3.5-super-vl:free"
+      },
+      "stale": null,
+      "tariff": {
+        "cost_basis": "implied",
+        "implied_from": [
+          "route.openrouter.nvidia-nemotron-3-5-super-vl"
+        ],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.5
+        },
+        "price_source": "src.models-dev-api"
+      }
+    },
+    {
+      "card_unknown": "no nemotron-3.5-super-vl card exists in this repository yet; publisher facts were not captured, and a card is not invented",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": 1048576
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.nvidia-nemotron-3-5-super-vl",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-10-31",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": 235929
+      },
+      "observations": {
+        "throughput": [
+          {
+            "method": "probe",
+            "n": 1,
+            "tokens_per_second": {
+              "confidence": "low",
+              "kind": "observed",
+              "last_verified": "2026-10-31",
+              "n": 1,
+              "source": "src.field-window-refresh-1",
+              "unknown": "the 2026-10-31 field window recorded a 9.2 s first-probe latency on the NVIDIA-hosted route, not a throughput measurement"
+            }
+          }
+        ]
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": "nvidia/nemotron-3.5-super-vl"
+      },
+      "stale": null,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.02
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "value": 0.5
+        },
+        "price_source": "src.models-dev-api"
+      }
+    },
+    {
+      "card": "qwen3.8-27b",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": 262144
+      },
+      "freshness": "current",
+      "freshness_days": 7,
+      "id": "route.openrouter.qwen-qwen3-8-27b",
+      "is_free": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot prices this upstream above zero (prompt \"0.00000015\"); false is the mapping of that, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-02",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": 235929
+      },
+      "observations": {
+        "throughput": []
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": "qwen/qwen3.8-27b"
+      },
+      "stale": null,
+      "supports_response_format": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot's supported_parameters lists \"response_format\"; true is the mapping, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": true
+      },
+      "supports_structured_outputs": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot's supported_parameters lists \"structured_outputs\"; true is the mapping, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": true
+      },
+      "supports_tools": {
+        "kind": "assumed",
+        "last_verified": "2026-11-02",
+        "note": "the snapshot's supported_parameters lists \"tools\"; true is the mapping, not a literal",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": true
+      },
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "assumed",
+          "last_verified": "2026-11-02",
+          "note": "the snapshot prints \"0.0000000375\" per token for input_cache_read; x 1e6 gives this per-Mtok value",
+          "source": "src.openrouter-qwen-endpoints",
+          "value": 0.0375
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "assumed",
+          "last_verified": "2026-11-02",
+          "note": "the snapshot prints \"0.00000015\" per token; this field is USD per Mtok, so the value is that literal x 1e6",
+          "source": "src.openrouter-qwen-endpoints",
+          "value": 0.15
+        },
+        "output_usd_per_mtok": {
+          "kind": "assumed",
+          "last_verified": "2026-11-02",
+          "note": "the snapshot prints \"0.000001875\" per token; x 1e6 gives this per-Mtok value",
+          "source": "src.openrouter-qwen-endpoints",
+          "value": 1.875
+        },
+        "price_source": "src.openrouter-qwen-endpoints"
+      },
+      "upstream": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": "deepinfra/bf16"
+      },
+      "uptime_last_1d": {
+        "confidence": "low",
+        "kind": "observed",
+        "last_verified": "2026-11-02",
+        "n": 1,
+        "note": "window: the capture instant 2026-11-01T23:22:58Z, read from the capture dir's CAPTURED_AT file; one sample of the upstream's reported 1-day uptime",
+        "source": "src.openrouter-qwen-endpoints",
+        "value": 99.375
+      }
+    }
+  ],
+  "sources": [
+    {
+      "id": "src.consumer-1-qwen-corpus",
+      "kind": "evidence",
+      "read_at": "2026-11-05",
+      "sha256": "306948925e5f579f4014481d62db6eaf6c2fa3d073b32d1a8c3169949e55a3c4",
+      "visibility": "private"
+    },
+    {
+      "id": "src.deepseek-host-profile-a8a24175",
+      "kind": "repo",
+      "read_at": "2026-11-02",
+      "sha256": "1c7ba7af6973e5d4de5cd8eceb306ef4da280ddd9aa70a3de84aadb005425260",
+      "visibility": "private"
+    },
+    {
+      "id": "src.deepseek-pricing",
+      "kind": "url",
+      "locator": "https://api-docs.deepseek.com/quick_start/pricing",
+      "read_at": "2026-11-02",
+      "sha256": "579412351262de19f1b067420542d042dc9433f389be6d252d0f4c41b82f515b",
+      "visibility": "public"
+    },
+    {
+      "id": "src.deepseek-reasoning",
+      "kind": "url",
+      "locator": "https://api-docs.deepseek.com/guides/reasoning_model",
+      "read_at": "2026-11-02",
+      "sha256": "723bbdcf0b8fd45ae629b0c9fa3939bbfa2af368c69c2ce37ff532049ddde9e3",
+      "visibility": "public"
+    },
+    {
+      "id": "src.field-window-refresh-1",
+      "kind": "evidence",
+      "read_at": "2026-10-31",
+      "sha256": "adec852b49641409f9b03af2bcbd068307049dca60f8211bf24d19c5f899ed13",
+      "visibility": "private"
+    },
+    {
+      "id": "src.hf-qwen3.8-27b-config",
+      "kind": "url",
+      "locator": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/config.json",
+      "read_at": "2026-11-02",
+      "sha256": "191e0af232104ed8b65258cf3fb2b842e288008baca7633c11b82a1ac7203aab",
+      "visibility": "public"
+    },
+    {
+      "id": "src.hf-qwen3.8-27b-readme",
+      "kind": "url",
+      "locator": "https://huggingface.co/Qwen/Qwen3.8-27B/raw/main/README.md",
+      "read_at": "2026-11-02",
+      "sha256": "57e4bdb258ee1a7d2635c5174ebd4e56abe392505cdb5f8bbb356b0dc4293641",
+      "visibility": "public"
+    },
+    {
+      "id": "src.hf-qwen3.8-27b",
+      "kind": "url",
+      "locator": "https://huggingface.co/api/models/Qwen/Qwen3.8-27B",
+      "read_at": "2026-11-02",
+      "sha256": "134b8106e75f400680cb038abfed0f77cfe27dad56898f9c9a722640de557158",
+      "visibility": "public"
+    },
+    {
+      "id": "src.serving-roster",
+      "kind": "repo",
+      "read_at": "2026-10-31",
+      "visibility": "private"
+    },
+    {
+      "id": "src.models-dev-api",
+      "kind": "url",
+      "locator": "https://models.dev/api.json",
+      "read_at": "2026-11-02",
+      "sha256": "a780f57d1a997cad6e1d1bcd6bedd1090fd853aeead3af0fda4cd5ca32b0033d",
+      "visibility": "public"
+    },
+    {
+      "id": "src.served-artifact-probe",
+      "kind": "evidence",
+      "read_at": "2026-10-31",
+      "sha256": "6e806c559cb2e5df99c6cf76509d818f55758ce1d7ca2cfe1b5fa5c6fee81411",
+      "visibility": "private"
+    },
+    {
+      "id": "src.openrouter-models",
+      "kind": "url",
+      "locator": "https://openrouter.ai/api/v1/models",
+      "read_at": "2026-11-02",
+      "sha256": "518d446dccace13eeb1e0e9a5a7c1598ad7943368f04660a5c82201c46e7cb46",
+      "visibility": "public"
+    },
+    {
+      "id": "src.openrouter-qwen-endpoints",
+      "kind": "url",
+      "locator": "https://openrouter.ai/api/v1/models/qwen/qwen3.8-27b/endpoints",
+      "read_at": "2026-11-02",
+      "sha256": "cfc6b5f99dd32394e92683bbcaa948a7e567f8a768f75f7aa9f602acc2a39d69",
+      "visibility": "public"
+    },
+    {
+      "id": "src.otel-genai-registry",
+      "kind": "url",
+      "locator": "https://opentelemetry.io/docs/specs/semconv/registry/attributes/gen-ai/",
+      "read_at": "2026-11-02",
+      "sha256": "a3d9c61c9ff0123854ed8a62c6d82814c9f055116338db99c6c9305414f64485",
+      "visibility": "public"
+    },
+    {
+      "id": "src.plangraph-run39a-per-prompt",
+      "kind": "evidence",
+      "read_at": "2026-11-03",
+      "sha256": "ed6eb08e62c334c77eb8615fc0cb376fd3169711fd1e77b0705b66ededa04252",
+      "visibility": "private"
+    },
+    {
+      "id": "src.qwen-density-by-role-2026-11-02",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "453e8b19462bcf532a09d76ae64b80fc3f04a1614412a21536c86f853ae7e3fc",
+      "visibility": "private"
+    },
+    {
+      "id": "src.qwen-density-summary-2026-11-02",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "06afe08306dc10bee31208f0e0ce1d487880f3d6b51feb0c6525f6285946b9d2",
+      "visibility": "private"
+    },
+    {
+      "id": "src.round20-ds-window-resp-a",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "0292d7a5161da5449df711a1ec5cfbf991621cf1b3d6664ba5652e5acd5a0663",
+      "visibility": "private"
+    },
+    {
+      "id": "src.round20-ds-window-resp-b",
+      "kind": "evidence",
+      "read_at": "2026-11-02",
+      "sha256": "d762c17552c194f3335ab9b619be2722daa2b6a8949839456b5b8e8dce7c9439",
+      "visibility": "private"
+    },
+    {
+      "id": "src.slice-scope",
+      "kind": "owner-statement",
+      "read_at": "2026-10-31",
+      "visibility": "private"
+    },
+    {
+      "id": "src.zai-glm-5-3-flash-probe-max131072",
+      "kind": "evidence",
+      "read_at": "2026-11-05",
+      "sha256": "6a511f31eb19b90906d4840d2cdac1c4f856a5c68a793a40596247052c167094",
+      "visibility": "private"
+    },
+    {
+      "id": "src.zai-glm-5-3-flash-probe",
+      "kind": "evidence",
+      "read_at": "2026-11-05",
+      "sha256": "06b39ab7f570c2c46953348bcda5df535d6326eb3eb9029edb76a2a5ac8349d1",
+      "visibility": "private"
+    }
+  ],
+  "tokenizer_density_rules": {
+    "admission": "use the lowest min across all rows for that role; if the role has no row with n >= 5, use 2.6",
+    "admission_default": 2.6,
+    "chars_per_token": "the overall ratio, sum of chars / sum of tokens, rounded to 3 decimals; never an admission figure",
+    "golden_examples": [
+      {
+        "admits_at": 1.64,
+        "note": "the minimum of that role's measured rows, not its overall ratio",
+        "role": "claim-author-correction-transition-s1"
+      },
+      {
+        "admits_at": 2.6,
+        "note": "the conservative default for an unmeasured role",
+        "role": "a role with no measured row"
+      }
+    ],
+    "min_max": "the per-row extremes, floored to 3 decimals",
+    "n": "rows as the source recorded them, duplicates included, not distinct prompts",
+    "role_match": "the longest key that equals the role or prefixes it on a '-' boundary",
+    "version": "1.8"
+  }
+}
