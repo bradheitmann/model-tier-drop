@@ -277,3 +277,14 @@ Rollback: revert the branch.
 ## V-14 Verify registry version 2 — kind: verify — verifies S-14
 
 QA (different family) reruns the S-14 checks on the frozen tip and applies mutants: (a) accept `/1` with lineage (the refusal test fails); (b) drop `/2` from the accepted list (the `/2` test fails); (c) remove the accepted-versions list from the refusal message (the `/3` test fails).
+
+## S-16 Re-pin the model-atlas export to 2026.11.05-2 and de-duplicate the unknown-cost reason — kind: implement — epic E2 (pin refresh 2026-11-10; S-15 is reserved for committed schemas)
+
+Requirements: R-25. Depends on: nothing unmerged (main; `crates/cli` only, independent of s10/s14). Write prefixes: `crates/cli/src/atlas.rs`, `crates/cli/tests/atlas_export.rs`, `crates/cli/tests/fixtures/`.
+Steps: 1. Vendor model-atlas `exports/model-atlas.export-2026.11.05-2.json` byte for byte as `crates/cli/tests/fixtures/model-atlas-export-2026.11.05-2.json`, replace the pinned sha256 (7c75a2cf476d370808505bb8ffb3af12170d9721498fc26015246dde507ef93b) and version, and remove the 2026.11.02-3 fixture in the same commit with `git rm`. 2. Tests first: all 6 cards resolve with no `atlas_fact_missing` (adds `deepseek-v4.1-flash` and `glm-5.3-flash`); `route.deepseek.deepseek-flash` belongs to card `deepseek-v4.1-flash` and card `deepseek-v4-flash` has no route (cost Unknown "no route in export"); the glm-5.3-flash route cost is Unknown, never 0, and its reason states each distinct tariff reason once (no repeated clause); the existing tests are kept, with their expectations moved to the new export where its facts differ. 3. In `atlas.rs`, join the input and output tariff reasons without repeating an identical or contained reason.
+Checks: `cargo fmt --all --check` exit 0; `cargo clippy --workspace --all-targets -- -D warnings` exit 0; `cargo test --workspace` exit 0; `git diff main -- crates/core` empty; `charter check --strict` exit 0; `gitleaks protect --staged --redact` exit 0.
+Rollback: revert the branch. After landing, the PM asks PM-MODEL-ATLAS to update the tier-drop row in model-atlas `exports/CONSUMERS.tsv` (their repository).
+
+## V-16 Verify the re-pin to 2026.11.05-2 — kind: verify — verifies S-16
+
+QA (different family from the author) reruns the S-16 checks on the frozen tip, confirms the fixture bytes equal model-atlas's file at its PINS.tsv current row, and applies mutants: (a) edit one byte of the fixture (the sha test fails); (b) restore the plain join of both tariff reasons (the no-repeated-clause test fails); (c) map the glm unknown tariff to 0.0 (the never-zero test fails).
