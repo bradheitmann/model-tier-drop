@@ -299,3 +299,14 @@ Rollback: revert the branch.
 ## V-17 Verify the re-pin to 2026.11.10-1 — kind: verify — verifies S-17
 
 QA (different family from the author) reruns the S-17 checks on the frozen tip, confirms the fixture bytes equal model-atlas's file at its PINS.tsv current row, and applies mutants: (a) edit one byte of the fixture (the sha test fails); (b) make a read through a stale route report `stale: false` (the stale-route test fails); (c) restore the plain join of both tariff reasons (the no-repeated-clause test fails).
+
+## S-18 Re-pin the model-atlas export to 2026.11.10-2 — kind: implement — epic E2 (pin refresh 2026-11-10, third of the day; the export that adds the xiaomi-mimo-v2.6-pro card)
+
+Requirements: R-25. Depends on: S-17 merged. Write prefixes: `crates/cli/src/atlas.rs`, `crates/cli/tests/atlas_export.rs`, `crates/cli/tests/fixtures/`.
+Steps: 1. Vendor model-atlas `exports/model-atlas.export-2026.11.10-2.json` byte for byte as `crates/cli/tests/fixtures/model-atlas-export-2026.11.10-2.json`, replace the pinned sha256 (fe83a346aa4809dd1356747b0d55823f1a3166261703d128303930cf79741a9c) and version, and remove the 2026.11.10-1 fixture in the same commit with `git rm`. 2. Tests first: seven cards resolve with no `atlas_fact_missing`; card `xiaomi-mimo-v2.6-pro` read through `route.openrouter.xiaomi-mimo-v2-6-pro` gives cost Known 0.435 in / 0.87 out with its source, maker Known xiaomi, reasoning levels Unknown with the export's reason, the route's stated context, and the route's stale flag; every S-17 test is kept, with expectations moved only where this export's facts differ. 3. Change `atlas.rs` only if a test requires it.
+Checks: as S-16.
+Rollback: revert the branch. After landing, the PM tells PM-MODEL-ATLAS, who updates the tier-drop row in model-atlas `exports/CONSUMERS.tsv`.
+
+## V-18 Verify the re-pin to 2026.11.10-2 — kind: verify — verifies S-18
+
+QA (different family from the author) reruns the S-18 checks on the frozen tip, confirms the fixture bytes equal model-atlas's file at its PINS.tsv current row, and applies mutants: (a) edit one byte of the fixture (the sha test fails); (b) remove `xiaomi-mimo-v2.6-pro` from the card list (the card-count test fails); (c) change the expected mimo-pro output price (the mimo-pro test fails, proving it reads the export).
