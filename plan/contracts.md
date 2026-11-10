@@ -288,3 +288,14 @@ Rollback: revert the branch. After landing, the PM asks PM-MODEL-ATLAS to update
 ## V-16 Verify the re-pin to 2026.11.05-2 — kind: verify — verifies S-16
 
 QA (different family from the author) reruns the S-16 checks on the frozen tip, confirms the fixture bytes equal model-atlas's file at its PINS.tsv current row, and applies mutants: (a) edit one byte of the fixture (the sha test fails); (b) restore the plain join of both tariff reasons (the no-repeated-clause test fails); (c) map the glm unknown tariff to 0.0 (the never-zero test fails).
+
+## S-17 Re-pin the model-atlas export to 2026.11.10-1 — kind: implement — epic E2 (pin refresh 2026-11-10, second of the day; ordered by reveng's acting EXEC-PM for the run 54 ladder)
+
+Requirements: R-25. Depends on: S-16 merged. Write prefixes: `crates/cli/src/atlas.rs`, `crates/cli/tests/atlas_export.rs`, `crates/cli/tests/fixtures/`.
+Steps: 1. Vendor model-atlas `exports/model-atlas.export-2026.11.10-1.json` byte for byte as `crates/cli/tests/fixtures/model-atlas-export-2026.11.10-1.json`, replace the pinned sha256 (ee364d3869efbd040bdb7f45bce176d08308152162033411d9f8966e36f06a81) and version, and remove the 2026.11.05-2 fixture in the same commit with `git rm`. 2. Tests first. This export is the first pinned one with records the producer itself marks stale: a card read with no route keeps its own record's flag; a read through a stale route carries `stale: true` on the route-derived facts (context window and cost) and on the result; no stale fact is dropped or turned Unknown because it is stale. The six cards still resolve with no `atlas_fact_missing`; the export's new `observations.role_outcomes` are ignored by the reader without error (reading them is out of scope). Every S-16 test is kept, with expectations moved only where this export's facts differ. 3. Change `atlas.rs` only if a test requires it.
+Checks: as S-16.
+Rollback: revert the branch.
+
+## V-17 Verify the re-pin to 2026.11.10-1 — kind: verify — verifies S-17
+
+QA (different family from the author) reruns the S-17 checks on the frozen tip, confirms the fixture bytes equal model-atlas's file at its PINS.tsv current row, and applies mutants: (a) edit one byte of the fixture (the sha test fails); (b) make a read through a stale route report `stale: false` (the stale-route test fails); (c) restore the plain join of both tariff reasons (the no-repeated-clause test fails).
