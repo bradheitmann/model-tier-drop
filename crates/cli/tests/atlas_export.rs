@@ -1,49 +1,56 @@
-//! S-12/T-25, S-13, seam-sync-1, S-16 and S-17: the pinned model-atlas export mapped to
+//! S-12/T-25, S-13, seam-sync-1, S-16, S-17 and S-18: the pinned model-atlas export mapped to
 //! tier-drop registry facts.
 //!
-//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.10-1.json`, vendored byte for
-//! byte: `model-atlas.export/1`, export_version `2026.11.10-1`, sha256
-//! `ee364d3869efbd040bdb7f45bce176d08308152162033411d9f8966e36f06a81`, produced by model-atlas
-//! at `exports/model-atlas.export-2026.11.10-1.json`, and marked `current` in model-atlas
+//! Fixture: `crates/cli/tests/fixtures/model-atlas-export-2026.11.10-2.json`, vendored byte for
+//! byte: `model-atlas.export/1`, export_version `2026.11.10-2`, sha256
+//! `fe83a346aa4809dd1356747b0d55823f1a3166261703d128303930cf79741a9c`, produced by model-atlas
+//! at `exports/model-atlas.export-2026.11.10-2.json`, and marked `current` in model-atlas
 //! `exports/PINS.tsv`. The earlier fixtures are gone: S-13 replaced `2026.11.01-2`,
-//! seam-sync-1 replaced `2026.11.01-4`, S-16 replaced `2026.11.02-3` and S-17 replaced
-//! `2026.11.05-2`, each in one commit with `git rm`.
+//! seam-sync-1 replaced `2026.11.01-4`, S-16 replaced `2026.11.02-3`, S-17 replaced
+//! `2026.11.05-2` and S-18 replaced `2026.11.10-1`, each in one commit with `git rm`.
 //!
-//! Export 2026.11.10-1 carries 6 cards, 5 providers and 7 routes (one of them a free route with an
+//! Export 2026.11.10-2 carries 7 cards, 5 providers and 8 routes (one of them a free route with an
 //! implied price, and one the OpenRouter route for `qwen3.8-27b`), so the route, cost-basis and
 //! maker-id paths run on the pinned file. It has no unpriced route, so the unpriced path runs on a
 //! DERIVED copy: the pinned bytes are parsed, one value is changed, and the copy is re-serialized in
 //! memory. No file is written and the pinned fixture, with its sha256, is never touched.
 //!
-//! It is the first pinned export whose producer marks records stale itself: all 5 providers and 6
-//! of the 7 routes are stale, and no card record is. Staleness therefore runs on the pinned bytes
-//! rather than on a derived copy, and each card's expected staleness is read from the fixture (its
-//! own record's flag, or the flag on any route that serves it) instead of being asserted false.
+//! The producer marks records stale itself: all 5 providers and 7 of the 8 routes are stale, and no
+//! card record is. Each card's expected staleness is read from the fixture (its own record's flag,
+//! or the flag on any route that serves it) instead of being asserted false.
 //!
 //! Facts that moved with earlier pins are kept: `route.deepseek.deepseek-flash` belongs to the card
 //! `deepseek-v4.1-flash`, so the card `deepseek-v4-flash` has no route at all; and the glm-5.3-flash
 //! route states the same Coding Plan `unknown` on all three price members, so its reason states each
-//! distinct reason once. The new `observations.role_outcomes` tables are ignored by the reader:
-//! reading them into resolved facts is out of scope for this slice.
+//! distinct reason once. The `observations.role_outcomes` tables are ignored by the reader: reading
+//! them into resolved facts is out of scope for this slice.
+//!
+//! What moved with this pin: the export adds card `xiaomi-mimo-v2.6-pro` and its OpenRouter route
+//! `route.openrouter.xiaomi-mimo-v2-6-pro`, so the card list grows to seven and the route list to
+//! eight. The card states a context of 1,050,000 and names no reasoning levels; the route is marked
+//! stale and prices 0.435 in / 0.87 out. The route's own `context_offered_tokens` is 1,050,000 and
+//! its note keeps the snapshot's 1,048,576 top-provider figure beside it, unconverted: the reader
+//! reports what the export states and a consumer admits on the smaller.
 
 use std::path::Path;
 
 use serde_json::{json, Value};
 use tier_drop_cli::atlas::{resolve, Cost, CostBasis, Export};
 
-const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.10-1.json");
-const PINNED_SHA256: &str = "ee364d3869efbd040bdb7f45bce176d08308152162033411d9f8966e36f06a81";
-const PINNED_VERSION: &str = "2026.11.10-1";
-const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.05-2.json";
+const FIXTURE: &str = include_str!("fixtures/model-atlas-export-2026.11.10-2.json");
+const PINNED_SHA256: &str = "fe83a346aa4809dd1356747b0d55823f1a3166261703d128303930cf79741a9c";
+const PINNED_VERSION: &str = "2026.11.10-2";
+const REPLACED_FIXTURE: &str = "model-atlas-export-2026.11.10-1.json";
 const MANIFEST_DIR: &str = env!("CARGO_MANIFEST_DIR");
 
-const CARD_IDS: [&str; 6] = [
+const CARD_IDS: [&str; 7] = [
     "deepseek-v4-flash",
     "deepseek-v4-pro",
     "deepseek-v4.1-flash",
     "glm-5.3-flash",
     "qwen3.8-27b",
     "xiaomi-mimo-v2.6-flash",
+    "xiaomi-mimo-v2.6-pro",
 ];
 const FREE_ROUTE: &str = "route.openrouter.nvidia-nemotron-3-5-super-vl-free";
 const FREE_ROUTE_WITH_CARD: &str = "route.openrouter.nvidia-nemotron-3-5-super-vl";
@@ -51,6 +58,8 @@ const LIST_ROUTE: &str = "route.deepseek.deepseek-flash";
 const LIST_ROUTE_CARD: &str = "deepseek-v4.1-flash";
 const NO_ROUTE_CARD: &str = "deepseek-v4-flash";
 const GLM_ROUTE: &str = "route.zai-coding-plan.glm-5-3-flash";
+const MIMO_PRO_CARD: &str = "xiaomi-mimo-v2.6-pro";
+const MIMO_PRO_ROUTE: &str = "route.openrouter.xiaomi-mimo-v2-6-pro";
 
 fn sha256(bytes: &[u8]) -> String {
     tier_drop_core::sha256_hex(bytes)
@@ -121,13 +130,13 @@ fn atlas_fixture_matches_pinned_sha256() {
     assert_eq!(export.export_version, PINNED_VERSION);
     assert_eq!(
         export.cards().len(),
-        6,
-        "export 2026.11.10-1 holds six cards"
+        7,
+        "export 2026.11.10-2 holds seven cards"
     );
     assert_eq!(
         export.routes().len(),
-        7,
-        "export 2026.11.10-1 carries seven routes"
+        8,
+        "export 2026.11.10-2 carries eight routes"
     );
 
     // This is the first pinned export whose producer marks records stale itself. The inventory is
@@ -141,8 +150,8 @@ fn atlas_fixture_matches_pinned_sha256() {
     );
     assert_eq!(
         stale_records_of_kind(&value, "route"),
-        6,
-        "six of the seven routes are stale"
+        7,
+        "seven of the eight routes are stale"
     );
     assert_eq!(
         stale_records_of_kind(&value, "card"),
@@ -157,7 +166,7 @@ fn atlas_fixture_matches_pinned_sha256() {
         .join(REPLACED_FIXTURE);
     assert!(
         !old.exists(),
-        "the 2026.11.05-2 fixture must be removed with git rm, not kept beside the pin"
+        "the 2026.11.10-1 fixture must be removed with git rm, not kept beside the pin"
     );
 
     // One changed character of a fact value changes the digest, so the pin catches a hand edit.
@@ -452,6 +461,77 @@ fn atlas_unknown_cost_reason_has_no_repeated_clause() {
     assert_eq!(card_reason.matches(CLAUSE).count(), 1, "{card_reason}");
 }
 
+/// S-18: the export that adds card `xiaomi-mimo-v2.6-pro` and its OpenRouter route. The card is
+/// read through that route, and every fact it carries is the export's own: a listed price with a
+/// source the export holds, a known maker, no reasoning levels (with the export's reason), the
+/// route's stated context, and the route's stale flag on the result.
+#[test]
+fn atlas_mimo_pro_route_resolves() {
+    let export = pinned();
+    let value = pinned_value();
+
+    let card = export
+        .card(MIMO_PRO_CARD)
+        .unwrap_or_else(|| panic!("no card `{MIMO_PRO_CARD}`"));
+    let route = export
+        .route(MIMO_PRO_ROUTE)
+        .unwrap_or_else(|| panic!("no route `{MIMO_PRO_ROUTE}`"));
+    assert_eq!(route.card.as_deref(), Some(MIMO_PRO_CARD));
+
+    let facts = resolve(&card, Some(&route));
+    assert!(facts.issues.is_empty(), "{:?}", facts.issues);
+    assert_eq!(facts.card_id, MIMO_PRO_CARD);
+    assert_eq!(facts.route_id.as_deref(), Some(MIMO_PRO_ROUTE));
+
+    // The price is Known, with the source the export holds for it.
+    assert_eq!(
+        facts.cost.value(),
+        Some(&Cost {
+            input_usd_per_mtok: 0.435,
+            output_usd_per_mtok: 0.87,
+        })
+    );
+    let source = facts.cost.source().expect("a Known cost names its source");
+    assert_eq!(source, "src.models-dev-api");
+    assert!(
+        export.known_sources().contains(source),
+        "{source} must resolve in the export"
+    );
+
+    // The maker is Known; no reasoning levels are stated, and the reason is the export's own.
+    assert_eq!(
+        facts.lineage.maker.value().map(String::as_str),
+        Some("xiaomi")
+    );
+    assert!(!facts.lineage.maker_free_text);
+    assert_eq!(facts.reasoning_levels.value(), None);
+    let reason = facts
+        .reasoning_levels
+        .reason()
+        .expect("an Unknown fact states the export's reason");
+    assert!(reason.contains("name no levels"), "{reason}");
+    assert_eq!(facts.lineage.key(), None, "the architecture is not stated");
+
+    // The context is the value the route itself states, not the card's and not a conversion.
+    let route_stated = value["records"][record_index(&value, MIMO_PRO_ROUTE)]
+        ["context_offered_tokens"]["value"]
+        .as_u64()
+        .expect("the route states a context");
+    assert_eq!(facts.context_window.value(), Some(&route_stated));
+    assert_eq!(facts.context_window.value(), Some(&1_050_000));
+    assert_eq!(facts.context_window.source(), Some("src.openrouter-models"));
+
+    // The pin marks this route stale, and the result follows the record's own flag.
+    assert_eq!(
+        facts.stale,
+        record_stale(&value, MIMO_PRO_ROUTE),
+        "the result's flag is the route record's flag"
+    );
+    assert!(facts.stale);
+    assert!(facts.context_window.stale());
+    assert!(facts.cost.stale());
+}
+
 /// S-17: this is the first pinned export whose producer marks records stale itself. A read
 /// through a stale route carries the flag on the result and on the facts the route supplies, and
 /// a stale fact is neither dropped nor turned Unknown because it is stale.
@@ -563,6 +643,7 @@ fn atlas_lineage_from_maker_id() {
         ("glm-5.3-flash", "zhipuai"),
         ("qwen3.8-27b", "qwen"),
         ("xiaomi-mimo-v2.6-flash", "xiaomi"),
+        ("xiaomi-mimo-v2.6-pro", "xiaomi"),
     ];
     for (card_id, maker) in expected {
         let facts = resolve(&export.card(card_id).unwrap(), None);
@@ -589,6 +670,7 @@ fn atlas_lineage_from_maker_id() {
         "deepseek-v4.1-flash",
         "glm-5.3-flash",
         "xiaomi-mimo-v2.6-flash",
+        "xiaomi-mimo-v2.6-pro",
     ] {
         let facts = resolve(&export.card(card_id).unwrap(), None);
         assert_eq!(facts.lineage.architecture.value(), None, "{card_id}");
