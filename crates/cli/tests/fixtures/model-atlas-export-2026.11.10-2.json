@@ -1,6 +1,6 @@
 {
   "schema": "model-atlas.export/1",
-  "export_version": "2026.11.10-1",
+  "export_version": "2026.11.10-2",
   "generated_at": "2026-11-10T00:00:00Z",
   "as_of": "2026-11-10T00:00:00Z",
   "records": [
@@ -1672,6 +1672,114 @@
       }
     },
     {
+      "artifacts": [],
+      "display_name": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "OpenRouter's listing spells the same model 'Xiaomi: MiMo-V2.6-Pro'",
+        "source": "src.models-dev-api",
+        "value": "MiMo-V2.6-Pro"
+      },
+      "family": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "mimo"
+      },
+      "freshness": "current",
+      "freshness_days": 30,
+      "id": "xiaomi-mimo-v2.6-pro",
+      "kind": "card",
+      "last_verified": "2026-11-02",
+      "licence": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "unknown": "no snapshot captured states a licence for these weights"
+      },
+      "limits": {
+        "context_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "the two snapshots disagree and both literals are kept: models.dev states limit.context 1050000 and OpenRouter's top-level context_length is 1050000, while OpenRouter's top_provider.context_length is 1048576. This card states the first; the route notes the second",
+          "source": "src.models-dev-api",
+          "value": 1050000
+        },
+        "max_output_tokens": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "OpenRouter's top_provider.max_completion_tokens is 131072, and models.dev's limit.output is the same figure",
+          "source": "src.openrouter-models",
+          "value": 131072
+        },
+        "reasoning_accounting": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states whether the output cap includes reasoning tokens"
+        }
+      },
+      "lineage": {
+        "architecture": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.models-dev-api",
+          "unknown": "no snapshot states the architecture lineage (dense vs MoE) for this model"
+        },
+        "maker": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "source": "src.openrouter-models",
+          "value": "Xiaomi"
+        },
+        "maker_id": "xiaomi"
+      },
+      "modalities": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "OpenRouter states the architecture modality as 'text+image+audio+video->text'; the output modality is text",
+        "source": "src.models-dev-api",
+        "value": [
+          "text",
+          "image",
+          "audio",
+          "video"
+        ]
+      },
+      "open_weight": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": true
+      },
+      "publisher": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": "Xiaomi"
+      },
+      "reasoning_levels": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "unknown": "both snapshots state reasoning as a flag (models.dev reasoning true, OpenRouter reasoning.mandatory false) and name no levels"
+      },
+      "stale": null,
+      "status": "current",
+      "tokenizer": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "unknown": "no snapshot states a tokenizer; OpenRouter's architecture.tokenizer says only 'Other'"
+      },
+      "version": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.models-dev-api",
+        "value": "2.6"
+      }
+    },
+    {
       "display_name": {
         "kind": "documented",
         "last_verified": "2026-11-02",
@@ -2975,6 +3083,275 @@
           "value": 0.28
         },
         "price_source": "src.models-dev-api"
+      }
+    },
+    {
+      "card": "xiaomi-mimo-v2.6-pro",
+      "context_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "the route's own top-level context_length is 1050000; the same snapshot's top_provider.context_length is 1048576 and models.dev states limit.context 1050000. Both literals are recorded and neither is converted",
+        "source": "src.openrouter-models",
+        "value": 1050000
+      },
+      "freshness": "stale",
+      "freshness_days": 7,
+      "id": "route.openrouter.xiaomi-mimo-v2-6-pro",
+      "is_free": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "OpenRouter lists a per-token price for this model, so the route is not free",
+        "source": "src.openrouter-models",
+        "value": false
+      },
+      "kind": "route",
+      "last_verified": "2026-11-02",
+      "max_output_offered_tokens": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "note": "top_provider.max_completion_tokens is 131072; models.dev's limit.output is the same figure",
+        "source": "src.openrouter-models",
+        "value": 131072
+      },
+      "observations": {
+        "role_outcomes": [
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "note": "served by DeepInfra for this call (usage.served_provider); stage FORGE",
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "forger",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:50:59Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T09:50:59Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "note": "served by DeepInfra for this call (usage.served_provider); stage P01",
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "custodian",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T11:38:15Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T11:38:15Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "note": "served by GMICloud for this call (usage.served_provider); stage P01",
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "worker",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T11:54:59Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T11:54:59Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "note": "served by DeepInfra for this call (usage.served_provider); stage P01",
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "reconciler",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:01:44Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:01:44Z"
+            }
+          },
+          {
+            "calls": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "note": "served by GMICloud for this call (usage.served_provider); stage P01",
+              "source": "src.consumer-1-run53-events",
+              "value": 1
+            },
+            "failed": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "first_try_nonconformant": {
+              "kind": "measured",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": 0
+            },
+            "role": "reviewer",
+            "window_from": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:24:06Z"
+            },
+            "window_to": {
+              "kind": "observed",
+              "last_verified": "2026-11-10",
+              "n": 1,
+              "source": "src.consumer-1-run53-events",
+              "value": "2026-11-10T12:24:06Z"
+            }
+          }
+        ],
+        "throughput": []
+      },
+      "provider": "provider.openrouter",
+      "provider_model_id": {
+        "kind": "documented",
+        "last_verified": "2026-11-02",
+        "source": "src.openrouter-models",
+        "value": "xiaomi/mimo-v2.6-pro"
+      },
+      "stale": true,
+      "tariff": {
+        "cached_input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "OpenRouter states the same price as the per-token literal '0.0000000036'",
+          "source": "src.models-dev-api",
+          "value": 0.0036
+        },
+        "cost_basis": "list",
+        "implied_from": [],
+        "input_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "OpenRouter states the same price as the per-token literal '0.000000435'",
+          "source": "src.models-dev-api",
+          "value": 0.435
+        },
+        "output_usd_per_mtok": {
+          "kind": "documented",
+          "last_verified": "2026-11-02",
+          "note": "OpenRouter states the same price as the per-token literal '0.00000087'",
+          "source": "src.models-dev-api",
+          "value": 0.87
+        },
+        "price_source": "src.models-dev-api"
+      },
+      "upstream": {
+        "kind": "documented",
+        "last_verified": "2026-11-10",
+        "source": "src.consumer-1-run53-events",
+        "unknown": "no snapshot tags a single upstream for this route: the run's five calls were served by two of them, DeepInfra and GMICloud, and the served provider is recorded per role outcome below"
       }
     },
     {
