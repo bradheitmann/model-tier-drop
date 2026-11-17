@@ -1,12 +1,12 @@
 //! model-tier-drop MCP Worker (workers-rs).
 //!
 //! `POST /mcp` answers MCP over Streamable HTTP with JSON responses and exposes the engine's pure
-//! operations as twelve tools. GET routes serve the skill, the example registry, the default policy
+//! operations as thirteen tools. GET routes serve the skill, the example registry, the default policy
 //! and the record schemas from bytes embedded at compile time. The server is stateless: no
 //! bindings, no secrets, no storage, no auth.
 //!
 //! Layout: `reply` (a plain response value), `mcp` (header checks and the JSON-RPC switch),
-//! `tools` (the twelve tools), `assets` (embedded files and GET routes). Only this file touches
+//! `tools` (the thirteen tools), `assets` (embedded files and GET routes). Only this file touches
 //! `worker` types, so the rest is unit-tested on the host target with `cargo test`.
 
 mod assets;

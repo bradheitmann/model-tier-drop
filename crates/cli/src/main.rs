@@ -18,10 +18,10 @@ use serde::Serialize;
 use serde_json::{json, Value};
 use tier_drop_core::summarise_eval as summarise_run;
 use tier_drop_core::{
-    assess_disqualification, check_floors, dataset_filter, decide, plan_next, qos_gate, schemas,
-    sha256_hex, split_holdout, validate_attempt, validate_registry, validate_task, Attempt,
-    Candidate, Disqualification, DisqualificationReason, EvalItem, Floor, Issue, Policy, Purpose,
-    Registry, Task, Tier, DISQUALIFICATION_SCHEMA_VERSION,
+    adjacent, assess_disqualification, check_floors, dataset_filter, decide, plan_next, qos_gate,
+    schemas, sha256_hex, split_holdout, validate_attempt, validate_registry, validate_task,
+    Attempt, Candidate, Disqualification, DisqualificationReason, EvalItem, Floor, Issue, ModelRef,
+    Policy, Purpose, Registry, Task, Tier, DISQUALIFICATION_SCHEMA_VERSION,
 };
 
 use crate::ledger::{Kind, Ledger};
@@ -120,6 +120,20 @@ enum Command {
     Policy(PolicyCmd),
     /// Print the next plan for a task: the lowest open tier and its untried candidates.
     Plan {
+        #[arg(long)]
+        task: PathBuf,
+        #[arg(long)]
+        registry: PathBuf,
+        #[arg(long)]
+        ledger: Option<PathBuf>,
+        #[arg(long)]
+        policy: Option<PathBuf>,
+    },
+    /// Print the lawful adjacent moves after a recommended candidate failed.
+    Adjacent {
+        /// A ModelRef: `{ "model_id": …, "reasoning_level": … }`.
+        #[arg(long)]
+        from: PathBuf,
         #[arg(long)]
         task: PathBuf,
         #[arg(long)]
@@ -433,6 +447,32 @@ fn cmd_plan(
     Ok(Done::ok(to_value(&plan)?))
 }
 
+fn cmd_adjacent(
+    from: &Path,
+    task: &Path,
+    registry: &Path,
+    ledger: Option<&Path>,
+    policy: Option<&Path>,
+) -> Result<Done, CliError> {
+    let policy = load_policy(policy)?;
+    let registry = load_registry(registry)?;
+    let task = load_task(task, &policy)?;
+    let from: ModelRef = read_json(from, "from")?;
+    // the ledger supplies in-force disqualifications, as for `plan`
+    let dqs = match ledger {
+        Some(dir) => current_disqualifications(&Ledger::new(dir))?,
+        None => Vec::new(),
+    };
+    let moves = adjacent(&from, &task, &registry, &dqs, &policy);
+    // decision: `from_not_fitting` is a warning by contract, so it keeps exit 0; an unknown model
+    // or level makes the question unanswerable and exits 1 like any other validation failure.
+    let ok = moves.issues.iter().all(|i| i.code == "from_not_fitting");
+    Ok(Done {
+        output: Output::Json(to_value(&moves)?),
+        ok,
+    })
+}
+
 fn cmd_qos(task: &Path, registry: &Path, policy: Option<&Path>) -> Result<Done, CliError> {
     let policy = load_policy(policy)?;
     let registry = load_registry(registry)?;
@@ -724,6 +764,19 @@ fn run(cli: Cli) -> Result<Done, CliError> {
             ledger,
             policy,
         } => cmd_plan(&task, &registry, ledger.as_deref(), policy.as_deref()),
+        Command::Adjacent {
+            from,
+            task,
+            registry,
+            ledger,
+            policy,
+        } => cmd_adjacent(
+            &from,
+            &task,
+            &registry,
+            ledger.as_deref(),
+            policy.as_deref(),
+        ),
         Command::Qos {
             task,
             registry,

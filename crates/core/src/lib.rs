@@ -21,6 +21,7 @@
 //! Disqualifications passed in are treated as in force by family and registry date only. The
 //! engine has no clock, so the caller (the CLI) drops expired records before passing them in.
 
+pub mod adjacent;
 pub mod attempt;
 pub mod candidate;
 pub mod canonical;
@@ -40,6 +41,10 @@ mod testutil;
 
 use std::collections::BTreeMap;
 
+pub use adjacent::ADJACENT_MOVES_SCHEMA_VERSION;
+pub use adjacent::{
+    adjacent, AdjacentMoves, FromModel, Move, MoveKind, PassedOver, PassedOverReason,
+};
 pub use attempt::ATTEMPT_SCHEMA_VERSION;
 pub use attempt::{
     check_floors, validate_attempt, Attempt, FloorFailure, FloorResult, Judge, JudgeKind, Outcome,
@@ -82,6 +87,7 @@ pub fn schemas() -> BTreeMap<&'static str, schemars::Schema> {
     out.insert("eval_split", schemars::schema_for!(EvalSplit));
     out.insert("eval_run", schemars::schema_for!(EvalRun));
     out.insert("plan", schemars::schema_for!(Plan));
+    out.insert("adjacent_moves", schemars::schema_for!(AdjacentMoves));
     out
 }
 
@@ -90,12 +96,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn schemas_cover_all_ten_names_with_type_titles() {
+    fn schemas_cover_all_eleven_names_with_type_titles() {
         let s = schemas();
         let names: Vec<&str> = s.keys().copied().collect();
         assert_eq!(
             names,
             vec![
+                "adjacent_moves",
                 "attempt",
                 "disqualification",
                 "eval_item",
@@ -108,10 +115,16 @@ mod tests {
                 "task"
             ]
         );
+        assert_eq!(names.len(), 11);
         let title = s["routing_decision"]
             .as_value()
             .get("title")
             .and_then(|t| t.as_str());
         assert_eq!(title, Some("RoutingDecision"));
+        let adjacent = s["adjacent_moves"]
+            .as_value()
+            .get("title")
+            .and_then(|t| t.as_str());
+        assert_eq!(adjacent, Some("AdjacentMoves"));
     }
 }

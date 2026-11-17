@@ -310,12 +310,15 @@ fn ledger_verify_names_the_tampered_attempt_line() {
 }
 
 #[test]
-fn schemas_lists_ten_and_names_routing_decision() {
+fn schemas_lists_eleven_and_names_routing_decision() {
     let tmp = TempDir::new("schemas");
     let dir = tmp.path();
     let one = run(dir, &["schemas", "routing_decision"], None);
     assert_eq!(code(&one), 0);
     assert_eq!(stdout_json(&one)["title"], "RoutingDecision");
+    let adjacent = run(dir, &["schemas", "adjacent_moves"], None);
+    assert_eq!(code(&adjacent), 0);
+    assert_eq!(stdout_json(&adjacent)["title"], "AdjacentMoves");
     let all = run(dir, &["schemas"], None);
     assert_eq!(code(&all), 0);
     let keys: Vec<String> = stdout_json(&all)
@@ -327,6 +330,7 @@ fn schemas_lists_ten_and_names_routing_decision() {
     assert_eq!(
         keys,
         vec![
+            "adjacent_moves",
             "attempt",
             "disqualification",
             "eval_item",
@@ -339,7 +343,108 @@ fn schemas_lists_ten_and_names_routing_decision() {
             "task"
         ]
     );
+    assert_eq!(keys.len(), 11);
     assert_eq!(code(&run(dir, &["schemas", "nope"], None)), 2);
+}
+
+#[test]
+fn adjacent_lists_moves_over_the_example_registry() {
+    let tmp = TempDir::new("adjacent");
+    let dir = tmp.path();
+    setup_files(dir);
+    std::fs::write(
+        dir.join("from.json"),
+        r#"{ "model_id": "jev", "reasoning_level": "none" }"#,
+    )
+    .unwrap();
+    let o = run(
+        dir,
+        &[
+            "adjacent",
+            "--from",
+            "from.json",
+            "--task",
+            "task.json",
+            "--registry",
+            "registry.json",
+            "--ledger",
+            "ledger",
+        ],
+        None,
+    );
+    assert_eq!(code(&o), 0, "{}", String::from_utf8_lossy(&o.stderr));
+    let a = stdout_json(&o);
+    assert_eq!(a["schema_version"], "tier-drop.adjacent_moves/1");
+    assert_eq!(a["task_id"], "ticket-4711");
+    assert_eq!(a["family"], "ticket.priority");
+    assert_eq!(a["from"]["tier"], "system_one");
+    assert_eq!(
+        a["ladder"],
+        serde_json::json!(["system_one", "cheap_generalist"])
+    );
+    assert_eq!(a["issues"], serde_json::json!([]));
+    let moves = a["moves"].as_array().unwrap();
+    assert_eq!(moves.len(), 3);
+    // another lineage at the same tier comes before the tier above
+    assert_eq!(moves[0]["kind"], "same_tier_other_lineage");
+    assert_eq!(moves[0]["to"]["model_id"], "laya");
+    assert_eq!(moves[1]["kind"], "one_tier_up");
+    assert_eq!(moves[1]["to"]["model_id"], "qwen-3.8-27b");
+    assert_eq!(moves[1]["to"]["reasoning_level"], "none");
+    assert_eq!(
+        moves[1]["passed_over"],
+        serde_json::json!([{ "tier": "specialised", "reason": "no_fitting_candidates" }])
+    );
+    assert_eq!(moves[2]["to"]["reasoning_level"], "thinking");
+    // the walkthrough task forbids remote calls, so no remote model is a target
+    for m in moves {
+        assert_ne!(m["to"]["model_id"], "deepseek-4.1-flash");
+        assert_ne!(m["to"]["model_id"], "opus-5.5");
+    }
+
+    // an unknown model is a validation failure: exit 1 with the issue described
+    std::fs::write(
+        dir.join("from-unknown.json"),
+        r#"{ "model_id": "nope", "reasoning_level": "none" }"#,
+    )
+    .unwrap();
+    let bad = run(
+        dir,
+        &[
+            "adjacent",
+            "--from",
+            "from-unknown.json",
+            "--task",
+            "task.json",
+            "--registry",
+            "registry.json",
+        ],
+        None,
+    );
+    assert_eq!(code(&bad), 1);
+    let b = stdout_json(&bad);
+    assert_eq!(b["issues"][0]["code"], "unknown_model");
+    assert_eq!(b["moves"], serde_json::json!([]));
+}
+
+#[test]
+fn registry_validate_accepts_the_example_with_its_lineages() {
+    let tmp = TempDir::new("registry-lineage");
+    let dir = tmp.path();
+    let o = run(dir, &["registry", "example"], None);
+    assert_eq!(code(&o), 0);
+    std::fs::write(dir.join("registry.json"), &o.stdout).unwrap();
+    let v = run(dir, &["registry", "validate", "registry.json"], None);
+    assert_eq!(code(&v), 0, "{}", String::from_utf8_lossy(&v.stdout));
+    assert_eq!(stdout_json(&v)["valid"], true);
+    let registry = stdout_json(&o);
+    for m in registry["models"].as_array().unwrap() {
+        assert!(
+            m["lineage"].as_str().is_some_and(|l| !l.is_empty()),
+            "model {} has no lineage",
+            m["id"]
+        );
+    }
 }
 
 #[test]
