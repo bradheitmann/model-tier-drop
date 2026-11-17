@@ -21,3 +21,9 @@ S-19 lands on main first, which turns CI green again. Then main is merged into s
 ## Not in this amendment
 
 Moving the Worker to `worker` 0.9. It is a dependency change with its own tests and a redeploy, recorded as an obligation in charter/STATE.md.
+
+## Correction, 2026-11-17, after S-19 landed
+
+"The merge changes nothing under `crates/worker/src`" was written before S-19's test module existed. S-19 itself added `crates/worker/src/build_pin.rs` and its `#[cfg(test)] mod build_pin;` line in `lib.rs`, so the diff between the V-14 tip and the deploy tip under `crates/worker/src` is exactly those two changes. Neither is compiled into the Worker. S-11's proof list checks that, and plan/contracts.md S-11 now says so.
+
+Also decided for S-11 and V-11: the deploy tip is branch `s11` (main with s14 merged in), the PM runs every command that needs the Cloudflare token, and QA checks the deployment id against the PM's kept `wrangler deployments list` output.

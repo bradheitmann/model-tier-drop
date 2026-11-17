@@ -223,13 +223,13 @@ QA (a model family different from the author's) reruns every S-10 check on the f
 ## S-11 Deploy the adjacent tool — kind: implement — epic E3
 
 Requirements: R-32, R-35. Depends on: V-14 accepted; S-19 merged (amendment 2026-11-17). Write prefixes: `crates/worker/README.md` (deployment record only).
-Steps: deploy the Worker from the V-14-accepted S-14 tip (S-10 plus registry /2; amendment 2026-11-05), with main merged into it after S-19 lands (amendment 2026-11-17: the deploy tip then carries the pinned build tool and the tokio 1.54.1 lock; `git diff <S-14 tip> <deploy tip> -- crates/worker/src` is empty) (`wrangler deploy` as in S-06), BEFORE S-10 merges to main: the deployed Worker rejects unknown fields, so the Slice Zero test (`crates/cli/tests/slice_zero.rs`) fails between a merge that adds `lineage` to the example registry and the deploy. Record the deployment id and the live checks.
+Steps: deploy the Worker from the V-14-accepted S-14 tip (S-10 plus registry /2; amendment 2026-11-05), with main merged into it after S-19 lands (amendment 2026-11-17, corrected the same day after S-19 landed: the deploy tip is branch s11, main with s14 merged in, so it carries the pinned build tool and the tokio 1.54.1 lock; `git diff <S-14 tip> <deploy tip> -- crates/worker/src` names only S-19's test module `build_pin.rs` and its `#[cfg(test)]` registration in `lib.rs`, so no non-test Worker code differs from what V-14 accepted). The PM deploys, through `doppler run --project model-tier-drop --config dev`; no pair seat handles the Cloudflare token (`wrangler deploy` as in S-06), BEFORE S-10 merges to main: the deployed Worker rejects unknown fields, so the Slice Zero test (`crates/cli/tests/slice_zero.rs`) fails between a merge that adds `lineage` to the example registry and the deploy. Record the deployment id and the live checks.
 Checks: live `tools/list` has 13 tools; live `tools/call adjacent` for the README task returns `isError: false`; `cargo test -p tier-drop-cli --test slice_zero -- --ignored` passes on the S-10 tip against the live MCP.
 Rollback: `wrangler rollback` to the previous deployment (recorded in S-06). Evidence: deployment id, the three live outputs.
 
 ## V-11 Verify the adjacent deployment — kind: verify — verifies S-11
 
-QA reruns the three live checks from a fresh clone of the S-10 tip and confirms the deployment id in `crates/worker/README.md` matches `wrangler deployments list`.
+QA reruns the three live checks from a fresh clone of the deploy tip (branch s11; amendment 2026-11-17) and confirms the deployment id in `crates/worker/README.md` matches `wrangler deployments list`. The PM runs that list through Doppler and keeps its output with the slice evidence; QA compares against the kept output, so no pair seat handles the Cloudflare token.
 
 ---
 
