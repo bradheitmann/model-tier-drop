@@ -14,6 +14,9 @@ mod mcp;
 mod reply;
 mod tools;
 
+#[cfg(test)]
+mod build_pin;
+
 use worker::{event, Context, Env, Headers, Request, Response, Result};
 
 use crate::reply::Reply;

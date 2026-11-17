@@ -176,7 +176,7 @@ cargo clippy --workspace --all-targets -- -D warnings
 cargo test --workspace
 cargo fmt --all --check --manifest-path crates/worker/Cargo.toml
 cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings
-(cd crates/worker && cargo test && worker-build --release)        # cargo install worker-build --locked
+(cd crates/worker && cargo test && worker-build --release)        # cargo install worker-build@0.8.7 --locked
 cargo build -p tier-drop-cli && pnpm --dir adapters/dsh install && pnpm --dir adapters/dsh check
 gitleaks detect --redact --source .
 ```
