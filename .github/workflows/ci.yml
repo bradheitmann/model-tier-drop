@@ -19,7 +19,7 @@ jobs:
         run: cargo clippy --manifest-path crates/worker/Cargo.toml --target wasm32-unknown-unknown -- -D warnings
       - name: worker build
         run: |
-          cargo install worker-build --locked
+          cargo install worker-build@0.8.7 --locked
           cd crates/worker && worker-build --release
   adapter:
     runs-on: ubuntu-latest

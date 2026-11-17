@@ -48,6 +48,11 @@ cargo test                       # host-target unit tests of routing, JSON-RPC a
 worker-build --release           # writes build/ (generated, ignored by git)
 ```
 
+The build tool is pinned: install it with `cargo install -q worker-build@0.8.7 --locked`.
+`worker-build` 0.9.0 refuses this crate's `worker` 0.8.7, so an install without the version
+replaces the tool with one that cannot build; `src/build_pin.rs` holds the pin in both
+`wrangler.jsonc` and CI and to the `worker` version in `Cargo.lock`.
+
 ## Run locally
 
 ```sh
